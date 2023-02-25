@@ -42,11 +42,19 @@ public static class Hooks
         }
     }
 
-    // posted notification hook
+    // posted notification hook (pre-display)
     [HarmonyPatch(typeof(NotificationScreen), "AddNotification")]
-    public static class NotificationScreen_AddNotification_Patch {
+    public static class NotificationScreen_AddNotification_PrePatch {
         internal static bool Prefix(Notification notification) {
             return globalGameState.AddNotification(ref notification);
+        }
+    }
+
+    // posted notification hook (post-display)
+    [HarmonyPatch(typeof(NotificationScreen), "AddNotification")]
+    public static class NotificationScreen_AddNotification_PostPatch {
+        internal static void Postfix(Notification notification) {
+            globalGameState.NotificationDisplayed(ref notification);
         }
     }
 
