@@ -29,7 +29,7 @@ public sealed class IdleOptions {
     }
 
     public override string ToString() {
-        return string.Format("IdleOptions[SuppressIdleInRockets={0} PauseOnIdle={1}]",
-                             SuppressIdleInRockets, PauseOnIdle);
+        return string.Format("IdleOptions[SuppressIdleInRockets={0} PauseOnIdle={1}, PauseCooldown={2}s]",
+                             SuppressIdleInRockets, PauseOnIdle, PauseCooldown);
     }
 }
