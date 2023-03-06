@@ -104,7 +104,7 @@ public class GameState
             if (diff.TotalSeconds >= opts.PauseCooldown) {
                 Util.LogDbg("dispnote: pausing for dupeId:{0}", minion.GetInstanceID());
                 SpeedControlScreen.Instance.Pause();
-                lastPause = now;
+                lastPause = System.DateTime.UtcNow;
             } else {
                 Util.LogDbg("dispnote: skipping pause for dupeId:{0} due to cooldown", minion.GetInstanceID());
             }
