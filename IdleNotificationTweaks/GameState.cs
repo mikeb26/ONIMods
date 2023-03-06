@@ -4,6 +4,7 @@ using KSerialization;
 using PeterHan.PLib.Options;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 namespace IdleNotificationTweaks;
 
 public class GameState
@@ -11,6 +12,7 @@ public class GameState
     public List<Notification> trackedNotifications;
 
     private IdleOptions opts = null;
+    private System.DateTime lastPause;
 
     public GameState() {
         this.opts = POptions.ReadSettings<IdleOptions>();
@@ -21,6 +23,7 @@ public class GameState
         if (trackedNotifications == null) {
             trackedNotifications = new List<Notification>();
         }
+        lastPause = System.DateTime.UtcNow;
 
         Util.Log("Game started; tracking idle dupes. Opts: {0}", opts);
     }
@@ -94,8 +97,16 @@ public class GameState
 
         if (!button.IsIdleSuppressed && !isInBusyRocket(ref minion) && opts.PauseOnIdle &&
             !SpeedControlScreen.Instance.IsPaused) {
-            Util.LogDbg("dispnote: pausing for dupeId:{0}", minion.GetInstanceID());
-            SpeedControlScreen.Instance.Pause();
+
+            var now = System.DateTime.UtcNow;
+            TimeSpan diff = now.Subtract(lastPause);
+            if (diff.TotalSeconds >= opts.PauseCooldown) {
+                Util.LogDbg("dispnote: pausing for dupeId:{0}", minion.GetInstanceID());
+                SpeedControlScreen.Instance.Pause();
+                lastPause = now;
+            } else {
+                Util.LogDbg("dispnote: skipping pause for dupeId:{0} due to cooldown", minion.GetInstanceID());
+            }
         }
     }
 
