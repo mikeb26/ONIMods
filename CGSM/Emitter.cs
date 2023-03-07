@@ -81,6 +81,12 @@ startWorldIndex: 0
                             OtherPlanetoids.Superconductive);
         addOtherPlanetIfSet(ref yamlContent, opts, opts.regolithPlanetoid,
                             OtherPlanetoids.Regolith);
+        addOtherPlanetIfSet(ref yamlContent, opts, opts.irradiatedForestPlanetoid,
+                            OtherPlanetoids.IrradiatedForest);
+        addOtherPlanetIfSet(ref yamlContent, opts, opts.irradiatedSwampPlanetoid,
+                            OtherPlanetoids.IrradiatedSwamp);
+        addOtherPlanetIfSet(ref yamlContent, opts, opts.irradiatedMarshPlanetoid,
+                            OtherPlanetoids.IrradiatedMarsh);
     }
 
      private static void addOtherPlanetIfSet(ref StringBuilder yamlContent, Options opts,
