@@ -1,0 +1,46 @@
+# Similar to SandstoneStart in features
+biomeNoise: noise/SandstoneStart
+temperatureRange: Cool
+density:
+  min: 10
+  max: 20
+avoidRadius: 20.0
+minChildCount: 4
+dontRelaxChildren: true
+sampleBehaviour: PoissonDisk
+borderOverride: rocky
+biomes:
+  - name: biomes2/CGSMSedimentaryIgneous2/Basic
+    weight: 4
+    tags:
+      - med_LightBug
+      - med_PrickleGrass
+      - med_PrickleGrassSeed
+      - HatchDense
+      - HatchBuriedDense  
+      - BasicForagePlantDense
+      - BasicForagePlantPlantedDense
+      - med_PrickleFlower
+      - med_PrickleFlowerSeed
+      - med_BasicSingleHarvestPlantSeed
+      - med_BasicSingleHarvestPlant
+  - name: biomes2/CGSMSedimentaryIgneous2/Metal_CO2
+    weight: 2
+    tags:   
+      - HatchDense
+      - HatchBuriedDense
+  - name: biomes2/CGSMSedimentaryIgneous2/Basic_CO2
+    weight: 1
+    tags:
+      - HatchDense
+      - HatchBuriedDense
+      - BasicForagePlantDense
+      - BasicForagePlantPlantedDense
+features:
+  - type: features/sedimentary/CGSM.SmallLakeIgneous
+  - type: features/sedimentary/CGSM.MetalVacuumBlobDenseWolframite
+  - type: features/sedimentary/CGSM.CoalDepositDenseIgneous
+  - type: features/sedimentary/CGSM.SmallDirtBallIgneous
+tags:
+  - IgnoreCaveOverride
+zoneType: Sandstone

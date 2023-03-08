@@ -1,0 +1,59 @@
+biomeNoise: noise/SandstoneStart
+temperatureRange: Cool
+pdWeight: 8
+density:
+  min: 10
+  max: 20
+avoidRadius: 20.0
+minChildCount: 6
+doAvoidPoints: false
+dontRelaxChildren: true
+sampleBehaviour: PoissonDisk
+borderOverride: rocky
+biomes:
+  - name: biomes2/CGSMSedimentaryIgneous/Basic_Dense
+    weight: 4
+    tags:
+      - LightBug
+      - PrickleFlower
+      - PrickleFlowerSeed
+      - PrickleGrass
+      - PrickleGrassSeed
+      - Hatch
+      - HatchBuried  
+      - BasicSingleHarvestPlantSeed
+      - BasicSingleHarvestPlant
+      - BasicForagePlant
+      - BasicForagePlantPlanted
+  - name: biomes2/CGSMSedimentaryIgneous/Metal_CO2_Dense
+    weight: 2
+    tags:   
+      - Hatch
+      - HatchBuried
+      - BasicForagePlant
+      - BasicForagePlantPlanted
+      - BasicSingleHarvestPlantSeed
+      - BasicSingleHarvestPlant
+      - PrickleFlower
+      - PrickleFlowerSeed
+  - name: biomes2/CGSMSedimentaryIgneous/Basic_CO2_Dense
+    weight: 1
+    tags:
+      - Hatch
+      - HatchBuried
+      - PrickleFlower
+      - PrickleFlowerSeed      
+      - BasicForagePlant
+      - BasicForagePlantPlanted
+centralFeature:
+  type: features/generic/StartLocation
+features:
+  - type: features/sedimentary/CGSM.MetalVacuumBlobDenseWolframite
+  - type: features/sedimentary/CGSM.CoalDepositDenseIgneous
+  - type: features/sedimentary/CGSM.DirtBallIgneous
+tags:
+  - IgnoreCaveOverride
+  - NoGlobalFeatureSpawning
+  - StartWorld
+  - SwapLakesToBelow
+zoneType: Sandstone

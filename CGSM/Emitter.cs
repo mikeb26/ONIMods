@@ -14,6 +14,7 @@ requiredDlcId: EXPANSION1_ID
 coordinatePrefix: CGSM-C
 menuOrder: -16
 clusterCategory: 2
+disableStoryTraits: true
 difficulty: 5
 
 startWorldIndex: 0

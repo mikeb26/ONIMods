@@ -17,6 +17,10 @@ public enum StartPlanetoids {
     Flipped = 3,
     [Option("STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.NAME", "STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.DESCRIPTION")]
     RadioactiveOcean = 4,
+    [Option("STRINGS.WORLDS.CGSM.TUNDRAMOONLET_NAME", "STRINGS.WORLDS.CGSM.TUNDRAMOONLET_DESC")]
+    Tundra = 5,
+    [Option("STRINGS.WORLDS.CGSM.MARSHYMOONLET_NAME", "STRINGS.WORLDS.CGSM.MARSHYMOONLET_DESC")]
+    Marshy = 6,
     [Option("STRINGS.WORLDS.TERRAMOONLET.NAME", "STRINGS.WORLDS.TERRAMOONLET.DESCRIPTION")]
     Terrania = 11,
     [Option("STRINGS.WORLDS.FORESTMOONLET.NAME", "STRINGS.WORLDS.FORESTMOONLET.DESCRIPTION")]
@@ -125,6 +129,8 @@ public static class Enum {
         {StartPlanetoids.FrozenForest, "expansion1::worlds/MiniForestFrozenStart"},
         {StartPlanetoids.Flipped, "expansion1::worlds/MiniFlippedStart"},
         {StartPlanetoids.RadioactiveOcean, "expansion1::worlds/MiniRadioactiveOceanStart"},
+        {StartPlanetoids.Tundra, "worlds/CGSM.TundraMoonletStart"},
+        {StartPlanetoids.Marshy, "worlds/CGSM.MarshyMoonletStart"},
         {StartPlanetoids.Terrania, "expansion1::worlds/TerraMoonlet"},
         {StartPlanetoids.Folia, "expansion1::worlds/ForestMoonlet"},
         {StartPlanetoids.Quagmiris, "expansion1::worlds/SwampMoonlet"},

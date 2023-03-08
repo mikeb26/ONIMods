@@ -18,6 +18,7 @@ public class Mod : UserMod2
         PUtil.InitLibrary(false);
         LocString.CreateLocStringKeys(typeof(Strings.UI));
         LocString.CreateLocStringKeys(typeof(Strings.CLUSTER_NAMES));
+        LocString.CreateLocStringKeys(typeof(Strings.WORLDS));
         new PLocalization().Register();
         new POptions().RegisterOptions(this, typeof(Options));
         this.opts = POptions.ReadSettings<Options>();

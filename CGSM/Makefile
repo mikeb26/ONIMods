@@ -7,7 +7,7 @@ export ONIModMergedDLL = $(ONIModName)Merged.dll
 export ModVer = $(shell echo $(shell grep version mod_info.yaml | tail -1 | cut -f2 -d:)-$(shell git rev-parse --short HEAD))
 
 .PHONY: build
-build: bin/Debug/$(ONIModMergedDLL) bin/Release/$(ONIModMergedDLL) bin/Debug/worldgen bin/Release/worldgen
+build: bin/Debug/$(ONIModMergedDLL) bin/Release/$(ONIModMergedDLL) bin/Debug/worldgen bin/Release/worldgen bin/Debug/templates bin/Release/templates
 
 bin/Debug/$(ONIModDLL): Util.cs depscheck FORCE
 	dotnet build -c Debug
@@ -39,6 +39,12 @@ bin/Debug/worldgen: FORCE
 bin/Release/worldgen: FORCE
 	rm -rf bin/Release/worldgen
 	cp -a worldgen bin/Release/worldgen
+bin/Debug/templates: FORCE
+	rm -rf bin/Debug/templates
+	cp -a templates bin/Debug/templates
+bin/Release/templates: FORCE
+	rm -rf bin/Release/templates
+	cp -a templates bin/Release/templates
 
 .PHONY: dirscheck
 dirscheck:
@@ -53,7 +59,7 @@ depscheck:
 test: build FORCE
 	rm -rf "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
 	mkdir "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
-	cp -r bin/Debug/$(ONIModMergedDLL) bin/Debug/mod_info.yaml bin/Debug/mod.yaml bin/Debug/worldgen "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
+	cp -r bin/Debug/$(ONIModMergedDLL) bin/Debug/mod_info.yaml bin/Debug/mod.yaml bin/Debug/worldgen bin/Debug/templates "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
 
 .PHONY: log
 log:

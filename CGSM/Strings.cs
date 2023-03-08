@@ -23,10 +23,21 @@ public static class Strings {
             }
         }
     }
+
     public static class CLUSTER_NAMES {
         public static class CGSM_CLUSTER {
             public static LocString NAME = "Cluster Generation Settings Manager";
             public static LocString DESCRIPTION = "CGSM generated cluster. To change planetoids please go back to the Mods menu and click CGSM's Options button.";
+        }
+    }
+
+    public static class WORLDS {
+        public static class CGSM {
+            public static LocString MARSHYMOONLET_NAME = "Marshy Asteroid(cgsm)";
+            public static LocString MARSHYMOONLET_DESC = "A small location with an abundance of marshland.\n\n<smallcaps>While Marshy Asteroids offer an abundance of organic resources like Slime Mold and Algae, their air quality poses a significant disease risk for Duplicants.</smallcaps>. (customized by CGSM)";
+
+            public static LocString TUNDRAMOONLET_NAME = "Tundra Asteroid(cgsm)";
+            public static LocString TUNDRAMOONLET_DESC = "A small frozen planetoid with sub-zero temperatures.\n\n<smallcaps>Duplicants that travel to Tundra Asteroids will need to wear protective gear due to its harsh environment.</smallcaps>. (customized by CGSM)";
         }
     }
 }
