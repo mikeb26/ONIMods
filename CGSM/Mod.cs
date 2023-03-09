@@ -11,6 +11,7 @@ namespace CGSM;
 public class Mod : UserMod2
 {
     private Options opts = null;
+    private Cluster cluster = null;
 
     public override void OnLoad(Harmony harmony) {
         Util.Log("Loading v{0}", Util.Version());
@@ -26,7 +27,11 @@ public class Mod : UserMod2
             this.opts = new Options();
         }
 
-        Emitter.generateYAML(this.opts, mod.ContentPath);
+        this.cluster = new Cluster(this.opts);
+        var clusterYamlPath = System.IO.Path.Combine(mod.ContentPath, "worldgen", "clusters",
+                                                     "CGSM.yaml");
+        var emitter = new ClusterYamlEmitter(cluster, clusterYamlPath);
+	emitter.emit();
 
         base.OnLoad(harmony);
     }

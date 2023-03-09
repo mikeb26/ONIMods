@@ -2,9 +2,9 @@
 
 using Newtonsoft.Json;
 using PeterHan.PLib.Options;
-using System.ComponentModel;
 using System.Text;
 using System.Reflection;
+using System;
 
 namespace CGSM;
 
@@ -19,11 +19,11 @@ public sealed class Options {
 
     [Option("STRINGS.UI.FRONTEND.CGSM.START_OPT", "STRINGS.UI.FRONTEND.CGSM.START_OPT")]
     [JsonProperty]
-    public StartPlanetoids startPlanetoid { get; set; }
+    public StartPlanetoidType startPlanetoid { get; set; }
 
     [Option("STRINGS.UI.FRONTEND.CGSM.WARP_OPT", "STRINGS.UI.FRONTEND.CGSM.WARP_OPT")]
     [JsonProperty]
-    public WarpPlanetoids warpPlanetoid { get; set; }
+    public WarpPlanetoidType warpPlanetoid { get; set; }
 
     [Option("STRINGS.WORLDS.MINIMETALLICSWAMPY.NAME", "STRINGS.WORLDS.MINIMETALLICSWAMPY.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
     [JsonProperty]
@@ -182,8 +182,8 @@ public sealed class Options {
         // defaults
         starmapRadius = 17;
 
-        startPlanetoid = StartPlanetoids.RadioactiveOcean;
-        warpPlanetoid = WarpPlanetoids.Desolands;
+        startPlanetoid = StartPlanetoidType.RadioactiveOcean;
+        warpPlanetoid = WarpPlanetoidType.Desolands;
 
         metallicSwampyPlanetoid = false;
         desolandsPlanetoid = false;
@@ -224,6 +224,57 @@ public sealed class Options {
         sandyOreField = true;
         satelliteField = true;
         swampyOreField = true;
+    }
+
+    public int getHarvestPoiCount() {
+        int count = 0;
+
+        count += Convert.ToInt32(carbonAsteroid);
+        count += Convert.ToInt32(chlorineCloud);
+        count += Convert.ToInt32(forestyOreField);
+        count += Convert.ToInt32(frozenOreField);
+        count += Convert.ToInt32(gasGiantCloud);
+        count += Convert.ToInt32(gildedAsteroidField);
+        count += Convert.ToInt32(glimmeringAsteroidField);
+        count += Convert.ToInt32(heliumCloud);
+        count += Convert.ToInt32(iceAsteroidField);
+        count += Convert.ToInt32(interstellarIceField);
+        count += Convert.ToInt32(interstellarOcean);
+        count += Convert.ToInt32(metallicAsteroidField);
+        count += Convert.ToInt32(oilyAsteroidField);
+        count += Convert.ToInt32(organicMassField);
+        count += Convert.ToInt32(oxidizedAsteroidField);
+        count += Convert.ToInt32(oxygenRichAsteroidField);
+        count += Convert.ToInt32(radioactiveAsteroidField);
+        count += Convert.ToInt32(radioactiveGasCloud);
+        count += Convert.ToInt32(rockyAsteroidField);
+        count += Convert.ToInt32(saltyAsteroidField);
+        count += Convert.ToInt32(sandyOreField);
+        count += Convert.ToInt32(satelliteField);
+        count += Convert.ToInt32(swampyOreField);
+
+        return count;
+    }
+
+    public int getOtherPlanetoidCount() {
+        int count = 0;
+
+        count += Convert.ToInt32(metallicSwampyPlanetoid);
+        count += Convert.ToInt32(desolandsPlanetoid);
+        count += Convert.ToInt32(frozenForestPlanetoid);
+        count += Convert.ToInt32(flippedPlanetoid);
+        count += Convert.ToInt32(radioactiveOceanPlanetoid);
+        count += Convert.ToInt32(tundraPlanetoid);
+        count += Convert.ToInt32(marshyPlanetoid);
+        count += Convert.ToInt32(mooPlanetoid);
+        count += Convert.ToInt32(waterPlanetoid);
+        count += Convert.ToInt32(firePlanetoid);
+        count += Convert.ToInt32(regolithPlanetoid);
+        count += Convert.ToInt32(irradiatedForestPlanetoid);
+        count += Convert.ToInt32(irradiatedSwampPlanetoid);
+        count += Convert.ToInt32(irradiatedMarshPlanetoid);
+
+        return count;
     }
 
     public override string ToString() {
