@@ -3,9 +3,24 @@
 using HarmonyLib;
 
 namespace CGSM;
-
 public static class Hooks
 {
+    [HarmonyPatch(typeof(ClusterCategorySelectionScreen))]
+    [HarmonyPatch("OnClickSpacedOut")]
+    public class ClusterCat_OnClickSpacedOut_Patch {
+        public static void Postfix() {
+            ClusterUtils.loadClusterFromOptionsAndEmit(false);
+        }
+    }
+
+    [HarmonyPatch(typeof(ClusterCategorySelectionScreen))]
+    [HarmonyPatch("OnClickVanilla")]
+    public class ClusterCat_OnClickVanilla_Patch {
+        public static void Postfix() {
+            ClusterUtils.loadClusterFromOptionsAndEmit(false);
+        }
+    }
+
     // new game hook
     [HarmonyPatch(typeof(ProcGenGame.Cluster), "BeginGeneration")]
     public static class Game_OnPrefabInit_Patch {

@@ -10,7 +10,6 @@ namespace CGSM;
 
 [JsonObject(MemberSerialization.OptIn)]
 [ModInfo("https://github.com/mikeb26/ONIMods/CGSM")]
-[RestartRequired]
 public sealed class Options {
     [Option("STRINGS.UI.FRONTEND.CGSM.STARMAP_OPT", "STRINGS.UI.FRONTEND.CGSM.STARMAP_OPT_DESC")]
     [Limit(14, 20)]
