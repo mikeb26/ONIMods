@@ -181,16 +181,16 @@ public sealed class Options {
         // defaults
         starmapRadius = 17;
 
-        startPlanetoid = StartPlanetoidType.RadioactiveOcean;
+        startPlanetoid = StartPlanetoidType.Marshy;
         warpPlanetoid = WarpPlanetoidType.Desolands;
 
         metallicSwampyPlanetoid = false;
         desolandsPlanetoid = false;
         frozenForestPlanetoid = true;
         flippedPlanetoid = false;
-        radioactiveOceanPlanetoid = false;
+        radioactiveOceanPlanetoid = true;
         tundraPlanetoid = true;
-        marshyPlanetoid = true;
+        marshyPlanetoid = false;
         mooPlanetoid = false;
         waterPlanetoid = true;
         firePlanetoid = true;

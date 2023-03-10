@@ -18,9 +18,9 @@ public static class ClusterUtils {
                                                      "clusters", "CGSM.yaml");
         var clusterYamlPathVanilla = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
                                                             "clusters", "CGSMVanilla.yaml");
-        var emitter = new ClusterYamlEmitter(cluster, 1, clusterYamlPath);
+        var emitter = new ClusterYamlEmitter(cluster, 2, clusterYamlPath);
         var needSettingsCacheReload1 = emitter.emit();
-        emitter = new ClusterYamlEmitter(cluster, 2, clusterYamlPathVanilla);
+        emitter = new ClusterYamlEmitter(cluster, 1, clusterYamlPathVanilla);
         var needSettingsCacheReload2 = emitter.emit();
 
         if (!onStart && (needSettingsCacheReload1 || needSettingsCacheReload2)) {
