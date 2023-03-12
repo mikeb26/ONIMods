@@ -9,7 +9,7 @@ using System;
 namespace CGSM;
 
 [JsonObject(MemberSerialization.OptIn)]
-[ModInfo("https://github.com/mikeb26/ONIMods/CGSM")]
+[ModInfo("https://steamcommunity.com/sharedfiles/filedetails/?id=2945098028")]
 public sealed class Options {
     [Option("STRINGS.UI.FRONTEND.CGSM.STARMAP_OPT", "STRINGS.UI.FRONTEND.CGSM.STARMAP_OPT_DESC")]
     [Limit(14, 20)]

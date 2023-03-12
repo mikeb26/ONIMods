@@ -12,6 +12,7 @@ public class Mod : UserMod2
 {
     public static Mod Instance;
     public string contentPath;
+    public GameState gameState;
 
     public override void OnLoad(Harmony harmony) {
         Util.Log("Loading v{0}", Util.Version());
@@ -24,9 +25,8 @@ public class Mod : UserMod2
         new POptions().RegisterOptions(this, typeof(Options));
 
         Instance = this;
-	contentPath = mod.ContentPath;
-
-        ClusterUtils.loadClusterFromOptionsAndEmit(true);
+        contentPath = mod.ContentPath;
+        gameState = new GameState();
 
         base.OnLoad(harmony);
     }

@@ -44,6 +44,43 @@ public class Cluster {
         this.radius = radiusIn;
     }
 
+    public bool hasOtherPlanetoid(PlanetoidType pType) {
+        foreach (var placement in this.others) {
+            if (placement.planetoid.Type() == pType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool hasAnyPlanetoid(PlanetoidType pType) {
+        if (this.start.planetoid.Type() == pType) {
+            return true;
+        }
+        if (this.warp.planetoid.Type() == pType) {
+            return true;
+        }
+
+        return hasOtherPlanetoid(pType);
+    }
+
+    public void remove(PlanetoidType pType) {
+        int idx = 0;
+        bool found = false;
+
+        foreach (var placement in this.others) {
+            if (placement.planetoid.Type() == pType) {
+                found = true;
+                break;
+            }
+            idx++;
+        }
+        if (found) {
+            this.others.RemoveAt(idx);
+        }
+    }
+
     private void initCommon(string nameIn) {
         this.poiGroups = new List<POIGroup>();
         this.others = new List<PlanetoidPlacement>();
@@ -190,7 +227,10 @@ public static class BuiltinClusters {
 
     static BuiltinClusters() {
         clusterMap = new Dictionary<string, Cluster>();
+        reinit();
+    }
 
+    static public void reinit() {
         // vanilla style
         addVanillaSandstone();
         addVanillaOceania();
@@ -246,7 +286,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void  addVanillaOceania() {
@@ -280,7 +320,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     public static void addVanillaSwamp() {
@@ -314,7 +354,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
      }
 
     public static void addVanillaRime(){
@@ -348,7 +388,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     public static void addVanillaForest(){
@@ -382,7 +422,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
     public static void addVanillaArboria(){
         var cluster = new Cluster("expansion1::clusters/VanillaArboriaCluster", 12);
@@ -415,7 +455,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
     public static void addVanillaVolcanea(){
         var cluster = new Cluster("expansion1::clusters/VanillaVolcanicCluster", 12);
@@ -448,7 +488,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
     public static void addVanillaBadlands(){
         var cluster = new Cluster("expansion1::clusters/VanillaBadlandsCluster", 12);
@@ -481,7 +521,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
     public static void addVanillaAridio(){
         var cluster = new Cluster("expansion1::clusters/VanillaAridioCluster", 12);
@@ -514,7 +554,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
     public static void addVanillaOasis(){
         var cluster = new Cluster("expansion1::clusters/VanillaOasisCluster", 12);
@@ -547,7 +587,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     // spaced out clusters
@@ -584,7 +624,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSOForest() {
@@ -620,7 +660,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSOSwamp() {
@@ -656,7 +696,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize12POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSODesolands() {
@@ -696,7 +736,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize14POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSOFlipped() {
@@ -737,7 +777,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize14POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSOForestFrozen() {
@@ -778,7 +818,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize14POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSOMetallicSwampy() {
@@ -819,7 +859,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize14POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSORadioactiveOcean() {
@@ -860,7 +900,7 @@ public static class BuiltinClusters {
         cluster.poiGroups.Add(poiGroup);
         addSize14POICommon(cluster);
 
-        clusterMap.Add(cluster.name, cluster);
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSize12POICommon(Cluster cluster) {

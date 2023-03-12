@@ -24,8 +24,8 @@ defaultsOverrides:
 startSubworldName: expansion1::subworlds/marsh/med_HotMarshStart
 startingBaseTemplate: expansion1::bases/swampBase
 startingBasePositionHorizontal:
-  min: 0.27
-  max: 0.27
+  min: 0.28
+  max: 0.28
 startingBasePositionVertical:
   min: 0.40
   max: 0.45

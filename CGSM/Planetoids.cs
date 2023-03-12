@@ -95,7 +95,6 @@ public enum StartPlanetoidType {
 };
 
 public enum WarpPlanetoidType {
-    // keep values consistent w/ StartPlanetoids & OtherPlanetoids
     [Option("STRINGS.WORLDS.MINIBADLANDS.NAME", "STRINGS.WORLDS.MINIBADLANDS.DESCRIPTION")]
     Desolands = PlanetoidType.Desolands,
     [Option("STRINGS.WORLDS.MINIFORESTFROZEN.NAME", "STRINGS.WORLDS.MINIFORESTFROZEN.DESCRIPTION")]
