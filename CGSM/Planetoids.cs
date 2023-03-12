@@ -42,6 +42,7 @@ public enum PlanetoidType {
     Oceania = 32,
     GlowoodWasteland = 33,
     TerraVanilla = 34, // "vanilla" appended to help differentiate w/ Terrania
+    MiniRegolith = 35,
 };
 
 public enum PlanetoidCategory {
@@ -313,6 +314,10 @@ public static class PlanetoidInfos {
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "expansion1::worlds/VanillaSandstoneDefault"},
                 })},
+            {PlanetoidType.MiniRegolith, new PlanetoidInfo(PlanetoidType.Regolith,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "expansion1::worlds/MiniRegolithMoonlet"},
+                })},
         };
 
     public static PlanetoidInfo lookup(PlanetoidType planetoidType) {
@@ -331,13 +336,22 @@ public class PlanetoidPlacement {
         this.planetoid = new Planetoid(startType);
         initCommon(0, 0, bufferIn, false);
     }
+    public PlanetoidPlacement(StartPlanetoidType startType, int bufferIn, int maxRadiusIn) {
+        this.planetoid = new Planetoid(startType);
+        initCommon(0, maxRadiusIn, bufferIn, false);
+    }
+    public PlanetoidPlacement(StartPlanetoidType startType, int bufferIn, int minRadiusIn,
+                              int maxRadiusIn) {
+        this.planetoid = new Planetoid(startType);
+        initCommon(minRadiusIn, maxRadiusIn, bufferIn, false);
+    }
     public PlanetoidPlacement(WarpPlanetoidType warpType, int bufferIn, int minRadiusIn,
                               int maxRadiusIn) {
         this.planetoid = new Planetoid(warpType);
         initCommon(minRadiusIn, maxRadiusIn, bufferIn, true);
     }
-    public PlanetoidPlacement(PlanetoidType pType, PlanetoidCategory pCat, int minRadiusIn,
-                              int maxRadiusIn, int bufferIn, bool isInnerIn) {
+    public PlanetoidPlacement(PlanetoidType pType, PlanetoidCategory pCat, int bufferIn,
+                              int minRadiusIn, int maxRadiusIn, bool isInnerIn) {
         this.planetoid = new Planetoid(pType, pCat);
         initCommon(minRadiusIn, maxRadiusIn, bufferIn, isInnerIn);
     }
@@ -357,12 +371,12 @@ public class PlanetoidPlacement {
         var yamlContent = new StringBuilder();
 
         yamlContent.Append(string.Format("- world: {0}\n", this.planetoid.ToYamlString()));
+        yamlContent.Append(string.Format("  buffer: {0}\n", this.buffer));
         if (this.planetoid.category == PlanetoidCategory.Start) {
             yamlContent.Append("  locationType: StartWorld\n");
         } else if (this.isInner) {
             yamlContent.Append("  locationType: InnerCluster\n");
         }
-        yamlContent.Append(string.Format("  buffer: {0}\n", this.buffer));
         yamlContent.Append("  allowedRings:\n");
         yamlContent.Append(string.Format("    min: {0}\n", this.minRadius));
         yamlContent.Append(string.Format("    max: {0}\n", this.maxRadius));

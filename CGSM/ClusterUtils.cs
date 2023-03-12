@@ -14,18 +14,22 @@ public static class ClusterUtils {
         }
 
         var cluster = new Cluster(opts);
+        cluster.name = "CGSM";
         var clusterYamlPath = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
                                                      "clusters", "CGSM.yaml");
         var clusterYamlPathVanilla = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
                                                             "clusters", "CGSMVanilla.yaml");
         var emitter = new ClusterYamlEmitter(cluster, 2, clusterYamlPath);
         var needSettingsCacheReload1 = emitter.emit();
+        cluster.name = "CGSMVanilla";
         emitter = new ClusterYamlEmitter(cluster, 1, clusterYamlPathVanilla);
         var needSettingsCacheReload2 = emitter.emit();
 
         if (!onStart && (needSettingsCacheReload1 || needSettingsCacheReload2)) {
             Util.LogDbg("Reloading settings cache");
 
+            // @todo should be able to reduce this to just a clustercache load of only our
+            // clusters if we can ensure our custom start worlds are already loaded
             ProcGen.SettingsCache.Clear();
             List<YamlIO.Error> errors = new List<YamlIO.Error>();
             ProcGen.SettingsCache.LoadFiles(errors);
