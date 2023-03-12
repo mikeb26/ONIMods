@@ -2,6 +2,7 @@
 
 using PeterHan.PLib.Options;
 using System.Collections.Generic;
+using System.Text;
 
 namespace CGSM;
 
@@ -48,7 +49,7 @@ public enum PlanetoidCategory {
     Warp,
     Other
 }
- 
+
 public enum StartPlanetoidType {
     [Option("STRINGS.WORLDS.MINIMETALLICSWAMPY.NAME", "STRINGS.WORLDS.MINIMETALLICSWAMPY.DESCRIPTION")]
     MetallicSwampy = PlanetoidType.MetallicSwampy,
@@ -317,4 +318,62 @@ public static class PlanetoidInfos {
     public static PlanetoidInfo lookup(PlanetoidType planetoidType) {
         return infos[planetoidType];
     }
+}
+
+public class PlanetoidPlacement {
+    public Planetoid planetoid { get; }
+    public int minRadius { get; set; }
+    public int maxRadius { get; set; }
+    public int buffer { get; set; }
+    public bool isInner { get; set; }
+
+    public PlanetoidPlacement(StartPlanetoidType startType, int bufferIn) {
+        this.planetoid = new Planetoid(startType);
+        initCommon(0, 0, bufferIn, false);
+    }
+    public PlanetoidPlacement(WarpPlanetoidType warpType, int bufferIn, int minRadiusIn,
+                              int maxRadiusIn) {
+        this.planetoid = new Planetoid(warpType);
+        initCommon(minRadiusIn, maxRadiusIn, bufferIn, true);
+    }
+    public PlanetoidPlacement(PlanetoidType pType, PlanetoidCategory pCat, int minRadiusIn,
+                              int maxRadiusIn, int bufferIn, bool isInnerIn) {
+        this.planetoid = new Planetoid(pType, pCat);
+        initCommon(minRadiusIn, maxRadiusIn, bufferIn, isInnerIn);
+    }
+    public PlanetoidPlacement(Planetoid planetoidIn, int minRadiusIn, int maxRadiusIn,
+                              int bufferIn, bool isInnerIn) {
+        this.planetoid = planetoidIn;
+        initCommon(minRadiusIn, maxRadiusIn, bufferIn, isInnerIn);
+    }
+    private void initCommon(int minRadiusIn, int maxRadiusIn, int bufferIn, bool isInnerIn) {
+        this.minRadius = minRadiusIn;
+        this.maxRadius = maxRadiusIn;
+        this.buffer = bufferIn;
+        this.isInner = isInnerIn;
+    }
+
+    public string ToYamlString() {
+        var yamlContent = new StringBuilder();
+
+        yamlContent.Append(string.Format("- world: {0}\n", this.planetoid.ToYamlString()));
+        if (this.planetoid.category == PlanetoidCategory.Start) {
+            yamlContent.Append("  locationType: StartWorld\n");
+        } else if (this.isInner) {
+            yamlContent.Append("  locationType: InnerCluster\n");
+        }
+        yamlContent.Append(string.Format("  buffer: {0}\n", this.buffer));
+        yamlContent.Append("  allowedRings:\n");
+        yamlContent.Append(string.Format("    min: {0}\n", this.minRadius));
+        yamlContent.Append(string.Format("    max: {0}\n", this.maxRadius));
+
+        return yamlContent.ToString();
+    }
+
+    public override string ToString() {
+        return string.Format("PlanetoidPlacement[planet:{0} min:{1} max:{2} buf:{3} inner:{4}]",
+                             this.planetoid, this.minRadius, this.maxRadius, this.buffer,
+                             this.isInner);
+    }
+
 }

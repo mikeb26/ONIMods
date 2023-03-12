@@ -7,7 +7,7 @@ supportedContent: EXPANSION1_ID
 minimumSupportedBuild: 546664
 
 # Mod version number
-version: 0.9.163
+version: 0.9.206
 
 # Required by ONI to validate mod is using Harmony 2.x
 APIVersion: 2
