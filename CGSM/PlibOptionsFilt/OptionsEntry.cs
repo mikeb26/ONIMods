@@ -218,9 +218,14 @@ namespace PeterHan.PLib.OptionsFilt {
 				attributes.AddRange(prop.GetCustomAttributes());
 				int n = attributes.Count;
 				for (int i = 0; i < n; i++)
-					// Do not create an entry if the DLC does not match
+					// Do not create an entry if the DLC does not match or the
+					// required mod is not enabled
 					if (attributes[i] is RequireDLCAttribute requireDLC && DlcManager.
 							IsContentActive(requireDLC.DlcID) != requireDLC.Required) {
+						dlcMatch = false;
+						break;
+					} else if (attributes[i] is RequireModAttribute requireMod &&
+							!Util.IsModEnabled(requireMod.ModStaticID)) {
 						dlcMatch = false;
 						break;
 					}

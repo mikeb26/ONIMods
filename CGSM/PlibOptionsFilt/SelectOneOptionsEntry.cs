@@ -55,6 +55,10 @@ namespace PeterHan.PLib.OptionsFilt {
 					            requireDLC.Required) {
 						shouldSkip = true;
 						break;
+					} else if (attrib is RequireModAttribute requireMod &&
+					           !Util.IsModEnabled(requireMod.ModStaticID)) {
+						shouldSkip = true;
+						break;
 					}
 				}
 				break;
