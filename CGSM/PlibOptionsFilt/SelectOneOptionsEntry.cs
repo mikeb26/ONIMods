@@ -22,7 +22,7 @@ using System.Reflection;
 using PeterHan.PLib.UI;
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An options entry which represents Enum and displays a spinner with text options.
 	/// </summary>

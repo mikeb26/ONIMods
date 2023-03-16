@@ -22,12 +22,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-using OptionsList = System.Collections.Generic.ICollection<PeterHan.PLib.Options.IOptionsEntry>;
+using OptionsList = System.Collections.Generic.ICollection<PeterHan.PLib.OptionsFilt.IOptionsEntry>;
 using AllOptions = System.Collections.Generic.IDictionary<string, System.Collections.Generic.
-	ICollection<PeterHan.PLib.Options.IOptionsEntry>>;
+	ICollection<PeterHan.PLib.OptionsFilt.IOptionsEntry>>;
 using PeterHan.PLib.Core;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An abstract parent class containing methods shared by all built-in options handlers.
 	/// </summary>

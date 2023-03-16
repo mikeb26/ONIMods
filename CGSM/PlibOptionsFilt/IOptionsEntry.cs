@@ -18,7 +18,7 @@
 
 using PeterHan.PLib.UI;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// All options handlers, including user dynamic option handlers, implement this type.
 	/// </summary>

@@ -16,7 +16,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// A class which can be used by mods to maintain a singleton of their options. This
 	/// class should be the superclass of the mod options class, and &lt;T&gt; should be

@@ -18,7 +18,7 @@
 
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An options entry which represents Color and displays a color picker with sliders.
 	/// </summary>

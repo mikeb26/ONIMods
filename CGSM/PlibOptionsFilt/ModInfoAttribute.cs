@@ -18,7 +18,7 @@
 
 using System;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// Allows mod authors to specify attributes for their mods to be shown in the Options
 	/// dialog.

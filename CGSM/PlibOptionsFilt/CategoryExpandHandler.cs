@@ -20,7 +20,7 @@ using PeterHan.PLib.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// Handles events for expanding and contracting options categories.
 	/// </summary>

@@ -18,7 +18,7 @@
 
 using System;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An empty marker attribute. If applied to an options class, PLib will notify the user
 	/// that the game must be restarted to apply the options. This attribute will not work if

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An options entry that encapsulates other options. The category annotation on those
 	/// objects will be ignored, and the category of the Option attribute on the property

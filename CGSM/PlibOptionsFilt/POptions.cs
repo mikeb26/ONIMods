@@ -27,7 +27,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// Adds an "Options" screen to a mod in the Mods menu.
 	/// </summary>

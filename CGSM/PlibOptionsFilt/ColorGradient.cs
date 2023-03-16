@@ -20,7 +20,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// A background image which displays a gradient between two different colors using HSV
 	/// interpolation.

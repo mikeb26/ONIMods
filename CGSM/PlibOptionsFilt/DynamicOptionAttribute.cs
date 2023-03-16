@@ -19,7 +19,7 @@
 using PeterHan.PLib.Core;
 using System;
 
-namespace PeterHan.PLib {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An attribute placed on an option property for a class used as mod options in order to
 	/// make PLib use a custom options handler. The type used for the handler must inherit

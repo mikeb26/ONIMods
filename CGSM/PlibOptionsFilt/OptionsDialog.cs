@@ -24,9 +24,9 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-using OptionsList = System.Collections.Generic.ICollection<PeterHan.PLib.Options.IOptionsEntry>;
+using OptionsList = System.Collections.Generic.ICollection<PeterHan.PLib.OptionsFilt.IOptionsEntry>;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// A dialog for handling mod options events.
 	/// </summary>

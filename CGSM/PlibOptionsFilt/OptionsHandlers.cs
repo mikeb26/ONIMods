@@ -23,7 +23,7 @@ using PeterHan.PLib.Core;
 using PeterHan.PLib.Detours;
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// Registers types to options entry classes that can handle them.
 	/// </summary>

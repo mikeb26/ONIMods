@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An optional interface which can be implemented to give mods the ability to dynamically
 	/// add new options at runtime, or to get a notification when options are updated to the

@@ -20,7 +20,7 @@ using PeterHan.PLib.UI;
 using System;
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An options entry that displays a button. Not intended to be serializable to the
 	/// options file, instead declare a read-only property that returns a handler method as

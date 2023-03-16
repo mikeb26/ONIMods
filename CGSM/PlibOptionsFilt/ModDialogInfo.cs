@@ -19,7 +19,7 @@
 using PeterHan.PLib.Core;
 using System;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// Stores the information displayed about a mod in its options dialog.
 	/// </summary>

@@ -19,7 +19,7 @@
 using PeterHan.PLib.UI;
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An options entry that displays static text. Not intended to be serializable to the
 	/// options file, instead declare a read-only property that returns null with a type of

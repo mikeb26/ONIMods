@@ -19,7 +19,7 @@
 using PeterHan.PLib.Core;
 using System;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An attribute placed on an option field for a property used as mod options to define
 	/// minimum and maximum acceptable values.

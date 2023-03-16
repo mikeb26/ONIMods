@@ -21,7 +21,7 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An options entry which represents int? and displays a text field and slider.
 	/// </summary>

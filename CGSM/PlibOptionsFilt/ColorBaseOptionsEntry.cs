@@ -22,7 +22,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// The abstract base of options entries that display a color picker with sliders.
 	/// </summary>

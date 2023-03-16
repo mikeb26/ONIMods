@@ -19,7 +19,7 @@
 using PeterHan.PLib.Core;
 using System;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An attribute placed on an option property for a class used as mod options in order to
 	/// show or hide it for particular DLCs. If the option is hidden, the value currently

@@ -18,7 +18,7 @@
 
 using System;
 
-namespace PeterHan.PLib.Options {
+namespace PeterHan.PLib.OptionsFilt {
 	/// <summary>
 	/// An attribute placed on an options class only (will not function on a member property)
 	/// which denotes the config file name to use for that mod, and allows save/load options
