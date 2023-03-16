@@ -38,6 +38,12 @@ public static class Strings {
 
             public static LocString TUNDRAMOONLET_NAME = "Tundra Asteroid(cgsm)";
             public static LocString TUNDRAMOONLET_DESC = "A small frozen planetoid with sub-zero temperatures.\n\n<smallcaps>Duplicants that travel to Tundra Asteroids will need to wear protective gear due to its harsh environment.</smallcaps>. (customized by CGSM)";
-        }
+
+            public static LocString BAATOR_OILYSWAMPY_NAME = "Baator Oily Swampy Asteroid";
+            public static LocString BAATOR_OILYSWAMPY_DESC = "The Oily Swampy Asteroid from the Baator mod";
+
+            public static LocString BAATOR_COLDTERRA_NAME = "Baator Cold Terra Asteroid";
+            public static LocString BAATOR_COLDTERRA_DESC = "The Cold Terra Asteroid from the Baator mod";
+         }
     }
 }

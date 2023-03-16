@@ -3,7 +3,7 @@
 using HarmonyLib;
 using KMod;
 using PeterHan.PLib.Core;
-using PeterHan.PLib.Options;
+using PeterHan.PLib.OptionsFilt;
 using PeterHan.PLib.Database;
 
 namespace CGSM;

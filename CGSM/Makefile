@@ -86,6 +86,7 @@ deps: dirscheck FORCE
 	cp $(ONIInstallDir)/OxygenNotIncluded_Data/Managed/UnityEngine.CoreModule.dll deps
 	cp $(ONIInstallDir)/OxygenNotIncluded_Data/Managed/UnityEngine.UI.dll deps
 	cp $(ONIInstallDir)/OxygenNotIncluded_Data/Managed/Unity.TextMeshPro.dll deps
+	cp $(ONIInstallDir)/OxygenNotIncluded_Data/Managed/UnityEngine.TextRenderingModule.dll deps
 	cp $(ONIInstallDir)/OxygenNotIncluded_Data/Managed/UnityEngine.ImageConversionModule.dll deps
 
 .PHONY: clean

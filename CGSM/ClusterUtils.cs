@@ -1,6 +1,6 @@
 // Copyright © 2023 Mike Brown; see LICENSE at the root of this package
 
-using PeterHan.PLib.Options;
+using PeterHan.PLib.OptionsFilt;
 using Klei;
 using System.Collections.Generic;
 
@@ -12,6 +12,7 @@ public static class ClusterUtils {
         if (opts == null) {
             opts = new Options();
         }
+        opts.scrubUnloadedModOptions();
 
         var cluster = new Cluster("CGSM", opts);
         var clusterYamlPath = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",

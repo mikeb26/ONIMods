@@ -1,6 +1,6 @@
 // Copyright © 2023 Mike Brown; see LICENSE at the root of this package
 
-using PeterHan.PLib.Options;
+using PeterHan.PLib.OptionsFilt;
 using System.Collections.Generic;
 using System.Text;
 
@@ -43,8 +43,14 @@ public enum PlanetoidType {
     GlowoodWasteland = 33,
     TerraVanilla = 34, // "vanilla" appended to help differentiate w/ Terrania
     MiniRegolith = 35,
+    Baator = 36,
+    BaatorOilySwampy = 37,
+    BaatorMoonlet = 38,
+    BaatorColdTerra = 39,
 };
 
+// Baator introduces 1-way warp planetoids that don't fit cleanly into these existing categories;
+// for now classify them as Other
 public enum PlanetoidCategory {
     Start,
     Warp,
@@ -92,6 +98,12 @@ public enum StartPlanetoidType {
     Oceania = PlanetoidType.Oceania,
     [Option("STRINGS.WORLDS.VANILLASANDSTONEDEFAULT.NAME", "STRINGS.WORLDS.VANILLASANDSTONEDEFAULT.DESCRIPTION")]
     TerraVanilla = PlanetoidType.TerraVanilla,
+    [Option("STRINGS.WORLDS.BAATOR.NAME", "STRINGS.WORLDS.BAATOR.DESCRIPTION")]
+    [RequireMod("Baator_BumminsMod")]
+    Baator = PlanetoidType.Baator,
+    [Option("STRINGS.WORLDS.BAATORMOONLET.NAME", "STRINGS.WORLDS.BAATORMOONLET.DESCRIPTION")]
+    [RequireMod("Baator_BumminsMod")]
+    BaatorMoonlet = PlanetoidType.BaatorMoonlet,
 };
 
 public enum WarpPlanetoidType {
@@ -144,7 +156,7 @@ public class Planetoid {
     }
 
     public override string ToString() {
-        return string.Format("Planetoid[Type:{0} Cat:{1}]", this.Type(), this.category);
+        return string.Format("{0}/{1}", this.Type(), this.category);
     }
 }
 
@@ -317,6 +329,22 @@ public static class PlanetoidInfos {
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Other, "expansion1::worlds/MiniRegolithMoonlet"},
                 })},
+            {PlanetoidType.Baator, new PlanetoidInfo(PlanetoidType.Baator,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "expansion1::worlds/Baator"},
+                })},
+            {PlanetoidType.BaatorOilySwampy, new PlanetoidInfo(PlanetoidType.BaatorOilySwampy,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "expansion1::worlds/Baator_oilyswampy"},
+                })},
+            {PlanetoidType.BaatorMoonlet, new PlanetoidInfo(PlanetoidType.BaatorMoonlet,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "expansion1::worlds/Baator_moonlet"},
+                })},
+            {PlanetoidType.BaatorColdTerra, new PlanetoidInfo(PlanetoidType.BaatorColdTerra,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "expansion1::worlds/Baator_coldterra"},
+                })},
         };
 
     public static PlanetoidInfo lookup(PlanetoidType planetoidType) {
@@ -384,9 +412,8 @@ public class PlanetoidPlacement {
     }
 
     public override string ToString() {
-        return string.Format("PlanetoidPlacement[planet:{0} min:{1} max:{2} buf:{3} inner:{4}]",
-                             this.planetoid, this.minRadius, this.maxRadius, this.buffer,
-                             this.isInner);
+        return string.Format("{0} min:{1} max:{2} buf:{3} inner:{4}", this.planetoid,
+                             this.minRadius, this.maxRadius, this.buffer, this.isInner);
     }
 
 }

@@ -105,6 +105,8 @@ public class Cluster {
         addOtherPlanetIfSet(opts.irradiatedForestPlanetoid, PlanetoidType.IrradiatedForest);
         addOtherPlanetIfSet(opts.irradiatedSwampPlanetoid, PlanetoidType.IrradiatedSwamp);
         addOtherPlanetIfSet(opts.irradiatedMarshPlanetoid, PlanetoidType.IrradiatedMarsh);
+        addOtherPlanetIfSet(opts.baatorOilySwampy, PlanetoidType.BaatorOilySwampy);
+        addOtherPlanetIfSet(opts.baatorColdTerra, PlanetoidType.BaatorColdTerra);
     }
 
     private void addOtherPlanetIfSet(bool optVal, PlanetoidType planetoidType) {
@@ -205,11 +207,14 @@ public class Cluster {
         var content = new StringBuilder();
         content.Append(string.Format("Cluster {0}:\n", this.name));
         content.Append(string.Format("  radius:{0}\n", this.radius));
+        content.Append(string.Format("  storyTraitsEnabled:{0}\n", this.storyTraits));
+        content.Append(string.Format("  difficulty:{0}\n", this.difficulty));
+        content.Append(string.Format("  placePriority:{0}\n", this.placePriority));
         content.Append(string.Format("  start:{0}\n", this.start));
         content.Append(string.Format("  warp:{0}\n", this.warp));
         int count = 0;
         foreach (var placement in this.others) {
-            content.Append(string.Format("  other[{0}]: {1}\n", count, placement));
+            content.Append(string.Format("  other[{0}]:{1}\n", count, placement));
             count++;
         }
         count = 0;
@@ -252,6 +257,8 @@ public static class BuiltinClusters {
         addSOForestFrozen();
         addSOMetallicSwampy();
         addSORadioactiveOcean();
+        addBaatorStartCluster();
+        addBaatorMoonletCluster();
     }
 
     // vanilla clusters
@@ -903,6 +910,86 @@ public static class BuiltinClusters {
         clusterMap[cluster.name] = cluster;
     }
 
+    // modded clusters
+    private static void addBaatorStartCluster() {
+        var cluster = new Cluster("expansion1::clusters/BaatorStartCluster", 12);
+        cluster.difficulty = 5;
+        cluster.start = new PlanetoidPlacement(StartPlanetoidType.Baator, 2);
+        cluster.warp = new PlanetoidPlacement(WarpPlanetoidType.RadioactiveSwamp, 2, 4, 4);
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.BaatorOilySwampy,
+                                               PlanetoidCategory.Other, 2, 1, 3, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MetallicSwampy,
+                                                  PlanetoidCategory.Other, 1, 2, 3, true));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.IrradiatedForest,
+                                                  PlanetoidCategory.Other, 2, 3, 3, true));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Tundra, PlanetoidCategory.Other,
+                                                  4, 6, 8, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Marshy, PlanetoidCategory.Other,
+                                                  4, 5, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Moo,
+                                                  PlanetoidCategory.Other,
+                                                  3, 6, 8, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Water,
+                                                  PlanetoidCategory.Other,
+                                                  4, 6, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Superconductive,
+                                                  PlanetoidCategory.Other,
+                                                  3, 7, 10, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Regolith,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 10, false));
+        cluster.addTearPOIGroup(8, 11);
+
+        var poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.SandyOreField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 2;
+        poiGroup.maxRadius = 3;
+        cluster.poiGroups.Add(poiGroup);
+        addSize12POICommon(cluster);
+
+        clusterMap[cluster.name] = cluster;
+    }
+
+    private static void addBaatorMoonletCluster() {
+        var cluster = new Cluster("expansion1::clusters/BaatorMoonletCluster", 12);
+        cluster.difficulty = 5;
+        cluster.start = new PlanetoidPlacement(StartPlanetoidType.BaatorMoonlet, 1);
+        cluster.warp = new PlanetoidPlacement(WarpPlanetoidType.RadioactiveSwamp, 2, 4, 4);
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.BaatorColdTerra,
+                                                  PlanetoidCategory.Other, 1, 1, 4, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.BaatorOilySwampy,
+                                                  PlanetoidCategory.Other, 2, 3, 5, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.IrradiatedForest,
+                                                  PlanetoidCategory.Other, 2, 3, 3, true));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Tundra, PlanetoidCategory.Other,
+                                                  4, 5, 5, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Marshy, PlanetoidCategory.Other,
+                                                  4, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Superconductive,
+                                                  PlanetoidCategory.Other,
+                                                  3, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Moo,
+                                                  PlanetoidCategory.Other,
+                                                  3, 6, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Water,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Regolith,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 10, false));
+        cluster.addTearPOIGroup(8, 11);
+
+        var poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.SwampyOreField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 2;
+        poiGroup.maxRadius = 3;
+        cluster.poiGroups.Add(poiGroup);
+        addSize12POICommon(cluster);
+
+        clusterMap[cluster.name] = cluster;
+    }
     private static void addSize12POICommon(Cluster cluster) {
         var poiGroup = new POIGroup();
         poiGroup.Add(HarvestablePOIs.OrganicMassField);

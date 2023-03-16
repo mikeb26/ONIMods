@@ -63,6 +63,12 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>deps\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>deps\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextRenderingModule">
+      <HintPath>deps\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ILRepack" Version="2.0.18" />

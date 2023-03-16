@@ -83,6 +83,14 @@ public class Toggles {
         addOneToggleSetting(ref cgs, PlanetoidType.IrradiatedMarsh,
                             STRINGS.WORLDS.METALHEAVYLANDINGSITE.NAME,
                             STRINGS.WORLDS.METALHEAVYLANDINGSITE.DESCRIPTION, false);
+        if (Util.IsModEnabled("Baator_BumminsMod")) {
+            addOneToggleSetting(ref cgs, PlanetoidType.BaatorOilySwampy,
+                                CGSM.Strings.WORLDS.CGSM.BAATOR_OILYSWAMPY_NAME,
+                                CGSM.Strings.WORLDS.CGSM.BAATOR_OILYSWAMPY_DESC, false);
+            addOneToggleSetting(ref cgs, PlanetoidType.BaatorColdTerra,
+                                CGSM.Strings.WORLDS.CGSM.BAATOR_COLDTERRA_NAME,
+                                CGSM.Strings.WORLDS.CGSM.BAATOR_COLDTERRA_DESC, false);
+        }
 
     }
 
@@ -116,6 +124,10 @@ public class Toggles {
             cgs.SetQualitySetting(this.toggleMap[PlanetoidType.IrradiatedForest], "Disabled");
             cgs.SetQualitySetting(this.toggleMap[PlanetoidType.IrradiatedSwamp], "Disabled");
             cgs.SetQualitySetting(this.toggleMap[PlanetoidType.IrradiatedMarsh], "Disabled");
+            if (Util.IsModEnabled("Baator_BumminsMod")) {
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.BaatorOilySwampy], "Disabled");
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.BaatorColdTerra], "Disabled");
+            }
             this.anyToggleSettingsChanged = false;
             this.resetInProgress = false;
             return;
@@ -135,8 +147,12 @@ public class Toggles {
             PlanetoidType.Regolith,
             PlanetoidType.IrradiatedForest,
             PlanetoidType.IrradiatedSwamp,
-            PlanetoidType.IrradiatedMarsh,
+            PlanetoidType.IrradiatedMarsh
         };
+        if (Util.IsModEnabled("Baator_BumminsMod")) {
+            pTypes.Add(PlanetoidType.BaatorOilySwampy);
+            pTypes.Add(PlanetoidType.BaatorColdTerra);
+        }
 
         foreach (var pType in pTypes) {
             if (cluster.hasOtherPlanetoid(pType)) {

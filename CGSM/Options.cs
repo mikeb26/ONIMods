@@ -1,7 +1,7 @@
 // Copyright © 2023 Mike Brown; see LICENSE at the root of this package
 
 using Newtonsoft.Json;
-using PeterHan.PLib.Options;
+using PeterHan.PLib.OptionsFilt;
 using System.Text;
 using System.Reflection;
 using System;
@@ -10,7 +10,7 @@ namespace CGSM;
 
 [JsonObject(MemberSerialization.OptIn)]
 [ModInfo("https://steamcommunity.com/sharedfiles/filedetails/?id=2945098028")]
-public sealed class Options {
+public sealed class Options /* : IOptions */ {
     [Option("STRINGS.UI.FRONTEND.CGSM.STARMAP_OPT", "STRINGS.UI.FRONTEND.CGSM.STARMAP_OPT_DESC")]
     [Limit(14, 20)]
     [JsonProperty]
@@ -79,6 +79,16 @@ public sealed class Options {
     [Option("STRINGS.WORLDS.METALHEAVYLANDINGSITE.NAME", "STRINGS.WORLDS.METALHEAVYLANDINGSITE.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
     [JsonProperty]
     public bool irradiatedMarshPlanetoid { get; set; }
+
+    [Option("STRINGS.WORLDS.CGSM.BAATOR_OILYSWAMPY_NAME", "STRINGS.WORLDS.CGSM.BAATOR_OILYSWAMPY_NAME", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("Baator_BumminsMod")]
+    [JsonProperty]
+    public bool baatorOilySwampy { get; set; }
+
+    [Option("STRINGS.WORLDS.CGSM.BAATOR_COLDTERRA_NAME", "STRINGS.WORLDS.CGSM.BAATOR_COLDTERRA_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("Baator_BumminsMod")]
+    [JsonProperty]
+    public bool baatorColdTerra { get; set; }
 
     [Option("STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT", "STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT_DESC", "STRINGS.UI.FRONTEND.CGSM.SPACE_POIS_CAT")]
     [Limit(0, 9)]
@@ -198,6 +208,8 @@ public sealed class Options {
         irradiatedForestPlanetoid = false;
         irradiatedSwampPlanetoid = false;
         irradiatedMarshPlanetoid = false;
+        baatorOilySwampy = false;
+        baatorColdTerra = false;
 
         numArtifactPOIs = 4;
         carbonAsteroid = true;
@@ -272,9 +284,36 @@ public sealed class Options {
         count += Convert.ToInt32(irradiatedForestPlanetoid);
         count += Convert.ToInt32(irradiatedSwampPlanetoid);
         count += Convert.ToInt32(irradiatedMarshPlanetoid);
+        count += Convert.ToInt32(baatorOilySwampy);
+        count += Convert.ToInt32(baatorColdTerra);
 
         return count;
     }
+
+    // if a player has loaded a mod, selected that mod's specific planetoids, disabled the mod,
+    // and restarted the game, we can wind up in a state where the persistent configuration
+    // returned by POptions.ReadSettings() still contains references to the disabled mod's
+    // planetoids. so, scrub them here if we detect this situation
+    public void scrubUnloadedModOptions() {
+        if (!Util.IsModEnabled("Baator_BumminsMod")) {
+            this.baatorOilySwampy = false;
+            this.baatorColdTerra = false;
+            if (this.startPlanetoid == StartPlanetoidType.Baator ||
+                this.startPlanetoid == StartPlanetoidType.BaatorMoonlet) {
+                this.startPlanetoid = StartPlanetoidType.Marshy;
+                Util.Log("Baator mod is not enabled; resetting start planetoid to {0}", this.startPlanetoid);
+            }
+        }
+    }
+
+    // public IEnumerable<IOptionsEntry> CreateOptions() {
+    //     Util.Log("CreateOptions() called");
+    //     var extraOpts = new List<IOptionsEntry>();
+    //     return extraOpts;
+    // }
+    // public void OnOptionsChanged() {
+    //     Util.Log("On Options Changed testcheckbox:{0}", this.testCheckbox.Value);
+    // }
 
     public override string ToString() {
         StringBuilder sb = new StringBuilder();

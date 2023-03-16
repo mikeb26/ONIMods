@@ -178,13 +178,13 @@ public class POIGroup {
     public override string ToString() {
         var content = new StringBuilder();
 
-        content.Append(string.Format("POIGroup[spawn:{0} clump:{1} dupe:{2} min:{3} max:{4}]: ",
+        content.Append(string.Format("spawn:{0} clump:{1} dupe:{2} min:{3} max:{4}: [",
                                      this.numToSpawn, this.avoidClumping, this.allowDupes,
                                      this.minRadius, this.maxRadius));
         foreach (var poi in this.poiList) {
-            content.Append(poi);
-            content.Append(", ");
+            content.Append(string.Format("{0},", poi));
         }
+        content.Append("]");
 
         return content.ToString();
     }

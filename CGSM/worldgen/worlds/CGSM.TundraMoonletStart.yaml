@@ -31,6 +31,35 @@ startingBasePositionVertical:
   max: 0.3
 
 disableWorldTraits: true
+# ONI does not seem to fully respect disableWorldTraits: true so additionally
+# add world trait rules to try to block them completely
+worldTraitRules:
+  - min: 0
+    max: 0
+    forbiddenTags:
+      - StartWorldOnly
+      - NonStartWorld
+      - GenericGeysers
+      - Oil
+      - Geodes
+      - LargeWorld
+      - Surface
+      - Crust
+      - Challenge
+      - Core
+      - AboveCore
+      - StartChange
+      - VeryCold
+    forbiddenTraits:
+      - traits/MagmaVents
+      - expansion1::traits/Volcanoes
+      - traits/SlimeSplats
+      - expansion1::traits/MetalCaves
+      - expansion1::traits/LushCore
+      - expansion1::traits/IrregularOil
+      - expansion1::traits/CrashedSatellites
+      - traits/MisalignedStart
+      - expansion1::traits/DistressSignal
 
 # List all the subworld files to load
 subworldFiles:
