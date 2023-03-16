@@ -131,6 +131,8 @@ public enum WarpPlanetoidType {
     Flipped = PlanetoidType.Flipped,
     [Option("STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.NAME", "STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.DESCRIPTION")]
     RadioactiveOcean = PlanetoidType.RadioactiveOcean,
+    [Option("STRINGS.WORLDS.CGSM.TUNDRAMOONLET_NAME", "STRINGS.WORLDS.CGSM.TUNDRAMOONLET_DESC")]
+    Tundra = PlanetoidType.Tundra,
     [Option("STRINGS.WORLDS.WARPOILYSWAMP.NAME", "STRINGS.WORLDS.WARPOILYSWAMP.DESCRIPTION")]
     OilySwamp = PlanetoidType.OilySwamp,
     [Option("STRINGS.WORLDS.OILRICHWARPTARGET.NAME", "STRINGS.WORLDS.OILRICHWARPTARGET.DESCRIPTION")]
@@ -225,6 +227,7 @@ public static class PlanetoidInfos {
             {PlanetoidType.Tundra, new PlanetoidInfo(PlanetoidType.Tundra,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "worlds/CGSM.TundraMoonletStart"},
+                    {PlanetoidCategory.Warp, "worlds/CGSM.TundraMoonletWarp"},
                     {PlanetoidCategory.Other, "expansion1::worlds/TundraMoonlet"},
                 })},
             {PlanetoidType.Marshy, new PlanetoidInfo(PlanetoidType.Marshy,
