@@ -25,7 +25,8 @@ namespace PeterHan.PLib.OptionsFilt {
 	/// show or hide it for particular DLCs. If the option is hidden, the value currently
 	/// in the options file is preserved unchanged when reading or writing.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true,
+		Inherited = true)]
 	public sealed class RequireDLCAttribute : Attribute {
 		/// <summary>
 		/// The DLC ID to check.

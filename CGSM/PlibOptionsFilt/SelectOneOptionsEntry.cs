@@ -36,22 +36,34 @@ namespace PeterHan.PLib.OptionsFilt {
 		private static EnumOption GetAttribute(object enumValue, Type fieldType) {
 			if (enumValue == null)
 				throw new ArgumentNullException(nameof(enumValue));
+			bool shouldSkip = false;
 			string valueName = enumValue.ToString(), title = valueName, tooltip = "";
 			foreach (var enumField in fieldType.GetMember(valueName, BindingFlags.Public |
-						BindingFlags.Static))
-				if (enumField.DeclaringType == fieldType) {
-					// Search for OptionsAttribute
-					foreach (var attrib in enumField.GetCustomAttributes(false))
-						if (attrib is IOptionSpec spec) {
-							if (string.IsNullOrEmpty(spec.Title))
-								spec = HandleDefaults(spec, enumField);
-							title = LookInStrings(spec.Title);
-							tooltip = LookInStrings(spec.Tooltip);
-							break;
-						}
-					break;
+						BindingFlags.Static)) {
+				if (enumField.DeclaringType != fieldType) {
+					continue;
 				}
-			return new EnumOption(title, tooltip, enumValue);
+				// Search for OptionsAttribute
+				foreach (var attrib in enumField.GetCustomAttributes(false)) {
+					if (attrib is IOptionSpec spec) {
+						if (string.IsNullOrEmpty(spec.Title))
+							spec = HandleDefaults(spec, enumField);
+						title = LookInStrings(spec.Title);
+						tooltip = LookInStrings(spec.Tooltip);
+					} else if (attrib is RequireDLCAttribute requireDLC &&
+					           DlcManager.IsContentActive(requireDLC.DlcID) !=
+					            requireDLC.Required) {
+						shouldSkip = true;
+						break;
+					}
+				}
+				break;
+			}
+			if (!shouldSkip) {
+ 				return new EnumOption(title, tooltip, enumValue);
+			} else {
+				return null;
+			}
 		}
 
 		public override object Value {
@@ -96,8 +108,13 @@ namespace PeterHan.PLib.OptionsFilt {
 			chosen = null;
 			comboBox = null;
 			options = new List<EnumOption>(n);
-			for (int i = 0; i < n; i++)
-				options.Add(GetAttribute(eval.GetValue(i), fieldType));
+			for (int i = 0; i < n; i++) {
+				var opt2add = GetAttribute(eval.GetValue(i), fieldType);
+				if (opt2add == null) {
+					continue;
+				}
+				options.Add(opt2add);
+			}
 		}
 
 		public override GameObject GetUIComponent() {
