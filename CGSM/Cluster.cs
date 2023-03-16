@@ -257,8 +257,11 @@ public static class BuiltinClusters {
         addSOForestFrozen();
         addSOMetallicSwampy();
         addSORadioactiveOcean();
+
+        // mod clusters
         addBaatorStartCluster();
         addBaatorMoonletCluster();
+        addFuleriaCluster();
     }
 
     // vanilla clusters
@@ -990,6 +993,42 @@ public static class BuiltinClusters {
 
         clusterMap[cluster.name] = cluster;
     }
+
+    private static void addFuleriaCluster() {
+        var cluster = new Cluster("expansion1::clusters/FuleriaDLC", 12);
+        cluster.difficulty = 1;
+        cluster.start = new PlanetoidPlacement(StartPlanetoidType.Fuleria, 2);
+        cluster.warp = new PlanetoidPlacement(WarpPlanetoidType.RadioactiveTerra, 2, 3, 3);
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Tundra, PlanetoidCategory.Other,
+                                                  4, 5, 5, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Marshy, PlanetoidCategory.Other,
+                                                  4, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Superconductive,
+                                                  PlanetoidCategory.Other,
+                                                  3, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Moo,
+                                                  PlanetoidCategory.Other,
+                                                  3, 6, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Water,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MiniRegolith,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 8, false));
+        cluster.addTearPOIGroup(8, 11);
+
+        var poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.ForestyOreField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 2;
+        poiGroup.maxRadius = 3;
+        cluster.poiGroups.Add(poiGroup);
+        addSize12POICommon(cluster);
+
+        clusterMap[cluster.name] = cluster;
+        
+    }
+
     private static void addSize12POICommon(Cluster cluster) {
         var poiGroup = new POIGroup();
         poiGroup.Add(HarvestablePOIs.OrganicMassField);

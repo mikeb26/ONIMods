@@ -304,6 +304,12 @@ public sealed class Options /* : IOptions */ {
                 Util.Log("Baator mod is not enabled; resetting start planetoid to {0}", this.startPlanetoid);
             }
         }
+        if (!Util.IsModEnabled("AllBiomesWorld")) {
+            if (this.startPlanetoid == StartPlanetoidType.Fuleria) {
+                this.startPlanetoid = StartPlanetoidType.Marshy;
+                Util.Log("Fuleria mod is not enabled; resetting start planetoid to {0}", this.startPlanetoid);
+	    }
+	}
     }
 
     // public IEnumerable<IOptionsEntry> CreateOptions() {

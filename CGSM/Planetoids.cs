@@ -47,6 +47,7 @@ public enum PlanetoidType {
     BaatorOilySwampy = 37,
     BaatorMoonlet = 38,
     BaatorColdTerra = 39,
+    Fuleria = 40,
 };
 
 // Baator introduces 1-way warp planetoids that don't fit cleanly into these existing categories;
@@ -104,6 +105,9 @@ public enum StartPlanetoidType {
     [Option("STRINGS.WORLDS.BAATORMOONLET.NAME", "STRINGS.WORLDS.BAATORMOONLET.DESCRIPTION")]
     [RequireMod("Baator_BumminsMod")]
     BaatorMoonlet = PlanetoidType.BaatorMoonlet,
+    [Option("STRINGS.WORLDS.FULERIA.NAME", "STRINGS.WORLDS.FULERIA.DESCRIPTION")]
+    [RequireMod("AllBiomesWorld")]
+    Fuleria = PlanetoidType.Fuleria,
 };
 
 public enum WarpPlanetoidType {
@@ -344,6 +348,10 @@ public static class PlanetoidInfos {
             {PlanetoidType.BaatorColdTerra, new PlanetoidInfo(PlanetoidType.BaatorColdTerra,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Other, "expansion1::worlds/Baator_coldterra"},
+                })},
+            {PlanetoidType.Fuleria, new PlanetoidInfo(PlanetoidType.Fuleria,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "expansion1::worlds/FuleriaDLC"},
                 })},
         };
 

@@ -14,6 +14,9 @@ public static class ClusterUtils {
         }
         opts.scrubUnloadedModOptions();
 
+        foreach(var mod in Global.Instance.modManager.mods) {
+            Util.LogDbg("mod label:{0} staticID:{1}", mod.label, mod.staticID);
+        }
         var cluster = new Cluster("CGSM", opts);
         var clusterYamlPath = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
                                                      "clusters", "CGSM.yaml");
