@@ -90,6 +90,21 @@ public sealed class Options /* : IOptions */ {
     [JsonProperty]
     public bool baatorColdTerra { get; set; }
 
+    [Option("STRINGS.WORLDS.CGSM.MARSHYSNAKES_NAME", "STRINGS.WORLDS.CGSM.MARSHYSNAKES_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("test447.RollerSnake")]
+    [JsonProperty]
+    public bool marshySnakes { get; set; }
+
+    [Option("STRINGS.WORLDS.CGSM.FIRESNAKES_NAME", "STRINGS.WORLDS.CGSM.FIRESNAKES_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("test447.RollerSnake")]
+    [JsonProperty]
+    public bool superconductiveSnakes { get; set; }
+
+    [Option("STRINGS.WORLDS.CGSM.WATERSNAKES_NAME", "STRINGS.WORLDS.CGSM.WATERSNAKES_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("test447.RollerSnake")]
+    [JsonProperty]
+    public bool waterSnakes { get; set; }
+
     [Option("STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT", "STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT_DESC", "STRINGS.UI.FRONTEND.CGSM.SPACE_POIS_CAT")]
     [Limit(0, 9)]
     [JsonProperty]
@@ -210,6 +225,9 @@ public sealed class Options /* : IOptions */ {
         irradiatedMarshPlanetoid = false;
         baatorOilySwampy = false;
         baatorColdTerra = false;
+	marshySnakes = false;
+	superconductiveSnakes = false;
+	waterSnakes = false;
 
         numArtifactPOIs = 4;
         carbonAsteroid = true;
@@ -286,6 +304,9 @@ public sealed class Options /* : IOptions */ {
         count += Convert.ToInt32(irradiatedMarshPlanetoid);
         count += Convert.ToInt32(baatorOilySwampy);
         count += Convert.ToInt32(baatorColdTerra);
+        count += Convert.ToInt32(marshySnakes);
+        count += Convert.ToInt32(superconductiveSnakes);
+        count += Convert.ToInt32(waterSnakes);
 
         return count;
     }
@@ -309,6 +330,20 @@ public sealed class Options /* : IOptions */ {
                 this.startPlanetoid = StartPlanetoidType.Marshy;
                 Util.Log("Fuleria mod is not enabled; resetting start planetoid to {0}", this.startPlanetoid);
 	    }
+	}
+        if (!Util.IsModEnabled("test447.RollerSnake")) {
+            this.marshySnakes = false;
+            this.superconductiveSnakes = false;
+            this.waterSnakes = false;
+            if (this.startPlanetoid == StartPlanetoidType.Tetrament ||
+                this.startPlanetoid == StartPlanetoidType.VanillaTetrament) {
+                this.startPlanetoid = StartPlanetoidType.Marshy;
+                Util.Log("Roller Snakes mod is not enabled; resetting start planetoid to {0}", this.startPlanetoid);
+            }
+            if (this.warpPlanetoid == WarpPlanetoidType.DryRadioactiveForest) {
+                this.warpPlanetoid = WarpPlanetoidType.Desolands;
+                Util.Log("Roller Snakes mod is not enabled; resetting warp planetoid to {0}", this.warpPlanetoid);
+            }
 	}
     }
 

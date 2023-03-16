@@ -44,6 +44,21 @@ public static class Strings {
 
             public static LocString BAATOR_COLDTERRA_NAME = "Baator Cold Terra Asteroid";
             public static LocString BAATOR_COLDTERRA_DESC = "The Cold Terra Asteroid from the Baator mod";
+
+            public static LocString MARSHYSNAKES_NAME = "Marshy (Roller Snakes)";
+            public static LocString MARSHYSNAKES_DESC = "The Marshy Asteroid customized by the Roller Snakes mod";
+
+            public static LocString FIRESNAKES_NAME = "Superconductive (Roller Snakes)";
+            public static LocString FIRESNAKES_DESC = "The Superconductive Asteroid customized by the Roller Snakes mod";
+
+            public static LocString WATERSNAKES_NAME = "Water (Roller Snakes)";
+            public static LocString WATERSNAKES_DESC = "The Water Asteroid customized by the Roller Snakes mod";
+
+            public static LocString VANILLATETRAMENT_NAME = "Vanilla Tetrament Asteroid (Roller Snakes)";
+            public static LocString VANILLATETRAMENT_DESC = "The large Tetrament Asteroid by the Roller Snakes mod";
+
+            public static LocString TETRAMENT_NAME = "Tetrament Moonlet Asteroid (Roller Snakes)";
+            public static LocString TETRAMENT_DESC = "The small Tetrament Asteroid by the Roller Snakes mod";
          }
     }
 }

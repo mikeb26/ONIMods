@@ -107,6 +107,9 @@ public class Cluster {
         addOtherPlanetIfSet(opts.irradiatedMarshPlanetoid, PlanetoidType.IrradiatedMarsh);
         addOtherPlanetIfSet(opts.baatorOilySwampy, PlanetoidType.BaatorOilySwampy);
         addOtherPlanetIfSet(opts.baatorColdTerra, PlanetoidType.BaatorColdTerra);
+        addOtherPlanetIfSet(opts.marshySnakes, PlanetoidType.MarshySnakes);
+        addOtherPlanetIfSet(opts.superconductiveSnakes, PlanetoidType.SuperconductiveSnakes);
+        addOtherPlanetIfSet(opts.waterSnakes, PlanetoidType.WaterSnakes);
     }
 
     private void addOtherPlanetIfSet(bool optVal, PlanetoidType planetoidType) {
@@ -262,6 +265,8 @@ public static class BuiltinClusters {
         addBaatorStartCluster();
         addBaatorMoonletCluster();
         addFuleriaCluster();
+        addVanillaTetramentCluster();
+        addTetramentCluster();
     }
 
     // vanilla clusters
@@ -1026,7 +1031,74 @@ public static class BuiltinClusters {
         addSize12POICommon(cluster);
 
         clusterMap[cluster.name] = cluster;
-        
+    }
+
+    private static void addVanillaTetramentCluster() {
+        var cluster = new Cluster("clusters/TetramentClassic", 12);
+        cluster.difficulty = 2;
+        cluster.start = new PlanetoidPlacement(StartPlanetoidType.VanillaTetrament, 2);
+        cluster.warp = new PlanetoidPlacement(WarpPlanetoidType.RadioactiveSwamp, 2, 3, 3);
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Tundra, PlanetoidCategory.Other,
+                                                  4, 5, 5, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Marshy, PlanetoidCategory.Other,
+                                                  4, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Superconductive,
+                                                  PlanetoidCategory.Other,
+                                                  3, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Moo,
+                                                  PlanetoidCategory.Other,
+                                                  3, 6, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Water,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MiniRegolith,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 8, false));
+        cluster.addTearPOIGroup(8, 11);
+
+        var poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.ForestyOreField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 2;
+        poiGroup.maxRadius = 3;
+        cluster.poiGroups.Add(poiGroup);
+        addSize12POICommon(cluster);
+
+        clusterMap[cluster.name] = cluster;
+    }
+
+    private static void addTetramentCluster() {
+        var cluster = new Cluster("clusters/TetramentCluster", 12);
+        cluster.difficulty = 3;
+        cluster.start = new PlanetoidPlacement(StartPlanetoidType.Tetrament, 2);
+        cluster.warp = new PlanetoidPlacement(WarpPlanetoidType.DryRadioactiveForest, 2, 3, 3);
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Tundra, PlanetoidCategory.Other,
+                                                  4, 5, 5, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MarshySnakes, PlanetoidCategory.Other,
+                                                  4, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.SuperconductiveSnakes,
+                                                  PlanetoidCategory.Other,
+                                                  3, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Moo,
+                                                  PlanetoidCategory.Other,
+                                                  3, 6, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.WaterSnakes,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MiniRegolith,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 8, false));
+        cluster.addTearPOIGroup(8, 11);
+
+        var poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.ForestyOreField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 2;
+        poiGroup.maxRadius = 3;
+        cluster.poiGroups.Add(poiGroup);
+        addSize12POICommon(cluster);
+
+        clusterMap[cluster.name] = cluster;
     }
 
     private static void addSize12POICommon(Cluster cluster) {

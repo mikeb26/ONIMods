@@ -48,6 +48,12 @@ public enum PlanetoidType {
     BaatorMoonlet = 38,
     BaatorColdTerra = 39,
     Fuleria = 40,
+    Tetrament = 41,
+    TetramentVanilla = 42,
+    DryRadioactiveForest = 43,
+    MarshySnakes = 44,
+    SuperconductiveSnakes = 45,
+    WaterSnakes = 46,
 };
 
 // Baator introduces 1-way warp planetoids that don't fit cleanly into these existing categories;
@@ -108,6 +114,12 @@ public enum StartPlanetoidType {
     [Option("STRINGS.WORLDS.FULERIA.NAME", "STRINGS.WORLDS.FULERIA.DESCRIPTION")]
     [RequireMod("AllBiomesWorld")]
     Fuleria = PlanetoidType.Fuleria,
+    [Option("STRINGS.WORLDS.CGSM.TETRAMENT_NAME", "STRINGS.WORLDS.CGSM.TETRAMENT_DESC")]
+    [RequireMod("test447.RollerSnake")]
+    Tetrament = PlanetoidType.Tetrament,
+    [Option("STRINGS.WORLDS.CGSM.VANILLATETRAMENT_NAME", "STRINGS.WORLDS.CGSM.VANILLATETRAMENT_DESC")]
+    [RequireMod("test447.RollerSnake")]
+    VanillaTetrament = PlanetoidType.TetramentVanilla,
 };
 
 public enum WarpPlanetoidType {
@@ -135,6 +147,9 @@ public enum WarpPlanetoidType {
     RadioactiveForest = PlanetoidType.RadioactiveForest,
     [Option("STRINGS.WORLDS.MEDIUMFORESTYWASTELAND.NAME", "STRINGS.WORLDS.MEDIUMFORESTYWASTELAND.DESCRIPTION")]
     GlowoodWasteland = PlanetoidType.GlowoodWasteland,
+    [Option("STRINGS.WORLDS.TETRAMENT_WARP.NAME", "STRINGS.WORLDS.TETRAMENT_WARP.DESCRIPTION")]
+    [RequireMod("test447.RollerSnake")]
+    DryRadioactiveForest = PlanetoidType.DryRadioactiveForest,
 };
 
 /* captures dynamic planetoid properties not known until runtime that the player may be customizing
@@ -352,6 +367,30 @@ public static class PlanetoidInfos {
             {PlanetoidType.Fuleria, new PlanetoidInfo(PlanetoidType.Fuleria,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "expansion1::worlds/FuleriaDLC"},
+                })},
+            {PlanetoidType.Tetrament, new PlanetoidInfo(PlanetoidType.Tetrament,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "worlds/TetramentStart"},
+                })},
+            {PlanetoidType.TetramentVanilla, new PlanetoidInfo(PlanetoidType.TetramentVanilla,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "worlds/VanillaTetrament"},
+                })},
+            {PlanetoidType.DryRadioactiveForest, new PlanetoidInfo(PlanetoidType.DryRadioactiveForest,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Warp, "worlds/TetramentClusterWarpPlanet"},
+                })},
+            {PlanetoidType.MarshySnakes, new PlanetoidInfo(PlanetoidType.MarshySnakes,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "worlds/MarshyMoonletAlt"},
+                })},
+            {PlanetoidType.SuperconductiveSnakes, new PlanetoidInfo(PlanetoidType.SuperconductiveSnakes,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "worlds/NiobiumMoonletFixed"},
+                })},
+            {PlanetoidType.WaterSnakes, new PlanetoidInfo(PlanetoidType.WaterSnakes,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "worlds/WaterMoonletHope"},
                 })},
         };
 

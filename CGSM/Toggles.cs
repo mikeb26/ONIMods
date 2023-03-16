@@ -91,6 +91,17 @@ public class Toggles {
                                 CGSM.Strings.WORLDS.CGSM.BAATOR_COLDTERRA_NAME,
                                 CGSM.Strings.WORLDS.CGSM.BAATOR_COLDTERRA_DESC, false);
         }
+        if (Util.IsModEnabled("test447.RollerSnake")) {
+            addOneToggleSetting(ref cgs, PlanetoidType.MarshySnakes,
+                                CGSM.Strings.WORLDS.CGSM.MARSHYSNAKES_NAME,
+                                CGSM.Strings.WORLDS.CGSM.MARSHYSNAKES_DESC, false);
+            addOneToggleSetting(ref cgs, PlanetoidType.SuperconductiveSnakes,
+                                CGSM.Strings.WORLDS.CGSM.FIRESNAKES_NAME,
+                                CGSM.Strings.WORLDS.CGSM.FIRESNAKES_DESC, false);
+            addOneToggleSetting(ref cgs, PlanetoidType.WaterSnakes,
+                                CGSM.Strings.WORLDS.CGSM.WATERSNAKES_NAME,
+                                CGSM.Strings.WORLDS.CGSM.WATERSNAKES_DESC, false);
+        }
 
     }
 
@@ -128,6 +139,12 @@ public class Toggles {
                 cgs.SetQualitySetting(this.toggleMap[PlanetoidType.BaatorOilySwampy], "Disabled");
                 cgs.SetQualitySetting(this.toggleMap[PlanetoidType.BaatorColdTerra], "Disabled");
             }
+            if (Util.IsModEnabled("test447.RollerSnake")) {
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.MarshySnakes], "Disabled");
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.SuperconductiveSnakes], "Disabled");
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.WaterSnakes], "Disabled");
+            }
+
             this.anyToggleSettingsChanged = false;
             this.resetInProgress = false;
             return;
@@ -152,6 +169,11 @@ public class Toggles {
         if (Util.IsModEnabled("Baator_BumminsMod")) {
             pTypes.Add(PlanetoidType.BaatorOilySwampy);
             pTypes.Add(PlanetoidType.BaatorColdTerra);
+        }
+        if (Util.IsModEnabled("test447.RollerSnake")) {
+            pTypes.Add(PlanetoidType.MarshySnakes);
+            pTypes.Add(PlanetoidType.SuperconductiveSnakes);
+            pTypes.Add(PlanetoidType.WaterSnakes);
         }
 
         foreach (var pType in pTypes) {
