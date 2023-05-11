@@ -102,7 +102,20 @@ public class Toggles {
                                 CGSM.Strings.WORLDS.CGSM.WATERSNAKES_NAME,
                                 CGSM.Strings.WORLDS.CGSM.WATERSNAKES_DESC, false);
         }
-
+        if (Util.IsModEnabled("miniBaseSO")) {
+            addOneToggleSetting(ref cgs, PlanetoidType.MiniBase,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASE_NAME,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASE_DESC, false);
+            addOneToggleSetting(ref cgs, PlanetoidType.MiniBaseOily,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASEOILY_NAME,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASEOILY_DESC, false);
+            addOneToggleSetting(ref cgs, PlanetoidType.MiniBaseMarshy,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASEMARSHY_NAME,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASEMARSHY_DESC, false);
+            addOneToggleSetting(ref cgs, PlanetoidType.MiniBaseNiobium,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASENIOBIUM_NAME,
+                                CGSM.Strings.WORLDS.CGSM.MINIBASENIOBIUM_DESC, false);
+        }
     }
 
     // unfortunately we can't make the set of toggled planetoids dynamic because the
@@ -144,6 +157,12 @@ public class Toggles {
                 cgs.SetQualitySetting(this.toggleMap[PlanetoidType.SuperconductiveSnakes], "Disabled");
                 cgs.SetQualitySetting(this.toggleMap[PlanetoidType.WaterSnakes], "Disabled");
             }
+            if (Util.IsModEnabled("miniBaseSO")) {
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.MiniBase], "Disabled");
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.MiniBaseOily], "Disabled");
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.MiniBaseMarshy], "Disabled");
+                cgs.SetQualitySetting(this.toggleMap[PlanetoidType.MiniBaseNiobium], "Disabled");
+            }
 
             this.anyToggleSettingsChanged = false;
             this.resetInProgress = false;
@@ -175,7 +194,12 @@ public class Toggles {
             pTypes.Add(PlanetoidType.SuperconductiveSnakes);
             pTypes.Add(PlanetoidType.WaterSnakes);
         }
-
+        if (Util.IsModEnabled("miniBaseSO")) {
+            pTypes.Add(PlanetoidType.MiniBase);
+            pTypes.Add(PlanetoidType.MiniBaseOily);
+            pTypes.Add(PlanetoidType.MiniBaseMarshy);
+            pTypes.Add(PlanetoidType.MiniBaseNiobium);
+        }
         foreach (var pType in pTypes) {
             if (cluster.hasOtherPlanetoid(pType)) {
                 cgs.SetQualitySetting(this.toggleMap[pType], "Enabled");

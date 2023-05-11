@@ -110,6 +110,10 @@ public class Cluster {
         addOtherPlanetIfSet(opts.marshySnakes, PlanetoidType.MarshySnakes);
         addOtherPlanetIfSet(opts.superconductiveSnakes, PlanetoidType.SuperconductiveSnakes);
         addOtherPlanetIfSet(opts.waterSnakes, PlanetoidType.WaterSnakes);
+        addOtherPlanetIfSet(opts.miniBase, PlanetoidType.MiniBase);
+        addOtherPlanetIfSet(opts.miniBaseOily, PlanetoidType.MiniBaseOily);
+        addOtherPlanetIfSet(opts.miniBaseMarshy, PlanetoidType.MiniBaseMarshy);
+        addOtherPlanetIfSet(opts.miniBaseNiobium, PlanetoidType.MiniBaseNiobium);
     }
 
     private void addOtherPlanetIfSet(bool optVal, PlanetoidType planetoidType) {
@@ -267,6 +271,8 @@ public static class BuiltinClusters {
         addFuleriaCluster();
         addVanillaTetramentCluster();
         addTetramentCluster();
+        // disabled for now until we can test
+        // addMiniBaseCluster();
     }
 
     // vanilla clusters
@@ -1101,6 +1107,94 @@ public static class BuiltinClusters {
         clusterMap[cluster.name] = cluster;
     }
 
+    private static void addMiniBaseCluster() {
+        var cluster = new Cluster("clusters/MiniBase", 12);
+        cluster.difficulty = 5;
+        cluster.start = new PlanetoidPlacement(PlanetoidType.MiniBase, PlanetoidCategory.Other,
+                                              0, 0, 0, false);
+        cluster.warp = new PlanetoidPlacement(PlanetoidType.MiniBaseOily, PlanetoidCategory.Other,
+                                              0, 3, 3, true);
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MiniBaseMarshy, PlanetoidCategory.Other,
+                                                  0, 5, 5, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MiniBaseNiobium, PlanetoidCategory.Other,
+                                                  0, 7, 7, false));
+        cluster.addTearPOIGroup(10, 11);
+
+        var poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.ForestyOreField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 2;
+        poiGroup.maxRadius = 3;
+        cluster.poiGroups.Add(poiGroup);
+
+        poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.GildedAsteroidField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 5;
+        poiGroup.maxRadius = 5;
+        cluster.poiGroups.Add(poiGroup);
+
+        poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.OrganicMassField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 5;
+        poiGroup.maxRadius = 7;
+        cluster.poiGroups.Add(poiGroup);
+
+        poiGroup = new POIGroup();
+        poiGroup.avoidClumping = false;
+        poiGroup.Add(HarvestablePOIs.GlimmeringAsteroidField);
+        poiGroup.Add(HarvestablePOIs.HeliumCloud);
+        poiGroup.Add(HarvestablePOIs.OilyAsteroidField);
+        poiGroup.Add(HarvestablePOIs.FrozenOreField);
+        poiGroup.minRadius = 8;
+        poiGroup.maxRadius = 11;
+        cluster.poiGroups.Add(poiGroup);
+
+        poiGroup = new POIGroup();
+        poiGroup.avoidClumping = true;
+        poiGroup.Add(HarvestablePOIs.RadioactiveGasCloud);
+        poiGroup.Add(HarvestablePOIs.RadioactiveAsteroidField);
+        poiGroup.minRadius = 10;
+        poiGroup.maxRadius = 11;
+        cluster.poiGroups.Add(poiGroup);
+
+        poiGroup = new POIGroup();
+        poiGroup.avoidClumping = false;
+        poiGroup.Add(HarvestablePOIs.RockyAsteroidField);
+        poiGroup.Add(HarvestablePOIs.InterstellarIceField);
+        poiGroup.Add(HarvestablePOIs.InterstellarOcean);
+        poiGroup.Add(HarvestablePOIs.SandyOreField);
+        poiGroup.Add(HarvestablePOIs.SwampyOreField);
+        poiGroup.numToSpawn = 5;
+        poiGroup.allowDupes = true;
+        poiGroup.minRadius = 5;
+        poiGroup.maxRadius = 7;
+        cluster.poiGroups.Add(poiGroup);
+
+        poiGroup = new POIGroup();
+        poiGroup.avoidClumping = false;
+        poiGroup.Add(HarvestablePOIs.CarbonAsteroidField);
+        poiGroup.Add(HarvestablePOIs.MetallicAsteroidField);
+        poiGroup.Add(HarvestablePOIs.SatelliteField);
+        poiGroup.Add(HarvestablePOIs.IceAsteroidField);
+        poiGroup.Add(HarvestablePOIs.GasGiantCloud);
+        poiGroup.Add(HarvestablePOIs.ChlorineCloud);
+        poiGroup.Add(HarvestablePOIs.OxidizedAsteroidField);
+        poiGroup.Add(HarvestablePOIs.SaltyAsteroidField);
+        poiGroup.Add(HarvestablePOIs.OxygenRichAsteroidField);
+        poiGroup.Add(HarvestablePOIs.SatelliteField);
+        poiGroup.numToSpawn = 10;
+        poiGroup.allowDupes = false;
+        poiGroup.minRadius = 7;
+        poiGroup.maxRadius = 11;
+        cluster.poiGroups.Add(poiGroup);
+
+        addSize12ArtifactsCommon(cluster);
+
+        clusterMap[cluster.name] = cluster;
+    }
+
     private static void addSize12POICommon(Cluster cluster) {
         var poiGroup = new POIGroup();
         poiGroup.Add(HarvestablePOIs.OrganicMassField);
@@ -1161,7 +1255,11 @@ public static class BuiltinClusters {
         poiGroup.minRadius = 7;
         poiGroup.maxRadius = 11;
         cluster.poiGroups.Add(poiGroup);
-        poiGroup = new POIGroup();
+        addSize12ArtifactsCommon(cluster);
+    }
+
+    private static void addSize12ArtifactsCommon(Cluster cluster) {
+        var poiGroup = new POIGroup();
         poiGroup.avoidClumping = true;
         poiGroup.Add(ArtifactPOIs.GravitasSpaceStation1);
         poiGroup.Add(ArtifactPOIs.GravitasSpaceStation4);

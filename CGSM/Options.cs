@@ -105,6 +105,26 @@ public sealed class Options /* : IOptions */ {
     [JsonProperty]
     public bool waterSnakes { get; set; }
 
+    [Option("STRINGS.WORLDS.MINIBASE.NAME", "STRINGS.WORLDS.MINIBASE.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("miniBaseSO")]
+    [JsonProperty]
+    public bool miniBase { get; set; }
+
+    [Option("STRINGS.WORLDS.CGSM.MINIBASEOILY_NAME", "STRINGS.WORLDS.OILYMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("miniBaseSO")]
+    [JsonProperty]
+    public bool miniBaseOily { get; set; }
+
+    [Option("STRINGS.WORLDS.CGSM.MINIBASEMARSHY_NAME", "STRINGS.WORLDS.MARSHYMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("miniBaseSO")]
+    [JsonProperty]
+    public bool miniBaseMarshy { get; set; }
+
+    [Option("STRINGS.WORLDS.CGSM.MINIBASENIOBIUM_NAME", "STRINGS.WORLDS.NIOBIUMMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
+    [RequireMod("miniBaseSO")]
+    [JsonProperty]
+    public bool miniBaseNiobium { get; set; }
+
     [Option("STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT", "STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT_DESC", "STRINGS.UI.FRONTEND.CGSM.SPACE_POIS_CAT")]
     [Limit(0, 9)]
     [JsonProperty]
@@ -225,9 +245,13 @@ public sealed class Options /* : IOptions */ {
         irradiatedMarshPlanetoid = false;
         baatorOilySwampy = false;
         baatorColdTerra = false;
-	marshySnakes = false;
-	superconductiveSnakes = false;
-	waterSnakes = false;
+        marshySnakes = false;
+        superconductiveSnakes = false;
+        waterSnakes = false;
+        miniBase = false;
+        miniBaseOily = false;
+        miniBaseMarshy = false;
+        miniBaseNiobium = false;
 
         numArtifactPOIs = 4;
         carbonAsteroid = true;
@@ -307,6 +331,10 @@ public sealed class Options /* : IOptions */ {
         count += Convert.ToInt32(marshySnakes);
         count += Convert.ToInt32(superconductiveSnakes);
         count += Convert.ToInt32(waterSnakes);
+        count += Convert.ToInt32(miniBase);
+        count += Convert.ToInt32(miniBaseOily);
+        count += Convert.ToInt32(miniBaseMarshy);
+        count += Convert.ToInt32(miniBaseNiobium);
 
         return count;
     }
@@ -329,8 +357,8 @@ public sealed class Options /* : IOptions */ {
             if (this.startPlanetoid == StartPlanetoidType.Fuleria) {
                 this.startPlanetoid = StartPlanetoidType.Marshy;
                 Util.Log("Fuleria mod is not enabled; resetting start planetoid to {0}", this.startPlanetoid);
-	    }
-	}
+            }
+        }
         if (!Util.IsModEnabled("test447.RollerSnake")) {
             this.marshySnakes = false;
             this.superconductiveSnakes = false;
@@ -344,7 +372,13 @@ public sealed class Options /* : IOptions */ {
                 this.warpPlanetoid = WarpPlanetoidType.Desolands;
                 Util.Log("Roller Snakes mod is not enabled; resetting warp planetoid to {0}", this.warpPlanetoid);
             }
-	}
+        }
+        if (!Util.IsModEnabled("miniBaseSO")) {
+            this.miniBase = false;
+            this.miniBaseOily = false;
+            this.miniBaseMarshy = false;
+            this.miniBaseNiobium = false;
+        }
     }
 
     // public IEnumerable<IOptionsEntry> CreateOptions() {

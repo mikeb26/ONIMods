@@ -54,6 +54,10 @@ public enum PlanetoidType {
     MarshySnakes = 44,
     SuperconductiveSnakes = 45,
     WaterSnakes = 46,
+    MiniBase = 47,
+    MiniBaseOily = 48,
+    MiniBaseMarshy = 49,
+    MiniBaseNiobium = 50,
 };
 
 // Baator introduces 1-way warp planetoids that don't fit cleanly into these existing categories;
@@ -394,6 +398,22 @@ public static class PlanetoidInfos {
             {PlanetoidType.WaterSnakes, new PlanetoidInfo(PlanetoidType.WaterSnakes,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Other, "worlds/WaterMoonletHope"},
+                })},
+            {PlanetoidType.MiniBase, new PlanetoidInfo(PlanetoidType.MiniBase,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "worlds/MiniBase"},
+                })},
+            {PlanetoidType.MiniBaseOily, new PlanetoidInfo(PlanetoidType.MiniBaseOily,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "worlds/BabyOilyMoonlet"},
+                })},
+            {PlanetoidType.MiniBaseMarshy, new PlanetoidInfo(PlanetoidType.MiniBaseMarshy,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "worlds/BabyMarshyMoonlet"},
+                })},
+            {PlanetoidType.MiniBaseNiobium, new PlanetoidInfo(PlanetoidType.MiniBaseNiobium,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "worlds/BabyNiobiumMoonlet"},
                 })},
         };
 

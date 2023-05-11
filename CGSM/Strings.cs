@@ -59,6 +59,18 @@ public static class Strings {
 
             public static LocString TETRAMENT_NAME = "Tetrament Moonlet Asteroid (Roller Snakes)";
             public static LocString TETRAMENT_DESC = "The small Tetrament Asteroid by the Roller Snakes mod";
-         }
+
+            public static LocString MINIBASE_NAME = "MiniBase";
+            public static LocString MINIBASE_DESC = "MiniBase planetoid from the MiniBase: Spaced Out! Edition mod";
+
+            public static LocString MINIBASEOILY_NAME = "MiniBase Oily Moonlet";
+            public static LocString MINIBASEOILY_DESC = "Oily Moonlet from the MiniBase: Spaced Out! Edition mod";
+
+            public static LocString MINIBASEMARSHY_NAME = "MiniBase Marshy Moonlet";
+            public static LocString MINIBASEMARSHY_DESC = "Marshy Moonlet from the MiniBase: Spaced Out! Edition mod";
+
+            public static LocString MINIBASENIOBIUM_NAME = "MiniBase Niobium Moonlet";
+            public static LocString MINIBASENIOBIUM_DESC = "Niobium Moonlet from the MiniBase: Spaced Out! Edition mod";
+        }
     }
 }
