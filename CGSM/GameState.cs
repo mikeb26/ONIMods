@@ -12,6 +12,8 @@ public class GameState {
     public string selectedClusterKey;
     public Cluster selectedCluster;
     public Cluster cgsmCluster;
+    // June 2023 QoL update added new "special"/"lab" cluster category
+    public bool unsupportedClusterCat;
     private Toggles toggles;
 
     // we add 2 new clusters under worldgen/clusters/CGSM{Vanilla}.yaml; 1 for "vanilla" clusters
@@ -33,12 +35,16 @@ public class GameState {
         this.selectedClusterKey = "";
         this.cgsmCluster = null;
         this.toggles = new Toggles();
+        this.unsupportedClusterCat = false;
 
         ClusterUtils.loadClusterFromOptionsAndEmit(true);
     }
 
     public void selectNewCluster(string clusterKey) {
-        Util.LogDbg("new cluster selected:{0}", clusterKey);
+        Util.LogDbg("new cluster selected:{0} unsupportedCat:{1}", clusterKey, this.unsupportedClusterCat);
+        if (this.unsupportedClusterCat) {
+            return;
+        }
 
         bool found = false;
         foreach (var cl in ProcGen.SettingsCache.clusterLayouts.clusterCache) {
@@ -69,18 +75,27 @@ public class GameState {
 
     // makes sure we start clean when ngsp is created
     public void resetTogglesAndSelectedCluster() {
+        if (this.unsupportedClusterCat) {
+            return;
+        }
         this.selectNewCluster(this.selectedClusterKey);
     }
 
     public void addToggleSettings(ref CustomGameSettings cgs) {
+        if (this.unsupportedClusterCat) {
+            return;
+        }
         this.toggles.addAllToggles(ref cgs);
     }
     public void toggleSetting(ref CustomGameSettings cgs, SettingConfig config, string value) {
+        if (this.unsupportedClusterCat) {
+            return;
+        }
         this.toggles.toggleSetting(this.selectedCluster, ref cgs, config, value);
     }
 
     public void Launch() {
-        if (this.selectedCluster == null || !this.toggles.anyToggleSettingsChanged) {
+        if (this.selectedCluster == null || !this.toggles.anyToggleSettingsChanged || this.unsupportedClusterCat) {
             return;
         }
 

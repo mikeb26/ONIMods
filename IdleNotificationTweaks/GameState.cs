@@ -102,7 +102,7 @@ public class GameState
             var now = System.DateTime.UtcNow;
             TimeSpan diff = now.Subtract(lastPause);
             if (diff.TotalSeconds >= opts.PauseCooldown) {
-                Util.LogDbg("dispnote: pausing for dupeId:{0}", minion.GetInstanceID());
+                Util.LogDbg("dispnote: pausing for dupeId:{0} button:{1}", minion.GetInstanceID(), button.IsIdleSuppressed);
                 SpeedControlScreen.Instance.Pause();
                 lastPause = System.DateTime.UtcNow;
             } else {

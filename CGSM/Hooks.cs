@@ -8,21 +8,21 @@ namespace CGSM;
 public static class Hooks
 {
     [HarmonyPatch(typeof(ClusterCategorySelectionScreen))]
-    [HarmonyPatch("OnClickSpacedOut")]
-    public class ClusterCat_OnClickSpacedOut_Patch {
-        public static void Postfix() {
-            Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
-            Mod.Instance.gameState.maskedCluster = "clusters/CGSMVanilla";
-        }
-    }
-
-    [HarmonyPatch(typeof(ClusterCategorySelectionScreen))]
-    [HarmonyPatch("OnClickVanilla")]
-    public class ClusterCat_OnClickVanilla_Patch {
-        public static void Postfix() {
-            Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
-            Mod.Instance.gameState.maskedCluster = "clusters/CGSM";
-        }
+    [HarmonyPatch("OnClickOption")]
+    public class ClusterCat_OnClickOption_Patch {
+        public static void Postfix(ProcGen.ClusterLayout.ClusterCategory clusterCategory) {
+            if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.spacedOutVanillaStyle) {
+                Mod.Instance.gameState.unsupportedClusterCat = false;
+                Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
+                Mod.Instance.gameState.maskedCluster = "clusters/CGSM";
+            } else if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.spacedOutStyle) {
+                Mod.Instance.gameState.unsupportedClusterCat = false;
+                Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
+                Mod.Instance.gameState.maskedCluster = "clusters/CGSMVanilla";
+            } else {
+                Mod.Instance.gameState.unsupportedClusterCat = true;
+            }
+       }
     }
 
     // @todo tweaking geysers is a future feature
@@ -43,7 +43,7 @@ public static class Hooks
     }
 
     [HarmonyPatch(typeof(CustomGameSettings))]
-    [HarmonyPatch("SetQualitySetting")]
+    [HarmonyPatch("SetQualitySetting", new System.Type[] { typeof(SettingConfig), typeof(string) } )]
     public static class CGS_SetQualitySetting_Patch {
          public static void Postfix(ref CustomGameSettings __instance, SettingConfig config,
                                     string value) {
