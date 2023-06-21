@@ -4,7 +4,7 @@ description: STRINGS.CLUSTER_NAMES.CGSM_CLUSTER.DESCRIPTION
 requiredDlcId: EXPANSION1_ID
 coordinatePrefix: CGSM-C
 menuOrder: -16
-clusterCategory: 1
+clusterCategory: 3
 disableStoryTraits: true
 difficulty: 5
 
