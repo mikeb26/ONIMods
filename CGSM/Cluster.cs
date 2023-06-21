@@ -265,12 +265,16 @@ public static class BuiltinClusters {
         addSOMetallicSwampy();
         addSORadioactiveOcean();
 
+        // special/lab clusters
+        addKleiFest23Cluster();
+
         // mod clusters
         addBaatorStartCluster();
         addBaatorMoonletCluster();
         addFuleriaCluster();
         addVanillaTetramentCluster();
         addTetramentCluster();
+
         // disabled for now until we can test
         // addMiniBaseCluster();
     }
@@ -920,6 +924,42 @@ public static class BuiltinClusters {
         poiGroup.maxRadius = 4;
         cluster.poiGroups.Add(poiGroup);
         addSize14POICommon(cluster);
+
+        clusterMap[cluster.name] = cluster;
+    }
+
+    // special/lab clusters
+    private static void addKleiFest23Cluster() {
+        var cluster = new Cluster("expansion1::clusters/KleiFest2023Cluster", 12);
+        cluster.difficulty = 0;
+        cluster.start = new PlanetoidPlacement(StartPlanetoidType.Skewed, 2);
+        cluster.warp = new PlanetoidPlacement(WarpPlanetoidType.RadioactiveSwamp, 2, 3, 3);
+
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Tundra, PlanetoidCategory.Other,
+                                                  4, 5, 5, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Marshy, PlanetoidCategory.Other,
+                                                  4, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Superconductive,
+                                                  PlanetoidCategory.Other,
+                                                  3, 5, 6, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Moo,
+                                                  PlanetoidCategory.Other,
+                                                  3, 6, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.Water,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 7, false));
+        cluster.others.Add(new PlanetoidPlacement(PlanetoidType.MiniRegolith,
+                                                  PlanetoidCategory.Other,
+                                                  4, 5, 8, false));
+        cluster.addTearPOIGroup(8, 11);
+
+        var poiGroup = new POIGroup();
+        poiGroup.Add(HarvestablePOIs.SandyOreField);
+        poiGroup.avoidClumping = false;
+        poiGroup.minRadius = 2;
+        poiGroup.maxRadius = 3;
+        cluster.poiGroups.Add(poiGroup);
+        addSize12POICommon(cluster);
 
         clusterMap[cluster.name] = cluster;
     }

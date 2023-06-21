@@ -58,6 +58,7 @@ public enum PlanetoidType {
     MiniBaseOily = 48,
     MiniBaseMarshy = 49,
     MiniBaseNiobium = 50,
+    Skewed = 51,
 };
 
 // Baator introduces 1-way warp planetoids that don't fit cleanly into these existing categories;
@@ -124,6 +125,8 @@ public enum StartPlanetoidType {
     [Option("STRINGS.WORLDS.CGSM.VANILLATETRAMENT_NAME", "STRINGS.WORLDS.CGSM.VANILLATETRAMENT_DESC")]
     [RequireMod("test447.RollerSnake")]
     VanillaTetrament = PlanetoidType.TetramentVanilla,
+    [Option("STRINGS.WORLDS.STRANGE_ASTEROID_KF23.NAME", "STRINGS.WORLDS.STRANGE_ASTEROID_KF23.DESCRIPTION")]
+    Skewed = PlanetoidType.Skewed,
 };
 
 public enum WarpPlanetoidType {
@@ -414,6 +417,10 @@ public static class PlanetoidInfos {
             {PlanetoidType.MiniBaseNiobium, new PlanetoidInfo(PlanetoidType.MiniBaseNiobium,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Other, "worlds/BabyNiobiumMoonlet"},
+                })},
+            {PlanetoidType.Skewed, new PlanetoidInfo(PlanetoidType.Skewed,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "expansion1::worlds/StrangeAsteroidKleiFest2023Cluster"},
                 })},
         };
 

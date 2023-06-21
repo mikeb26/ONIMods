@@ -8,12 +8,11 @@ namespace CGSM;
 public class GameState {
     public NewGameSettingsPanel ngsp {get; set;}
     public DestinationSelectPanel dsp {get; set;}
+    public CustomGameSettings cgs {get; set;}
     public ColonyDestinationSelectScreen cdss {get; set;}
     public string selectedClusterKey;
     public Cluster selectedCluster;
     public Cluster cgsmCluster;
-    // June 2023 QoL update added new "special"/"lab" cluster category
-    public bool unsupportedClusterCat;
     private Toggles toggles;
 
     // we add 2 new clusters under worldgen/clusters/CGSM{Vanilla}.yaml; 1 for "vanilla" clusters
@@ -30,21 +29,18 @@ public class GameState {
     public GameState() {
         this.ngsp = null;
         this.dsp = null;
+        this.cgs = null;
         this.cdss = null;
         this.selectedCluster = null;
         this.selectedClusterKey = "";
         this.cgsmCluster = null;
         this.toggles = new Toggles();
-        this.unsupportedClusterCat = false;
 
         ClusterUtils.loadClusterFromOptionsAndEmit(true);
     }
 
     public void selectNewCluster(string clusterKey) {
-        Util.LogDbg("new cluster selected:{0} unsupportedCat:{1}", clusterKey, this.unsupportedClusterCat);
-        if (this.unsupportedClusterCat) {
-            return;
-        }
+        Util.LogDbg("new cluster selected:{0}", clusterKey);
 
         bool found = false;
         foreach (var cl in ProcGen.SettingsCache.clusterLayouts.clusterCache) {
@@ -73,29 +69,46 @@ public class GameState {
         this.toggles.reset(this.selectedClusterKey, this.selectedCluster);
     }
 
-    // makes sure we start clean when ngsp is created
-    public void resetTogglesAndSelectedCluster() {
-        if (this.unsupportedClusterCat) {
+    public string getCurrentCluster() {
+        SettingLevel currentQualitySetting = cgs.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
+             if (currentQualitySetting == null) {
+              return "";
+        }
+
+        return currentQualitySetting.id;
+
+    }
+
+    public void maybeSelectNewCluster() {
+        string curCluster = getCurrentCluster();
+        if (curCluster == "" || curCluster == this.selectedClusterKey) {
             return;
         }
+
+        selectNewCluster(curCluster);
+    }
+
+    // makes sure we start clean when ngsp is created
+    public void resetTogglesAndSelectedCluster() {
         this.selectNewCluster(this.selectedClusterKey);
     }
 
     public void addToggleSettings(ref CustomGameSettings cgs) {
-        if (this.unsupportedClusterCat) {
-            return;
-        }
         this.toggles.addAllToggles(ref cgs);
     }
     public void toggleSetting(ref CustomGameSettings cgs, SettingConfig config, string value) {
-        if (this.unsupportedClusterCat) {
-            return;
-        }
         this.toggles.toggleSetting(this.selectedCluster, ref cgs, config, value);
     }
 
     public void Launch() {
-        if (this.selectedCluster == null || !this.toggles.anyToggleSettingsChanged || this.unsupportedClusterCat) {
+        if (this.selectedCluster == null) {
+            maybeSelectNewCluster();
+        }
+        string curCluster = getCurrentCluster();
+        if (curCluster != selectedClusterKey) {
+            selectNewCluster(curCluster);
+        }
+        if (!this.toggles.anyToggleSettingsChanged) {
             return;
         }
 
@@ -106,6 +119,7 @@ public class GameState {
 
         Util.Log("Lauching customized {0}", this.selectedCluster.ToString());
         ClusterUtils.emitCluster(this.selectedCluster);
+
         this.ngsp.SetSetting(CustomGameSettingConfigs.ClusterLayout, this.maskedCluster);
     }
 }

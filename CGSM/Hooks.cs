@@ -12,15 +12,12 @@ public static class Hooks
     public class ClusterCat_OnClickOption_Patch {
         public static void Postfix(ProcGen.ClusterLayout.ClusterCategory clusterCategory) {
             if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.spacedOutVanillaStyle) {
-                Mod.Instance.gameState.unsupportedClusterCat = false;
                 Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
                 Mod.Instance.gameState.maskedCluster = "clusters/CGSM";
-            } else if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.spacedOutStyle) {
-                Mod.Instance.gameState.unsupportedClusterCat = false;
+            } else if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.spacedOutStyle ||
+                       clusterCategory == ProcGen.ClusterLayout.ClusterCategory.special) {
                 Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
                 Mod.Instance.gameState.maskedCluster = "clusters/CGSMVanilla";
-            } else {
-                Mod.Instance.gameState.unsupportedClusterCat = true;
             }
        }
     }
@@ -32,12 +29,13 @@ public static class Hooks
     //         WorldGen.ApplyGeyserPreferences(ref __instance);
     //     }
     // }
-
+    
     [HarmonyPatch(typeof(CustomGameSettings))]
     [HarmonyPatch("OnPrefabInit")]
     public static class CGS_Prefab_Patch {
          public static void Postfix(ref CustomGameSettings __instance) {
              Util.LogDbg("CGS Init");
+             Mod.Instance.gameState.cgs = __instance;
              Mod.Instance.gameState.addToggleSettings(ref __instance);
          }
     }
@@ -99,4 +97,16 @@ public static class Hooks
         }
     }
 
+    /* in testing it looks like our CustomGameSettings.SetQualitySetting hook is no longer being
+     * invoked when the player selects a new cluster from the colony destination select screen.
+     * so to mitigate we hook here as well
+     */
+    [HarmonyPatch(typeof(ColonyDestinationSelectScreen))]
+    [HarmonyPatch("OnAsteroidClicked")]
+    public static class CDS_OnAsteroidClicked_Patch {
+        public static void Prefix(ref ColonyDestinationSelectScreen __instance, ColonyDestinationAsteroidBeltData cluster) {
+            Util.LogDbg("CDSS onasteroidclicked");
+            Mod.Instance.gameState.selectNewCluster(cluster.beltPath);
+        }
+    }
 }

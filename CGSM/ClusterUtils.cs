@@ -22,13 +22,20 @@ public static class ClusterUtils {
                                                      "clusters", "CGSM.yaml");
         var clusterYamlPathVanilla = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
                                                             "clusters", "CGSMVanilla.yaml");
+        var clusterYamlPathLab = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
+                                                        "clusters", "CGSMLab.yaml");
+
         var emitter = new ClusterYamlEmitter(cluster, 2, clusterYamlPath);
         var needSettingsCacheReload1 = emitter.emit();
         cluster.name = "CGSMVanilla";
         emitter = new ClusterYamlEmitter(cluster, 1, clusterYamlPathVanilla);
         var needSettingsCacheReload2 = emitter.emit();
+        cluster.name = "CGSMLab";
+        emitter = new ClusterYamlEmitter(cluster, 3, clusterYamlPathLab);
+        var needSettingsCacheReload3 = emitter.emit();
 
-        if (!onStart && (needSettingsCacheReload1 || needSettingsCacheReload2)) {
+        if (!onStart && (needSettingsCacheReload1 || needSettingsCacheReload2 ||
+                         needSettingsCacheReload3)) {
             Util.LogDbg("Reloading settings cache");
 
             // @todo should be able to reduce this to just a clustercache load of only our
@@ -50,12 +57,17 @@ public static class ClusterUtils {
                                                      "clusters", "CGSM.yaml");
         var clusterYamlPathVanilla = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
                                                             "clusters", "CGSMVanilla.yaml");
+        var clusterYamlPathLab = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen",
+                                                        "clusters", "CGSMLab.yaml");
+
         var emitter = new ClusterYamlEmitter(cluster, 2, clusterYamlPath);
         var needSettingsCacheReload1 = emitter.emit();
         emitter = new ClusterYamlEmitter(cluster, 1, clusterYamlPathVanilla);
         var needSettingsCacheReload2 = emitter.emit();
+        emitter = new ClusterYamlEmitter(cluster, 3, clusterYamlPathLab);
+        var needSettingsCacheReload3 = emitter.emit();
 
-        if (needSettingsCacheReload1 || needSettingsCacheReload2) {
+        if (needSettingsCacheReload1 || needSettingsCacheReload2 || needSettingsCacheReload3) {
             Util.LogDbg("Reloading cluster cache");
 
             var worldGenPath = System.IO.Path.Combine(Mod.Instance.contentPath, "worldgen");
