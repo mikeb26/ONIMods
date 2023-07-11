@@ -1,0 +1,189 @@
+name: STRINGS.WORLDS.CGSM.MARSHYMOONLET_NAME
+description: STRINGS.WORLDS.CGSM.MARSHYMOONLET_DESC
+nameTables: [ SWAMP ]
+asteroidIcon: asteroid_marshy_moonlet_kanim
+
+worldTraitScale: 0.06 # Adjust with worldSize. Traits are tuned to base game world sizes.
+worldsize:
+  X: 64
+  Y: 96
+layoutMethod: PowerTree
+
+defaultsOverrides:
+  data:
+    DrawWorldBorderForce: false
+    DrawWorldBorder: true
+    WorldBorderThickness: 2
+    WorldBorderRange: 1
+    OverworldDensityMin: 15
+    OverworldDensityMax: 15
+    OverworldAvoidRadius: 5
+    OverworldSampleBehaviour: PoissonDisk
+    POIPadding: 1
+
+startSubworldName: expansion1::subworlds/marsh/med_HotMarshStart
+startingBaseTemplate: expansion1::bases/warpworldSwampBase
+startingBasePositionHorizontal:
+  min: 0.28
+  max: 0.28
+startingBasePositionVertical:
+  min: 0.40
+  max: 0.45
+
+disableWorldTraits: true
+# ONI does not seem to fully respect disableWorldTraits: true so additionally
+# add world trait rules to try to block them completely
+worldTraitRules:
+  - min: 0
+    max: 0
+    forbiddenTags:
+      - StartWorldOnly
+      - NonStartWorld
+      - GenericGeysers
+      - Oil
+      - Geodes
+      - LargeWorld
+      - Surface
+      - Crust
+      - Challenge
+      - Core
+      - AboveCore
+      - StartChange
+      - VeryCold
+    forbiddenTraits:
+      - traits/MagmaVents
+      - expansion1::traits/Volcanoes
+      - traits/SlimeSplats
+      - expansion1::traits/MetalCaves
+      - expansion1::traits/LushCore
+      - expansion1::traits/IrregularOil
+      - expansion1::traits/CrashedSatellites
+      - traits/MisalignedStart
+      - expansion1::traits/DistressSignal
+
+fixedTraits:
+  - sunlightMedHigh
+  - cosmicRadiationMedLow
+
+# List all the subworld files to load
+subworldFiles:
+  - name: subworlds/space/Space
+  - name: expansion1::subworlds/space/SpaceWithOrganicBorder
+  - name: expansion1::subworlds/marsh/med_HotMarshStart
+  - name: expansion1::subworlds/marsh/med_HotMarshLandingSite
+  - name: expansion1::subworlds/marsh/med_HotMarshInactive
+  - name: expansion1::subworlds/jungle/med_JungleInactive
+    minCount: 1
+  - name: expansion1::subworlds/magma/BottomSmall
+
+unknownCellsAllowedSubworlds: 
+  - tagcommand: Default
+    command: Replace
+    subworldNames:
+      - expansion1::subworlds/marsh/med_HotMarshInactive
+      - expansion1::subworlds/jungle/med_JungleInactive
+  - tagcommand: AtTag
+    tag: AtSurface
+    command: Replace
+    subworldNames:
+      - subworlds/space/Space
+  - tagcommand: DistanceFromTag # Space with crust
+    tag: AtSurface
+    minDistance: 1
+    maxDistance: 1
+    command: Replace
+    subworldNames:
+      - expansion1::subworlds/space/SpaceWithOrganicBorder
+  - tagcommand: DistanceFromTag
+    tag: AtSurface
+    minDistance: 2
+    maxDistance: 2
+    command: Replace
+    subworldNames:
+      - expansion1::subworlds/marsh/med_HotMarshLandingSite
+  - tagcommand: DistanceFromTag
+    tag: AtSurface
+    minDistance: 3
+    maxDistance: 3
+    command: Replace
+    subworldNames:
+      - expansion1::subworlds/marsh/med_HotMarshInactive
+      - expansion1::subworlds/jungle/med_JungleInactive
+  - tagcommand: DistanceFromTag
+    tag: AtDepths
+    minDistance: 0
+    maxDistance: 0
+    command: Replace
+    subworldNames:
+      - expansion1::subworlds/magma/BottomSmall
+
+worldTemplateRules:
+  # Resin tree
+  - names:
+    - expansion1::poi/sap_tree_room
+    listRule: GuaranteeAll
+    times: 1
+    priority: 150
+    useRelaxedFiltering: true # Marsh contains a lot of features, this means they can be replaced
+    allowedCellsFilter:
+      - command: Replace
+        tagcommand: DistanceFromTag
+        tag: AtSurface
+        minDistance: 2
+        maxDistance: 3
+  # teleporters
+  - names:
+    - poi/warp/CGSM_marsh_sender_tiny
+    - poi/warp/CGSM_marsh_receiver_tiny
+    #- poi/warp/CGSM_marsh_teleporter_mini
+    listRule: GuaranteeAll
+    priority: 140
+    allowExtremeTemperatureOverlap: true # This is acceptable
+    allowedCellsFilter:
+      - command: Replace
+        tagcommand: DistanceFromTag
+        tag: AtSurface
+        minDistance: 1
+        maxDistance: 99
+      - command: IntersectWith
+        zoneTypes: [ BoggyMarsh ]
+      - command: ExceptWith
+        tagcommand: AtTag
+        tag: NoGravitasFeatures
+  # Try to place tungsten volcanoes in the core
+  - names:
+    - expansion1::geysers/molten_tungsten_exposed_compact
+    listRule: TryOne
+    times: 2
+    allowDuplicates: true
+    priority: 130
+    allowedCellsFilter:
+      - command: Replace
+        tagcommand: DistanceFromTag
+        tag: AtDepths
+        minDistance: 0
+        maxDistance: 0
+  # Curated Geysers
+  - names:
+    - geysers/slimy_po2
+    - geysers/methane
+    - geysers/chlorine_gas
+    - geysers/hot_co2
+    - geysers/hot_hydrogen
+    - geysers/hot_po2
+    listRule: TryOne
+    times: 1
+    allowDuplicates: true
+    priority: 50
+    useRelaxedFiltering: true # Marsh contains a lot of features, this means they can be replaced
+    allowedCellsFilter:
+      - command: Replace
+        tagcommand: DistanceFromTag
+        tag: AtStart
+        minDistance: 1
+        maxDistance: 99
+      - command: ExceptWith
+        zoneTypes: [ Space ]        
+      - command: ExceptWith
+        tagcommand: AtTag
+        tag: NoGravitasFeatures

@@ -159,6 +159,8 @@ public enum WarpPlanetoidType {
     [Option("STRINGS.WORLDS.TETRAMENT_WARP.NAME", "STRINGS.WORLDS.TETRAMENT_WARP.DESCRIPTION")]
     [RequireMod("test447.RollerSnake")]
     DryRadioactiveForest = PlanetoidType.DryRadioactiveForest,
+    [Option("STRINGS.WORLDS.CGSM.MARSHYMOONLET_NAME", "STRINGS.WORLDS.CGSM.MARSHYMOONLET_DESC")]
+    Marshy = PlanetoidType.Marshy,
 };
 
 /* captures dynamic planetoid properties not known until runtime that the player may be customizing
@@ -240,6 +242,7 @@ public static class PlanetoidInfos {
             {PlanetoidType.Marshy, new PlanetoidInfo(PlanetoidType.Marshy,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "worlds/CGSM.MarshyMoonletStart"},
+                    {PlanetoidCategory.Warp, "worlds/CGSM.MarshyMoonletWarp"},
                     {PlanetoidCategory.Other, "expansion1::worlds/MarshyMoonlet"},
                 })},
             {PlanetoidType.Moo, new PlanetoidInfo(PlanetoidType.Moo,
