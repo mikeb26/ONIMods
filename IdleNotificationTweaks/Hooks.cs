@@ -37,7 +37,7 @@ public static class Hooks
     // dupe exit hook
     [HarmonyPatch(typeof(MinionIdentity), "OnCleanUp")]
     public static class MinionIdentity_OnCleanUp_Patch {
-        internal static void Prefix(MinionIdentity __instance) {
+        internal static void Prefix(ref MinionIdentity __instance) {
             globalGameState.RemoveDupe(ref __instance);
         }
     }
@@ -45,7 +45,7 @@ public static class Hooks
     // posted notification hook (pre-display)
     [HarmonyPatch(typeof(NotificationScreen), "AddNotification")]
     public static class NotificationScreen_AddNotification_PrePatch {
-        internal static bool Prefix(Notification notification) {
+        internal static bool Prefix(ref Notification notification) {
             return globalGameState.AddNotification(ref notification);
         }
     }
@@ -53,7 +53,7 @@ public static class Hooks
     // posted notification hook (post-display)
     [HarmonyPatch(typeof(NotificationScreen), "AddNotification")]
     public static class NotificationScreen_AddNotification_PostPatch {
-        internal static void Postfix(Notification notification) {
+        internal static void Postfix(ref Notification notification) {
             globalGameState.NotificationDisplayed(ref notification);
         }
     }
@@ -61,7 +61,7 @@ public static class Hooks
     // removed notification hook
     [HarmonyPatch(typeof(Notifier), nameof(Notifier.Remove))]
     public static class NotificationScreen_RemoveNotification_Patch {
-        internal static void Prefix(Notification notification) {
+        internal static void Prefix(ref Notification notification) {
             globalGameState.RemoveNotification(ref notification);
         }
     }

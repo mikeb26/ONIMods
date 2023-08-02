@@ -45,6 +45,12 @@ public class GameState
      * (potentially reposting it if the user unsuppresses)
      */
     public bool AddNotification(ref Notification n) {
+        // song of moo update can now pass null notifications
+        if (n == null) {
+            Util.LogDbg("addnote: null notification");
+
+            return true;
+        }
         if (!isIdleNotification(ref n)) {
             Util.LogDbg("addnote: ignore type:{0} text:{1}", n.Type, n.titleText);
 
@@ -79,6 +85,12 @@ public class GameState
 
     /* Post-process a notification has been displayed to the screen */
     public void NotificationDisplayed(ref Notification n) {
+        // song of moo update can now pass null notifications
+        if (n == null) {
+            Util.LogDbg("dispnote: null notification");
+
+            return;
+        }
         if (!isIdleNotification(ref n)) {
             Util.LogDbg("dispnote: ignore type:{0} text:{1}", n.Type, n.titleText);
 
@@ -112,6 +124,12 @@ public class GameState
     }
 
     public void RemoveNotification(ref Notification n) {
+        // song of moo update can now pass null notifications
+        if (n == null) {
+            Util.LogDbg("removenote: null notification");
+
+            return;
+        }
         if (!isIdleNotification(ref n)) {
             Util.LogDbg("removenote: ignore type:{0} text:{1}", n.Type, n.titleText);
 
