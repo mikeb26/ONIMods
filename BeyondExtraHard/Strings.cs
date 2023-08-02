@@ -56,6 +56,18 @@ public static class Strings {
 
                 public static LocString TECH_NOTURBINE = "Heat != Power";
                 public static LocString TECH_NOTURBINE_DESC = "In addition to the \"Sieve it Yourself\" removals, the following building is removed:\n\n\t<smallcaps>Steam Turbine:</smallcaps> This is a game defining limitation and will push even the most advanced and experienced ONI players to their limit. All of the usual design patterns for heat deletion are completely upended.";
+
+                public static LocString MASS = "Mass";
+                public static LocString MASS_DESC = "Adjusts the mass of debris returned from digging and deconstructing.";
+
+                public static LocString MASS_NORMAL = "Normal";
+                public static LocString MASS_NORMAL_DESC = "Digging returns 50% of natural tile mass. Deconstructing returns 100% of constructed building masses.";
+
+                public static LocString MASS_LIGHTTAX = "Restocking Fee";
+                public static LocString MASS_LIGHTTAX_DESC = "Digging returns 40% of natural tile mass. Deconstructing returns 80% of constructed building masses.";
+
+                public static LocString MASS_HEAVYTAX = "Confiscatory Taxation";
+                public static LocString MASS_HEAVYTAX_DESC = "Digging returns 30% of natural tile mass. Deconstructing returns 60% of constructed building masses.";
             }
         }
     }

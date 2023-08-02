@@ -6,7 +6,8 @@ public enum BEHSetting {
     Power, 
     Oxygen,
     Health,
-    Tech
+    Tech,
+    Mass
 };
 
 public enum PowerSetting {
@@ -46,3 +47,8 @@ public enum TechSetting {
     NoTurbine
 };
 
+public enum MassSetting {
+    Normal,
+    LightTax,
+    HeavyTax,
+};

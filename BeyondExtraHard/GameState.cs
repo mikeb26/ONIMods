@@ -27,10 +27,12 @@ public class GameState
     private Dictionary<GeneratorType, GeneratorInfo> powerInfos;
     private Dictionary<OxygenSetting, float> oxyIncrs;
     private Dictionary<HealthSetting, float> healthIncrs;
+    private Dictionary<MassSetting, float> massFactors;
     private OxygenSetting oxySetting;
     private HealthSetting healthSetting;
     private PowerSetting powerSetting;
     private TechSetting techSetting;
+    private MassSetting massSetting;
     private List<TechItem> removedTechItems;
     private Dictionary<string, string> building2Tech;
     private Dictionary<TechSetting, List<string>> buildings2Remove;
@@ -43,6 +45,7 @@ public class GameState
         this.healthSetting = HealthSetting.Normal;
         this.powerSetting = PowerSetting.Normal;
         this.techSetting = TechSetting.Normal;
+        this.massSetting = MassSetting.Normal;
 
         this.powerFactors = new Dictionary<PowerSetting, float>();
         this.powerFactors[PowerSetting.Normal] = 1.0f;
@@ -94,6 +97,10 @@ public class GameState
         this.buildings2Remove[TechSetting.NoTurbine] = new List<string>();
         this.buildings2Remove[TechSetting.NoTurbine].Add(SteamTurbineConfig2.ID);
 
+        this.massFactors = new Dictionary<MassSetting, float>();
+        this.massFactors[MassSetting.Normal] = 1.0f;
+        this.massFactors[MassSetting.LightTax] = 0.80f;
+        this.massFactors[MassSetting.HeavyTax] = 0.60f;
     }
 
     public void applyGameSettings() {
@@ -122,8 +129,20 @@ public class GameState
         }
         this.healthSetting = healthSettingTemp;
 
-        Util.Log("Game started with power:{0} oxygen:{1} health:{2} tech:{3}", this.powerSetting,
-                 this.oxySetting, this.healthSetting, this.techSetting);
+        MassSetting massSettingTemp = MassSetting.Normal;
+        SettingLevel massSettingLvl =
+            this.cgs.GetCurrentQualitySetting(Constants.ModPrefix + "Mass");
+        if (massSettingLvl == null) {
+            Util.Log("apply: no mass setting found; defaulting to Normal");
+        } else if (!Enum.TryParse<MassSetting>(massSettingLvl.id, out massSettingTemp)) {
+            Util.Log("apply: unable to parse mass setting {0}; defaulting to Normal",
+                     massSettingLvl.id);
+        }
+        this.massSetting = massSettingTemp;
+
+        Util.Log("Game started with power:{0} oxygen:{1} health:{2} tech:{3} mass:{4}",
+                 this.powerSetting, this.oxySetting, this.healthSetting, this.techSetting,
+                 this.massSetting);
     }
 
     private void applyPowerSetting() {
@@ -261,6 +280,10 @@ public class GameState
         if (health.hitPoints > health.maxHitPoints) {
             health.hitPoints = health.maxHitPoints;
         }
+    }
+
+    public void applyMassSetting(ref float mass) {
+        mass *= this.massFactors[this.massSetting];
     }
 
     public void addToggleSettings(ref CustomGameSettings cgs) {

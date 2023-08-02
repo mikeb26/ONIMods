@@ -66,4 +66,20 @@ public static class Hooks
              Mod.Instance.gameState.toggleSetting(ref __instance, config, value);
          }
     }
+
+    [HarmonyPatch(typeof(WorldDamage))]
+    [HarmonyPatch("OnDigComplete")]
+    public static class WorldDamage_OnDigComplete_Patch {
+        public static void Prefix(ref float mass) {
+            Mod.Instance.gameState.applyMassSetting(ref mass);
+        }
+    }
+
+    [HarmonyPatch(typeof(Deconstructable))]
+    [HarmonyPatch("SpawnItem")]
+    public static class Deconstructable_SpawnItem_Patch {
+        public static void Prefix(ref float src_mass) {
+            Mod.Instance.gameState.applyMassSetting(ref src_mass);
+        }
+    }
 }

@@ -7,7 +7,7 @@ supportedContent: ALL
 minimumSupportedBuild: 562984
 
 # Mod version number
-version: 0.9.1
+version: 0.9.2
 
 # Required by ONI to validate mod is using Harmony 2.x
 APIVersion: 2

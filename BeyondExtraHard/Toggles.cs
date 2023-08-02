@@ -90,6 +90,25 @@ public class Toggles {
                                                        TechSetting.Normal.ToString(),
                                                        TechSetting.Normal.ToString());
         cgs.AddQualitySettingConfig(techSettingConfig);
+
+        var massSettings = new List<SettingLevel>();
+        massSettings.Add(new SettingLevel(MassSetting.Normal.ToString(),
+                                           Strings.UI.FRONTEND.BEH.MASS_NORMAL,
+                                           Strings.UI.FRONTEND.BEH.MASS_NORMAL_DESC));
+        massSettings.Add(new SettingLevel(MassSetting.LightTax.ToString(),
+                                           Strings.UI.FRONTEND.BEH.MASS_LIGHTTAX,
+                                           Strings.UI.FRONTEND.BEH.MASS_LIGHTTAX_DESC));
+        massSettings.Add(new SettingLevel(MassSetting.HeavyTax.ToString(),
+                                           Strings.UI.FRONTEND.BEH.MASS_HEAVYTAX,
+                                           Strings.UI.FRONTEND.BEH.MASS_HEAVYTAX_DESC));
+        var massSettingConfig = new ListSettingConfig(string.Format("{0}{1}", Constants.ModPrefix,
+                                                                      BEHSetting.Mass.ToString()),
+                                                       Strings.UI.FRONTEND.BEH.MASS,
+                                                       Strings.UI.FRONTEND.BEH.MASS_DESC,
+                                                       massSettings,
+                                                       MassSetting.Normal.ToString(),
+                                                       MassSetting.Normal.ToString());
+        cgs.AddQualitySettingConfig(massSettingConfig);
     }
 
     public void toggleSetting(ref CustomGameSettings cgs, SettingConfig config,
