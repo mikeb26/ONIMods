@@ -65,4 +65,20 @@ public static class Hooks
             globalGameState.RemoveNotification(ref notification);
         }
     }
+
+    // The "Packed Snacks" update removes idle notifications altogether, so re-add them here
+    [HarmonyPatch(typeof(Database.DuplicantStatusItems), "CreateStatusItems")]
+    public static class DuplicantStatusItems_CreateStatusItems_Patch {
+        internal static void Postfix(ref Database.DuplicantStatusItems __instance) {
+            __instance.Idle.AddNotification(null, null, null);
+        }
+    }
+
+    // just for reference if we need to hook chores in the future
+    //[HarmonyPatch(typeof(ChoreDriver.StatesInstance), "BeginChore")]
+    //public static class ChoreDriver_BeginChore_Patch {
+    //    internal static void Postfix(ref ChoreDriver.StatesInstance __instance) {
+    //        globalGameState.BeginChore(ref __instance);
+    //    }
+    //}
 }

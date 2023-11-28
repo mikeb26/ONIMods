@@ -53,7 +53,6 @@ public class SuppressIdleButton : KMonoBehaviour, ISaveLoadable
 
     internal void OnSuppressClick() {
         IsIdleSuppressed = true;
-        Game.Instance.userMenu.Refresh(gameObject);
 
         /* @todo is there a cleaner way to derive gameState? */
         Hooks.globalGameState.RefreshNotifications();
@@ -61,7 +60,6 @@ public class SuppressIdleButton : KMonoBehaviour, ISaveLoadable
 
     internal void OnClearClick() {
         IsIdleSuppressed = false;
-        Game.Instance.userMenu.Refresh(gameObject);
 
         /* @todo is there a cleaner way to derive gameState? */
         Hooks.globalGameState.RefreshNotifications();

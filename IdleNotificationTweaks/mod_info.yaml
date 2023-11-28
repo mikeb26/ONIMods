@@ -4,10 +4,10 @@
 supportedContent: ALL
 
 # The build number of the last version of the game you tested your mod with
-minimumSupportedBuild: 561558
+minimumSupportedBuild: 583005
 
 # Mod version number
-version: 0.9.24
+version: 0.9.25
 
 # Required by ONI to validate mod is using Harmony 2.x
 APIVersion: 2

@@ -226,4 +226,18 @@ public class GameState
 
         return false;
     }
+
+    public void BeginChore(ref ChoreDriver.StatesInstance cdsi) {
+        Chore c = cdsi.GetCurrentChore();
+        if (!(c is IdleChore)) {
+            return;
+        }
+        ChoreDriver cd = cdsi.master;
+
+        if (cd.TryGetComponent(out MinionIdentity minion) == false) {
+            return;
+        }
+
+        Util.LogDbg("begin idle chore for dupeId:{0}", minion.GetInstanceID());
+    }
 }
