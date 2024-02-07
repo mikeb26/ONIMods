@@ -10,7 +10,7 @@ namespace IdleNotificationTweaks;
 
 public class GameState
 {
-    public List<Notification> trackedNotifications;
+    public Dictionary<Notification, IdleNotice> trackedNotifications;
 
     private IdleOptions opts = null;
     private System.DateTime lastPause;
@@ -22,7 +22,7 @@ public class GameState
         }
 
         if (trackedNotifications == null) {
-            trackedNotifications = new List<Notification>();
+            trackedNotifications = new Dictionary<Notification, IdleNotice>();
         }
         lastPause = System.DateTime.UtcNow;
 
@@ -72,53 +72,65 @@ public class GameState
         Util.LogDbg("addnote: dupeId:{0} idleSuppressed:{1}", minion.GetInstanceID(),
                     button.IsIdleSuppressed);
 
-        trackedNotifications.Add(n);
+        trackedNotifications.Add(n, new IdleNotice(ref n));
 
         if (button.IsIdleSuppressed || isInBusyRocket(ref minion)) {
             return false;
         }
 
-        // pause processing is deferred until NotificationDisplayed()
+        // pause processing is deferred until processOneDeferredIdle()
 
         return true;
     }
 
     /* Post-process a notification has been displayed to the screen */
-    public void NotificationDisplayed(ref Notification n) {
-        // song of moo update can now pass null notifications
-        if (n == null) {
-            Util.LogDbg("dispnote: null notification");
-
-            return;
-        }
-        if (!isIdleNotification(ref n)) {
-            Util.LogDbg("dispnote: ignore type:{0} text:{1}", n.Type, n.titleText);
-
-            return;
-        }
-
-        if (n.clickFocus.TryGetComponent(out MinionIdentity minion) == false) {
+    public bool processOneDeferredIdle(IdleNotice idleNotice, System.DateTime now) {
+        if (idleNotice.N.clickFocus.TryGetComponent(out MinionIdentity minion) == false) {
             Util.Log("dispnote: could not find associated dupe");
 
-            return;
+            return false;
         }
         if (minion.TryGetComponent(out SuppressIdleButton button) == false) {
             Util.Log("dispnote: could not find dupeId:{0} idleSuppressed", minion.GetInstanceID());
 
-            return;
+            return false;
         }
 
-        if (!button.IsIdleSuppressed && !isInBusyRocket(ref minion) && opts.PauseOnIdle &&
+        if (!button.IsIdleSuppressed && !isInBusyRocket(ref minion) &&
             !SpeedControlScreen.Instance.IsPaused) {
 
-            var now = System.DateTime.UtcNow;
-            TimeSpan diff = now.Subtract(lastPause);
-            if (diff.TotalSeconds >= opts.PauseCooldown) {
+            TimeSpan lastPausedDiff = now.Subtract(lastPause);
+            TimeSpan idleStartDiff = now.Subtract(idleNotice.IdleStart);
+            if (idleStartDiff.TotalSeconds < opts.PauseMinIdle) {
+                Util.LogDbg("dispnote: skipping pause for dupeId:{0} due to idleTime:{1}s < minimum(({2}s)",
+                            minion.GetInstanceID(), idleStartDiff.TotalSeconds, opts.PauseMinIdle);
+                return false;
+            }
+            if (lastPausedDiff.TotalSeconds >= opts.PauseCooldown) {
                 Util.LogDbg("dispnote: pausing for dupeId:{0} button:{1}", minion.GetInstanceID(), button.IsIdleSuppressed);
                 SpeedControlScreen.Instance.Pause();
                 lastPause = System.DateTime.UtcNow;
+                return true;
             } else {
-                Util.LogDbg("dispnote: skipping pause for dupeId:{0} due to cooldown", minion.GetInstanceID());
+                Util.LogDbg("dispnote: skipping pause for dupeId:{0} due to lastPauseTime:{1}s < cooldown({2}s)",
+                            minion.GetInstanceID(), lastPausedDiff.TotalSeconds, opts.PauseCooldown);
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public void ProcessDeferredIdlePauses() {
+        if (opts.PauseOnIdle == false) {
+            return;
+        }
+
+        var now = System.DateTime.UtcNow;
+        foreach (var idleN in trackedNotifications.Values) {
+            var didPause = processOneDeferredIdle(idleN, now);
+            if (didPause) {
+                break;
             }
         }
     }
@@ -156,14 +168,19 @@ public class GameState
     public void RefreshNotifications() {
         Util.LogDbg("refreshnote");
 
-        List<Notification> tmpList = trackedNotifications.ToList();
+        List<IdleNotice> tmpList = new List<IdleNotice>();
+        foreach (var idleN in trackedNotifications.Values) {
+            tmpList.Add(idleN);
+        }
+
         trackedNotifications.Clear();
 
-        foreach (var n in tmpList) {
-            Notifier notifier = n.Notifier;
-            n.Clear();
-            notifier.Add(n);
+        foreach (var idleN in tmpList) {
+            Notifier notifier = idleN.N.Notifier;
+            idleN.N.Clear();
+            notifier.Add(idleN.N);
         }
+        tmpList.Clear();
     }
 
     private static bool isIdleNotification(ref Notification n) {

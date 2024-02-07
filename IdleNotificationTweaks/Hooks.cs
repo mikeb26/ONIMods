@@ -50,14 +50,6 @@ public static class Hooks
         }
     }
 
-    // posted notification hook (post-display)
-    [HarmonyPatch(typeof(NotificationScreen), "AddNotification")]
-    public static class NotificationScreen_AddNotification_PostPatch {
-        internal static void Postfix(ref Notification notification) {
-            globalGameState.NotificationDisplayed(ref notification);
-        }
-    }
-
     // removed notification hook
     [HarmonyPatch(typeof(Notifier), nameof(Notifier.Remove))]
     public static class NotificationScreen_RemoveNotification_Patch {
@@ -71,6 +63,14 @@ public static class Hooks
     public static class DuplicantStatusItems_CreateStatusItems_Patch {
         internal static void Postfix(ref Database.DuplicantStatusItems __instance) {
             __instance.Idle.AddNotification(null, null, null);
+        }
+    }
+
+    // hook chore tick updates to process any delayed pauses
+    [HarmonyPatch(typeof(GlobalChoreProvider), "Render200ms")]
+    public static class GlobalChoreProvider_Render200ms_Patch {
+        internal static void Postfix() {
+            globalGameState.ProcessDeferredIdlePauses();
         }
     }
 
