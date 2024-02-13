@@ -1,0 +1,16 @@
+// Copyright © 2024 Mike Brown; see LICENSE at the root of this package
+
+using PeterHan.PLib.Options;
+
+namespace QuickStart;
+
+public enum StartLevel {
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.NORMAL_NAME", "STRINGS.UI.FRONTEND.QUICKSTART.NORMAL_DESC")]
+    Normal = 0,
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.EARLY_NAME", "STRINGS.UI.FRONTEND.QUICKSTART.EARLY_DESC")]
+    AdvancedEarly,
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.MID_NAME", "STRINGS.UI.FRONTEND.QUICKSTART.MID_DESC")]
+    Mid,
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.LATE_NAME", "STRINGS.UI.FRONTEND.QUICKSTART.LATE_DESC")]
+    Late,
+};
