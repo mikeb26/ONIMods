@@ -46,7 +46,8 @@ public class DupeBufs {
 
     private void upgradeAttributeLevels(QuickStartOptions opts, MinionIdentity minion) {
         if (minion.gameObject.TryGetComponent(out AttributeLevels attrLvls) == false) {
-            Util.Log("BUG: could not find attr levels for dupe");
+            Util.Log("BUG: could not find attr levels for dupe(id:{0})",
+                     minion.GetInstanceID());
             return;
         }
 
@@ -54,6 +55,11 @@ public class DupeBufs {
 
         foreach(var attrId in this.generalistAttrs) {
             var attrLvl = attrLvls.GetAttributeLevel(attrId);
+            if (attrLvl == null) {
+                Util.Log("Could not find attribute {0} for dupe(id:{1})", attrId,
+                         minion.GetInstanceID());
+                continue;
+            }
 
             while (attrLvl.GetLevel() < targetLvl) {
                 // need multiple calls here because AttributeLevel.LevelUp() resets experience

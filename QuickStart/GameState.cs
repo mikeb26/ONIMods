@@ -37,6 +37,7 @@ public class GameState
     }
 
     public void LogNewGame() {
+        this.needDeferredDupeUpgrade = false;
         if (this.savedState.GameWasModified) {
             Util.Log("Loaded game already modified by Quick Start {0} {1}",
                      this.savedState.version, this.savedState.opts);
@@ -67,7 +68,7 @@ public class GameState
         this.items.Spawn(this.opts);
         this.techBufs.UnlockResearch(this.opts);
         if (this.dupeBufs.UpgradeAll(this.opts) == 0) {
-            Util.LogDbg("Deferring dupe upgrades");
+            Util.Log("Deferring dupe upgrades");
 
             this.needDeferredDupeUpgrade = true;
         }
