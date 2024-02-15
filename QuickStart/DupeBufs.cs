@@ -37,6 +37,10 @@ public class DupeBufs {
     }
 
     public void UpgradeOne(QuickStartOptions opts, MinionIdentity minion) {
+        if (minion.addToIdentityList == false) {
+            return;
+        }
+
         Util.Log("Upgrading dupe(id:{0}) for a {1} start.", minion.GetInstanceID(),
                  opts.startLevel);
 

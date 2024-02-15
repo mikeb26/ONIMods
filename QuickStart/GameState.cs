@@ -13,6 +13,7 @@ public class GameState
     private TechBufs techBufs;
     private SavedState savedState;
     private bool needDeferredDupeUpgrade;
+    private float firstDeferredDupeUpgradeTime;
 
     public GameState() {
         this.opts = null;
@@ -26,6 +27,7 @@ public class GameState
         this.dupeBufs = null;
         this.savedState = null;
         this.needDeferredDupeUpgrade = false;
+        this.firstDeferredDupeUpgradeTime = 0;
     }
 
     public void LoadSavedStateAndOpts(ref Game game) {
@@ -38,6 +40,7 @@ public class GameState
 
     public void LogNewGame() {
         this.needDeferredDupeUpgrade = false;
+        this.firstDeferredDupeUpgradeTime = 0;
         if (this.savedState.GameWasModified) {
             Util.Log("Loaded game already modified by Quick Start {0} {1}",
                      this.savedState.version, this.savedState.opts);
@@ -77,7 +80,19 @@ public class GameState
     }
 
     public void MaybeUpgradeDupe(ref MinionIdentity minion) {
-        if (this.needDeferredDupeUpgrade == false) {
+        if (this.needDeferredDupeUpgrade == false ||
+            minion.addToIdentityList == false) {
+            return;
+        }
+
+        // only upgrade the initial set of dupes
+        if (this.firstDeferredDupeUpgradeTime == 0) {
+            this.firstDeferredDupeUpgradeTime = GameClock.Instance.GetTimeInCycles();
+        }
+        if (this.firstDeferredDupeUpgradeTime != GameClock.Instance.GetTimeInCycles()) {
+            this.needDeferredDupeUpgrade = false;
+            Util.Log("Not upgrading new dupe(id:{0}) and shutting off future dupe upgrades",
+                     minion.GetInstanceID());
             return;
         }
 
