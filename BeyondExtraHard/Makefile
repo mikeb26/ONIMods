@@ -59,7 +59,7 @@ Player.log:
 deps: dirscheck FORCE
 	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net471 --version 1.0.3
 	dotnet add package ILRepack --version 2.0.18
-	dotnet add package PLib --version 4.12.0
+	dotnet add package PLib --version 4.14.0
 	dotnet add package Newtonsoft.Json --version 13.0.2
 	rm -rf deps
 	mkdir deps

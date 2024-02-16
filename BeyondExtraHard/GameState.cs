@@ -21,7 +21,6 @@ public class GameState
         }
     }
 
-    private BEHOptions opts;
     private Toggles toggles;
     private Dictionary<PowerSetting, float> powerFactors;
     private Dictionary<GeneratorType, GeneratorInfo> powerInfos;
@@ -38,7 +37,6 @@ public class GameState
     private Dictionary<TechSetting, List<string>> buildings2Remove;
 
     public GameState() {
-        this.opts = null;
         this.cgs = null;
         this.toggles = new Toggles();
         this.oxySetting = OxygenSetting.Normal;
@@ -63,7 +61,7 @@ public class GameState
                                                                   2000.0f);
         this.powerInfos[GeneratorType.Wood] = new GeneratorInfo(WoodGasGeneratorConfig.ID, 300.0f);
         this.powerInfos[GeneratorType.Solar] = new GeneratorInfo(SolarPanelConfig.ID, 380.0f);
-        this.powerInfos[GeneratorType.Turbine] = new GeneratorInfo(SteamTurbineConfig.ID,
+        this.powerInfos[GeneratorType.Turbine] = new GeneratorInfo(SteamTurbineConfig2.ID,
                                                                    850.0f);
         this.powerInfos[GeneratorType.PlugSlug] = new GeneratorInfo(StaterpillarGeneratorConfig.ID,
                                                                     850.0f);
@@ -239,6 +237,10 @@ public class GameState
     }
 
     public void applyDupeSettings(ref MinionIdentity dupe) {
+        if (dupe.addToIdentityList == false) {
+            return;
+        }
+
         MinionModifiers modifiers = dupe.GetComponent<MinionModifiers>();
         if (modifiers == null) {
             Util.Log("apply: could not find dupe modifiers; skipping");
@@ -257,7 +259,7 @@ public class GameState
         var oxyIncr = this.oxyIncrs[this.oxySetting];
         var airConsumptionId = Db.Get().Attributes.AirConsumptionRate.Id;
         AttributeModifier modifier =
-            new AttributeModifier(airConsumptionId, oxyIncr, Constants.ModName);
+            PDatabaseUtils.CreateAttributeModifier(airConsumptionId, oxyIncr, Constants.ModName);
         modifiers.attributes.Add(modifier);
     }
 
@@ -269,7 +271,7 @@ public class GameState
         var healthIncr = this.healthIncrs[this.healthSetting];
         var maxHitpointsId = Db.Get().Amounts.HitPoints.maxAttribute.Id;
         AttributeModifier modifier =
-            new AttributeModifier(maxHitpointsId, healthIncr, Constants.ModName);
+            PDatabaseUtils.CreateAttributeModifier(maxHitpointsId, healthIncr, Constants.ModName);
         modifiers.attributes.Add(modifier);
 
         Health health = dupe.GetComponent<Health>();

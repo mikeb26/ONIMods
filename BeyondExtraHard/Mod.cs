@@ -25,7 +25,6 @@ public class Mod : UserMod2
         PUtil.InitLibrary(false);
         LocString.CreateLocStringKeys(typeof(Strings.UI));
         new PLocalization().Register();
-        new POptions().RegisterOptions(this, typeof(BEHOptions));
 
         Instance = this;
         contentPath = mod.ContentPath;
