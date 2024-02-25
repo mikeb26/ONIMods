@@ -127,6 +127,11 @@ public class TechBufs {
         foreach (var tech in Db.Get().Techs.resources) {
             // Util.Log("tech item:{0}", tech.Id);
 
+            if (opts.startLevel == StartLevel.End) {
+                doUnlock(tech);
+                continue;
+            }
+
             foreach (var buildingId in tech.unlockedItemIDs) {
 
                 // Util.Log("\tbuilding:{0}", buildingId);
@@ -151,6 +156,10 @@ public class TechBufs {
     }
 
     private void doUnlock(Tech tech) {
+        if (tech.IsComplete()) {
+            return;
+        }
+
         foreach (var parentTech in tech.requiredTech) {
             if (parentTech.IsComplete() == false) {
                 doUnlock(parentTech);

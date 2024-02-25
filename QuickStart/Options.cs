@@ -19,9 +19,14 @@ public sealed class QuickStartOptions {
     [JsonProperty]
     public Scope scope { get; set; }
 
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.CRITTERS_OPT", "STRINGS.UI.FRONTEND.QUICKSTART.CRITTERS_DESC")]
+    [JsonProperty]
+    public bool includeCritters { get; set; }
+
     public QuickStartOptions() {
         this.startLevel = StartLevel.AdvancedEarly;
         this.scope = Scope.NewGameOnly;
+        this.includeCritters = true;
     }
 
     public override string ToString() {

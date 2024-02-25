@@ -18,6 +18,9 @@ public static class Strings {
                 public static LocString LATE_NAME = "Late Game";
                 public static LocString LATE_DESC = "Additional items, research, and attributes are added appropriate for a late game start (e.g. thermium, supercoolant).";
 
+                public static LocString END_NAME = "End Game";
+                public static LocString END_DESC = "Fully unlocked research tree plus additional items and attributes are added appropriate for an end game start (e.g. insulation, plastium).";
+
                 public static LocString STARTLEVEL_OPT = "Starting Level";
                 public static LocString STARTLEVEL_OPT_DESC = "Select the level you want to start at";
 
@@ -29,6 +32,9 @@ public static class Strings {
 
                 public static LocString SCOPE_OPT = "Game Types";
                 public static LocString SCOPE_OPT_DESC = "Select which game types you want Quick Start to modify";
+
+                public static LocString CRITTERS_OPT = "Include Critters?";
+                public static LocString CRITTERS_DESC = "Select whether you want critters to be included for an Advanced Early, Mid, Late, or End game start";
             }
         }
     }
