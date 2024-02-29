@@ -8,7 +8,7 @@ namespace IdleNotificationTweaks;
 [JsonObject(MemberSerialization.OptIn)]
 [ModInfo("https://github.com/mikeb26/ONIMods/IdleNotificationTweaks")]
 public sealed class IdleOptions {
-    [Option("Suppress Idle in Rockets", "Suppress Idle notifications from duplicants inside of moving or mining rockets.")]
+    [Option("Suppress Idle in Busy Rockets", "Suppress Idle notifications from duplicants inside of moving or mining rockets.")]
     [JsonProperty]
     public bool SuppressIdleInRockets { get; set; }
 

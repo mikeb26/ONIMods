@@ -4,15 +4,19 @@ export ONIPlayerDir ?= "$(HOME)/.config/unity3d/Klei/Oxygen Not Included"
 export ONIModName = "IdleNotificationTweaks"
 export ONIModDLL = $(ONIModName).dll
 export ONIModMergedDLL = $(ONIModName)Merged.dll
+export ModVer = $(shell echo $(shell grep version mod_info.yaml | tail -1 | cut -f2 -d:)-$(shell git rev-parse --short HEAD))
 
 .PHONY: build
 build: bin/Debug/$(ONIModMergedDLL) bin/Release/$(ONIModMergedDLL)
 
-bin/Debug/$(ONIModDLL): depscheck FORCE
+bin/Debug/$(ONIModDLL): Util.cs depscheck FORCE
 	dotnet build -c Debug
 
-bin/Release/$(ONIModDLL): depscheck FORCE
+bin/Release/$(ONIModDLL): Util.cs depscheck FORCE
 	dotnet build -c Release
+
+Util.cs: Util.cs.tmpl FORCE
+	sed s/%VERSION%/$(ModVer)/ Util.cs.tmpl > Util.cs
 
 # https://github.com/peterhaneve/ONIMods/tree/main/PLib
 #
@@ -71,6 +75,6 @@ deps: dirscheck FORCE
 .PHONY: clean
 clean:
 	dotnet clean
-	rm -rf bin obj
+	rm -rf bin obj Util.cs
 
 FORCE:

@@ -63,14 +63,16 @@ public static class Hooks
     public static class DuplicantStatusItems_CreateStatusItems_Patch {
         internal static void Postfix(ref Database.DuplicantStatusItems __instance) {
             __instance.Idle.AddNotification(null, null, null);
+            __instance.IdleInRockets.AddNotification(null, null, null);
+            __instance.IdleInRockets.shouldNotify = true;
         }
     }
 
-    // hook chore tick updates to process any delayed pauses
+    // hook chore tick updates to process any delayed pauses or hidden notices
     [HarmonyPatch(typeof(GlobalChoreProvider), "Render200ms")]
     public static class GlobalChoreProvider_Render200ms_Patch {
         internal static void Postfix() {
-            globalGameState.ProcessDeferredIdlePauses();
+            globalGameState.ProcessDeferredIdleNotices();
         }
     }
 

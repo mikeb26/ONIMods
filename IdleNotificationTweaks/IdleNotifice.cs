@@ -5,9 +5,11 @@ namespace IdleNotificationTweaks;
 public class IdleNotice {
     public Notification N;
     public System.DateTime IdleStart;
+    public bool Hidden;
 
     public IdleNotice(ref Notification n) {
         this.N = n;
         this.IdleStart = System.DateTime.UtcNow;
+        this.Hidden = false;
     }
 }

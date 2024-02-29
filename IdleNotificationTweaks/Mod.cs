@@ -12,10 +12,10 @@ public class IdleNotificationTweaksMod : UserMod2
     public override void OnLoad(Harmony harmony) {
         base.OnLoad(harmony);
 
+        Util.Log("Loading v{0}", Util.Version());
+
         PUtil.InitLibrary(false);
 
         new POptions().RegisterOptions(this, typeof(IdleOptions));
-
-        Util.Log("Loaded.");
     }
 }

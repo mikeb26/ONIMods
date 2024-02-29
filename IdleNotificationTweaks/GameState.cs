@@ -69,22 +69,26 @@ public class GameState
             return true;
         }
 
-        Util.LogDbg("addnote: dupeId:{0} idleSuppressed:{1}", minion.GetInstanceID(),
-                    button.IsIdleSuppressed);
+        var dupeInBusyRocket = isInBusyRocket(ref minion);
 
-        trackedNotifications.Add(n, new IdleNotice(ref n));
+        Util.LogDbg("addnote: dupeId:{0} idleSuppressed:{1} busyRocket:{2}", minion.GetInstanceID(),
+                    button.IsIdleSuppressed, dupeInBusyRocket);
 
-        if (button.IsIdleSuppressed || isInBusyRocket(ref minion)) {
+        var idleNotice = new IdleNotice(ref n);
+        trackedNotifications.Add(n, idleNotice);
+
+        if (button.IsIdleSuppressed || dupeInBusyRocket) {
+            // may be unhidden later in ProcessDeferredIdleNotices() 
+            idleNotice.Hidden = true;
             return false;
         }
 
-        // pause processing is deferred until processOneDeferredIdle()
-
+        // any pause triggers are deferred to ProcessDeferredIdleNotices() 
         return true;
     }
 
     /* Post-process a notification has been displayed to the screen */
-    public bool processOneDeferredIdle(IdleNotice idleNotice, System.DateTime now) {
+    public bool processOneDeferredIdlePause(IdleNotice idleNotice, System.DateTime now) {
         if (idleNotice.N.clickFocus.TryGetComponent(out MinionIdentity minion) == false) {
             Util.Log("dispnote: could not find associated dupe");
 
@@ -121,14 +125,40 @@ public class GameState
         return false;
     }
 
-    public void ProcessDeferredIdlePauses() {
+    public bool shouldUnhideIdleNotice(IdleNotice idleNotice) {
+        if (idleNotice.N.clickFocus.TryGetComponent(out MinionIdentity minion) == false) {
+            Util.Log("dispnote: could not find associated dupe");
+
+            return false;
+        }
+        if (minion.TryGetComponent(out SuppressIdleButton button) == false) {
+            Util.Log("dispnote: could not find dupeId:{0} idleSuppressed", minion.GetInstanceID());
+
+            return false;
+        }
+
+        return !button.IsIdleSuppressed && !isInBusyRocket(ref minion);
+    }
+
+    public void ProcessDeferredIdleNotices() {
+        foreach (var idleN in trackedNotifications.Values) {
+            if (idleN.Hidden == false) {
+                continue;
+            }
+            var shouldUnhide = shouldUnhideIdleNotice(idleN);
+            if (shouldUnhide) {
+                this.RefreshNotifications();
+                return;
+            }
+        }
+
         if (opts.PauseOnIdle == false) {
             return;
         }
 
         var now = System.DateTime.UtcNow;
         foreach (var idleN in trackedNotifications.Values) {
-            var didPause = processOneDeferredIdle(idleN, now);
+            var didPause = processOneDeferredIdlePause(idleN, now);
             if (didPause) {
                 break;
             }
@@ -160,7 +190,8 @@ public class GameState
     }
 
     /* Recalculate which tracked notifications should or should not be displayed;
-     * this is invoked whenever the player clicks the dupe's idle suppress button. This
+     * this is invoked whenever the player clicks the dupe's idle suppress button, or
+     * when a duplicant was idle in a launching rocket that is no longer launching. This
      * recalculation is done by implicitly triggering O(n) RemoveNotification() and
      * O(n) AddNotification() calls allowing us to reuse the same logic to squelch
      * notifications when they are first created.
@@ -184,7 +215,8 @@ public class GameState
     }
 
     private static bool isIdleNotification(ref Notification n) {
-        if (n.Type != NotificationType.BadMinor) {
+        // Idle notices are BadMinor; IdleInRocket notices are Neutral
+        if (n.Type != NotificationType.BadMinor && n.Type != NotificationType.Neutral) {
             return false;
         }
 
