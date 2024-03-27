@@ -41,14 +41,20 @@ public class DupeBufs {
             return;
         }
 
-        Util.Log("Upgrading dupe(id:{0}) for a {1} start.", minion.GetInstanceID(),
-                 opts.startLevel);
-
         this.upgradeAttributeLevels(opts, minion);
         this.upgradeSkillpoints(opts, minion);
     }
 
     private void upgradeAttributeLevels(QuickStartOptions opts, MinionIdentity minion) {
+        if (!opts.includeAttr) {
+            Util.Log("Not upgrading dupe(id:{0}) attributes for a {1} start.",
+                     minion.GetInstanceID(), opts.startLevel);
+            return;
+        }
+
+        Util.Log("Upgrading dupe(id:{0}) attributes for a {1} start.", minion.GetInstanceID(),
+                 opts.startLevel);
+
         if (minion.gameObject.TryGetComponent(out AttributeLevels attrLvls) == false) {
             Util.Log("BUG: could not find attr levels for dupe(id:{0})",
                      minion.GetInstanceID());
@@ -74,6 +80,14 @@ public class DupeBufs {
     }
 
     private void upgradeSkillpoints(QuickStartOptions opts, MinionIdentity minion) {
+        if (!opts.includeSkill) {
+            Util.Log("Not upgrading dupe(id:{0}) skillpoints for a {1} start.",
+                     minion.GetInstanceID(), opts.startLevel);
+            return;
+        }
+        Util.Log("Upgrading dupe(id:{0}) skillpoints for a {1} start.", minion.GetInstanceID(),
+                 opts.startLevel);
+
         if (minion.gameObject.TryGetComponent(out MinionResume minionResume) == false) {
             Util.Log("BUG: could not find resume for dupe");
             return;

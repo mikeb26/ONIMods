@@ -23,10 +23,30 @@ public sealed class QuickStartOptions {
     [JsonProperty]
     public bool includeCritters { get; set; }
 
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.ITEMS_OPT", "STRINGS.UI.FRONTEND.QUICKSTART.ITEMS_DESC")]
+    [JsonProperty]
+    public bool includeItems { get; set; }
+
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.TECHS_OPT", "STRINGS.UI.FRONTEND.QUICKSTART.TECHS_DESC")]
+    [JsonProperty]
+    public bool includeTechs { get; set; }
+
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.SKILL_OPT", "STRINGS.UI.FRONTEND.QUICKSTART.SKILL_DESC")]
+    [JsonProperty]
+    public bool includeSkill { get; set; }
+
+    [Option("STRINGS.UI.FRONTEND.QUICKSTART.ATTR_OPT", "STRINGS.UI.FRONTEND.QUICKSTART.ATTR_DESC")]
+    [JsonProperty]
+    public bool includeAttr { get; set; }
+
     public QuickStartOptions() {
         this.startLevel = StartLevel.AdvancedEarly;
         this.scope = Scope.NewGameOnly;
         this.includeCritters = true;
+        this.includeItems = true;
+        this.includeTechs = true;
+        this.includeSkill = true;
+        this.includeAttr = true;
     }
 
     public override string ToString() {

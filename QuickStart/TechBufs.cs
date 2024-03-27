@@ -122,6 +122,10 @@ public class TechBufs {
     }
 
     public void UnlockResearch(QuickStartOptions opts) {
+        if (!opts.includeTechs) {
+            Util.Log("Not unlocking research for a {0} start.", opts.startLevel);
+            return;
+        }
         Util.Log("Unlocking research for a {0} start.", opts.startLevel);
 
         foreach (var tech in Db.Get().Techs.resources) {

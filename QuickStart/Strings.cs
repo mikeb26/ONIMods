@@ -34,7 +34,20 @@ public static class Strings {
                 public static LocString SCOPE_OPT_DESC = "Select which game types you want Quick Start to modify";
 
                 public static LocString CRITTERS_OPT = "Include Critters?";
-                public static LocString CRITTERS_DESC = "Select whether you want critters to be included for an Advanced Early, Mid, Late, or End game start";
+                public static LocString CRITTERS_DESC = "Select whether you want bonus critters to be included for an Advanced Early, Mid, Late, or End game start";
+
+                public static LocString ITEMS_OPT = "Include Items?";
+                public static LocString ITEMS_DESC = "Select whether you want bonus materials to be included for an Advanced Early, Mid, Late, or End game start";
+
+                public static LocString TECHS_OPT = "Include Research?";
+                public static LocString TECHS_DESC = "Select whether you want bonus research to be included for an Advanced Early, Mid, Late, or End game start";
+
+                public static LocString SKILL_OPT = "Include Skillpoints?";
+                public static LocString SKILL_DESC = "Select whether you want bonus duplicant skill points to be added for an Advanced Early, Mid, Late, or End game start";
+
+                public static LocString ATTR_OPT = "Include Attributes?";
+                public static LocString ATTR_DESC = "Select whether you want bonus duplicant attributes to be added for an Advanced Early, Mid, Late, or End game start";
+
             }
         }
     }

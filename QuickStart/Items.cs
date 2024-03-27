@@ -146,7 +146,16 @@ public class Items {
     }
 
     public void Spawn(QuickStartOptions opts) {
-        Util.Log("Spawning items for a {0} start.", opts.startLevel);
+        if (!opts.includeItems && !opts.includeCritters) {
+            Util.Log("Not spawning items or critters for a {0} start.", opts.startLevel);
+            return;
+        }
+        if (opts.includeItems) {
+            Util.Log("Spawning items for a {0} start.", opts.startLevel);
+        }
+        if (opts.includeCritters) {
+            Util.Log("Spawning critters for a {0} start.", opts.startLevel);
+        }
 
         var startWorld = ClusterManager.Instance.GetStartWorld();
         if (startWorld == null) {
@@ -170,6 +179,9 @@ public class Items {
                 continue;
             }
             if (kv.Value.isCritter && !opts.includeCritters) {
+                continue;
+            }
+            if (!kv.Value.isCritter && !opts.includeItems) {
                 continue;
             }
 
