@@ -28,7 +28,7 @@ public class Foods {
         List<Tag> tags = new List<Tag>();
 
         foreach (EdiblesManager.FoodInfo foodInfo in EdiblesManager.GetAllFoodTypes()) {
-            if (this.baseGameOnly && foodInfo.DlcId != "") {
+            if (this.baseGameOnly) {
                 continue;
             }
             // this food was never released
