@@ -26,7 +26,6 @@ public class Clothes {
         this.clothes = new List<ClothingInfo>();
 
         this.clothes.Add(new ClothingInfo(AtmoSuitConfig.ID, AtmoSuitConfig.WORN_ID, false));
-        this.clothes.Add(new ClothingInfo(CoolVestConfig.ID, "", false));
         this.clothes.Add(new ClothingInfo(CustomClothingConfig.ID, "", false)); // primo garb
         this.clothes.Add(new ClothingInfo(FunkyVestConfig.ID, "", false)); // snazzy suit
         this.clothes.Add(new ClothingInfo(JetSuitConfig.ID, JetSuitConfig.WORN_ID, false));

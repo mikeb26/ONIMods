@@ -10,7 +10,6 @@ namespace ShowUndiscovered;
 
 public class GameState
 {
-    private SUOptions opts;
     private bool baseGameOnly;
     private Critters critters;
     private Seeds seeds;
@@ -23,7 +22,6 @@ public class GameState
     private bool isStarted;
 
     public GameState() {
-        this.opts = null;
         if (DlcManager.IsPureVanilla() || !DlcManager.IsExpansion1Active()) {
             this.baseGameOnly = true;
         } else {

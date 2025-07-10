@@ -53,9 +53,7 @@ public class Extras {
 
         // pokeshell molts
         this.extras.Add(new ExtraInfo(CrabShellConfig.ID, false, false, GameTags.IndustrialIngredient));
-        this.extras.Add(new ExtraInfo(BabyCrabShellConfig.ID, false, false, GameTags.IndustrialIngredient));
         this.extras.Add(new ExtraInfo(CrabWoodShellConfig.ID, false, false, GameTags.IndustrialIngredient));
-        this.extras.Add(new ExtraInfo(BabyCrabWoodShellConfig.ID, false, false, GameTags.IndustrialIngredient));
         
         // @todo dream journal?
     }
