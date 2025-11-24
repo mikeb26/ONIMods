@@ -256,9 +256,14 @@ public class GameState
             return false;
         }
 
+        // not sure what happened to this tag, or if there is a replacment
+        // this sounds like an end-game thing that could be handled by suppressing idle on the pilot
+        var isPoiHarvesting = false;
+        //var isPoiHarvesting = ship.HasTag(GameTags.POIHarvesting); //?
+
         Util.LogDbg("isbusyrocket: dupeId:{0} worldId:{1} shipStatus:{2} fueled:{3} mining:{4}",
-                    m.GetInstanceID(), world.id, ship.Status, ship.IsTravellingAndFueled(),
-                    ship.HasTag(GameTags.POIHarvesting));
+                    m.GetInstanceID(), world.id, ship.Status, ship.IsTravellingAndFueled(), isPoiHarvesting
+                    );
 
         if (ship.Status == Clustercraft.CraftStatus.Grounded) {
             return false;
@@ -268,7 +273,7 @@ public class GameState
         } else if (ship.IsTravellingAndFueled()) {
             // rocket is moving
             return true;
-        } else if (ship.HasTag(GameTags.POIHarvesting)) {
+        } else if (isPoiHarvesting) {
             // rocket is mining
             return true;
         } // else rocket is idle in space

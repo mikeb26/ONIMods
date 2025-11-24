@@ -2,4 +2,5 @@
 /bin
 /deps
 /obj
-/Util.cs
+
+.vs/
