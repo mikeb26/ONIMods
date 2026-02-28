@@ -1,7 +1,7 @@
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export ONIInstallDir ?= "$(HOME)/.steam/steam/SteamApps/common/OxygenNotIncluded"
 export ONIPlayerDir ?= "$(HOME)/.config/unity3d/Klei/Oxygen Not Included"
-export ONIModName = "ShowUndiscovered"
+export ONIModName = ShowUndiscovered
 export ONIModDLL = $(ONIModName).dll
 export ONIModMergedDLL = $(ONIModName)Merged.dll
 export ModVer = $(shell echo $(shell grep version mod_info.yaml | tail -1 | cut -f2 -d:)-$(shell git rev-parse --short HEAD))
@@ -23,12 +23,13 @@ Util.cs: Util.cs.tmpl FORCE
 # @todo there's probably a cleaner way to do this via PostBuildEvent in csproj but all of the
 # examples I could find assume visual studio
 #
-export ILREPACK = "$(HOME)/.nuget/packages/ilrepack/2.0.18/tools/ILRepack.exe"
+export ILREPACK = dotnet tool run ilrepack --
+export NET471_REF_DIR = $(HOME)/.nuget/packages/microsoft.netframework.referenceassemblies.net471/1.0.3/build/.NETFramework/v4.7.1
 bin/Debug/$(ONIModMergedDLL): bin/Debug/$(ONIModDLL)
-	cd bin/Debug; $(ILREPACK) /ndebug /out:$(ONIModMergedDLL) $(ONIModDLL) PLib.dll Newtonsoft.Json.dll /targetplatform:v4
+	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET471_REF_DIR)
 
 bin/Release/$(ONIModMergedDLL): bin/Release/$(ONIModDLL)
-	cd bin/Release; $(ILREPACK) /ndebug /out:$(ONIModMergedDLL) $(ONIModDLL) PLib.dll Newtonsoft.Json.dll /targetplatform:v4
+	$(ILREPACK) /lib:bin/Release /ndebug /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET471_REF_DIR)
 
 .PHONY: dirscheck
 dirscheck:
@@ -58,9 +59,11 @@ Player.log:
 
 deps: dirscheck FORCE
 	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net471 --version 1.0.3
-	dotnet add package ILRepack --version 2.0.18
-	dotnet add package PLib --version 4.12.0
+	# Keep ILRepack as a local dotnet tool (cross-platform) instead of the legacy .exe.
+	# (See .config/dotnet-tools.json)
+	dotnet add package PLib --version 4.19.0.0
 	dotnet add package Newtonsoft.Json --version 13.0.2
+	dotnet tool restore --tool-manifest .config/dotnet-tools.json
 	rm -rf deps
 	mkdir deps
 	cp $(ONIInstallDir)/OxygenNotIncluded_Data/Managed/Assembly-CSharp.dll deps
