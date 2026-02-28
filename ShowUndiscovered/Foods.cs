@@ -6,21 +6,11 @@ using System.Collections.Generic;
 namespace ShowUndiscovered;
 
 public class Foods {
-    private Dictionary<Tag, Tag> dehyrdratedTags;
-
     public Foods() {
-        this.dehyrdratedTags = new Dictionary<Tag, Tag>();
-
-        this.dehyrdratedTags[SalsaConfig.ID] = DehydratedSalsaConfig.ID; // stuffed berry
-        this.dehyrdratedTags[MushroomWrapConfig.ID] = DehydratedMushroomWrapConfig.ID;
-        this.dehyrdratedTags[SurfAndTurfConfig.ID] = DehydratedSurfAndTurfConfig.ID;
-        this.dehyrdratedTags[SpiceBreadConfig.ID] = DehydratedSpiceBreadConfig.ID; // pepper bread
-        this.dehyrdratedTags[QuicheConfig.ID] = DehydratedQuicheConfig.ID;
-        this.dehyrdratedTags[CurryConfig.ID] = DehydratedCurryConfig.ID;
-        this.dehyrdratedTags[SpicyTofuConfig.ID] = DehydratedSpicyTofuConfig.ID;
-        this.dehyrdratedTags[BurgerConfig.ID] = DehydratedFoodPackageConfig.ID; // frost burger
-        this.dehyrdratedTags[BerryPieConfig.ID] = DehydratedBerryPieConfig.ID;
     }
+
+    // Avoid log spam: only log categorization fallbacks once per food id per session.
+    private static readonly HashSet<Tag> LoggedFoodCategoryFallback = new HashSet<Tag>();
 
     public List<Tag> discoverAll() {
         List<Tag> tags = new List<Tag>();
@@ -40,23 +30,31 @@ public class Foods {
 
             var tag = TagManager.Create(foodInfo.Id);
             tags.Add(tag);
-            var catTag = GameTags.Edible;
-            if (foodInfo.CaloriesPerUnit <= 0.0) {
+
+            // Categorize based on the prefab's tags rather than hardcoded dehydrated mappings.
+            // This allows new DLC/patch foods (and their dehydrated variants) to be handled
+            // automatically.
+            var prefab = Assets.TryGetPrefab(tag);
+            var prefabId = prefab != null ? prefab.GetComponent<KPrefabID>() : null;
+
+            Tag catTag;
+            if (prefabId != null && prefabId.HasTag(GameTags.Dehydrated)) {
+                catTag = GameTags.Dehydrated;
+            } else if (prefabId == null) {
+                // We filtered via IsPrefabEnabledForCurrentDlc, so this should be rare.
+                // Fall back to calories-based categorization and log once.
+                if (LoggedFoodCategoryFallback.Add(tag)) {
+                    Util.Log("Foods: {0} has no prefab/KPrefabID; categorizing from calories (Cal={1})",
+                        tag, foodInfo.CaloriesPerUnit);
+                }
+                catTag = foodInfo.CaloriesPerUnit <= 0.0 ? GameTags.CookingIngredient : GameTags.Edible;
+            } else if (foodInfo.CaloriesPerUnit <= 0.0) {
                 catTag = GameTags.CookingIngredient;
+            } else {
+                catTag = GameTags.Edible;
             }
+
             DiscoveredResources.Instance.Discover(tag, catTag);
-
-            if (this.dehyrdratedTags.TryGetValue(tag, out Tag dehydTag) == false) {
-                continue;
-            }
-
-            // Only discover dehydrated variants if the dehydrated prefab exists and is valid.
-            if (!Util.IsPrefabEnabledForCurrentDlc(dehydTag)) {
-                continue;
-            }
-            tags.Add(dehydTag);
-            DiscoveredResources.Instance.Discover(dehydTag, GameTags.Dehydrated);
-            
         }
 
         return tags;

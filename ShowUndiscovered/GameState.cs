@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System;
-using System.Reflection;
 using Klei.CustomSettings;
 using Klei.AI;
 

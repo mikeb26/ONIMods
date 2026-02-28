@@ -6,46 +6,37 @@ using System.Collections.Generic;
 namespace ShowUndiscovered;
 
 public class Medicines {
-    private class MedicineInfo {
-        public string id;
-        public MedicineInfo(string idIn) {
-            this.id = idIn;
-        }
-    }
-
-    private List<MedicineInfo> medicines;
-
     public Medicines() {
-        this.medicines = new List<MedicineInfo>();
-
-        // vitamin chews
-        this.medicines.Add(new MedicineInfo(BasicBoosterConfig.ID));
-        // Immuno Booster
-        this.medicines.Add(new MedicineInfo(IntermediateBoosterConfig.ID));
-        // curative tablet
-        this.medicines.Add(new MedicineInfo(BasicCureConfig.ID));
-        // rad pill
-        this.medicines.Add(new MedicineInfo(BasicRadPillConfig.ID));
-        // medical pack
-        this.medicines.Add(new MedicineInfo(IntermediateCureConfig.ID));
-        // serum vial
-        this.medicines.Add(new MedicineInfo(AdvancedCureConfig.ID));
-        // Allergy Medication
-        this.medicines.Add(new MedicineInfo(AntihistamineConfig.ID));
     }
 
     public List<Tag> discoverAll() {
-        List<Tag> tags = new List<Tag>();
+        var tags = new HashSet<Tag>();
 
-        foreach (MedicineInfo medicineInfo in this.medicines) {
-            if (!Util.IsPrefabEnabledForCurrentDlc(medicineInfo.id)) {
+        // Iterate the live prefab list so new DLC/patch medicines are automatically covered.
+        foreach (var prefab in Assets.Prefabs) {
+            if (prefab == null) {
                 continue;
             }
-            var medicineTag = TagManager.Create(medicineInfo.id);
-            tags.Add(medicineTag);
-            DiscoveredResources.Instance.Discover(medicineTag, GameTags.Medicine);
+
+            var prefabId = prefab.GetComponent<KPrefabID>();
+            if (prefabId == null) {
+                continue;
+            }
+
+            if (!Game.IsCorrectDlcActiveForCurrentSave(prefabId)) {
+                continue;
+            }
+
+            if (!prefabId.HasTag(GameTags.Medicine)) {
+                continue;
+            }
+
+            var tag = prefabId.PrefabTag;
+            if (tags.Add(tag)) {
+                DiscoveredResources.Instance.Discover(tag, GameTags.Medicine);
+            }
         }
 
-        return tags;
+        return new List<Tag>(tags);
     }
 }
