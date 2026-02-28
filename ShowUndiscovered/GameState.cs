@@ -10,7 +10,6 @@ namespace ShowUndiscovered;
 
 public class GameState
 {
-    private bool baseGameOnly;
     private Critters critters;
     private Seeds seeds;
     private Foods foods;
@@ -22,18 +21,13 @@ public class GameState
     private bool isStarted;
 
     public GameState() {
-        if (DlcManager.IsPureVanilla() || !DlcManager.IsExpansion1Active()) {
-            this.baseGameOnly = true;
-        } else {
-            this.baseGameOnly = false;
-        }
-        this.critters = new Critters(this.baseGameOnly);
-        this.seeds = new Seeds(this.baseGameOnly);
-        this.medicines = new Medicines(this.baseGameOnly);
-        this.clothes = new Clothes(this.baseGameOnly);
-        this.elements = new Elements(this.baseGameOnly);
-        this.extras = new Extras(this.baseGameOnly);
-        this.foods = new Foods(this.baseGameOnly);
+        this.critters = new Critters();
+        this.seeds = new Seeds();
+        this.medicines = new Medicines();
+        this.clothes = new Clothes();
+        this.elements = new Elements();
+        this.extras = new Extras();
+        this.foods = new Foods();
         this.allTags = new List<Tag>();
         this.isStarted = false;
     }

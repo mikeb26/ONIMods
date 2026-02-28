@@ -1,4 +1,4 @@
-// Copyright © 2023 Mike Brown; see LICENSE at the root of this package
+// Copyright © 2023,2026 Mike Brown; see LICENSE at the root of this package
 
 using System;
 using System.Collections.Generic;
@@ -8,52 +8,45 @@ namespace ShowUndiscovered;
 public class Extras {
     private class ExtraInfo {
         public string id;
-        public bool dlcOnly;
-        public bool excludeFromDlc;
         public Tag category;
-        public ExtraInfo(string idIn, bool dlcOnlyIn, bool excludeIn, Tag catIn) {
+        public ExtraInfo(string idIn, Tag catIn) {
             this.id = idIn;
-            this.dlcOnly = dlcOnlyIn;
-            this.excludeFromDlc = excludeIn;
             this.category = catIn;
         }
     }
-    private bool baseGameOnly;
-
     private List<ExtraInfo> extras;
 
-    public Extras(bool baseGameOnlyIn) {
-        this.baseGameOnly = baseGameOnlyIn;
+    public Extras() {
         this.extras = new List<ExtraInfo>();
 
         // reed fiber
-        this.extras.Add(new ExtraInfo(BasicFabricConfig.ID, false, false, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(BasicFabricConfig.ID, GameTags.IndustrialIngredient));
         // dlc data bank
-        this.extras.Add(new ExtraInfo(OrbitalResearchDatabankConfig.ID, true, false, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(OrbitalResearchDatabankConfig.ID, GameTags.IndustrialIngredient));
         // vanilla data bank
-        this.extras.Add(new ExtraInfo(ResearchDatabankConfig.ID, false, true, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(ResearchDatabankConfig.ID, GameTags.IndustrialIngredient));
 
-        this.extras.Add(new ExtraInfo(TableSaltConfig.ID, false, false, GameTags.Other));
+        this.extras.Add(new ExtraInfo(TableSaltConfig.ID, GameTags.Other));
         // balm lily flower
-        this.extras.Add(new ExtraInfo(SwampLilyFlowerConfig.ID, false, false, GameTags.IndustrialIngredient));
-        this.extras.Add(new ExtraInfo(EggShellConfig.ID, false, false, GameTags.Organics));
-        this.extras.Add(new ExtraInfo(RotPileConfig.ID, false, false, GameTags.Organics));
+        this.extras.Add(new ExtraInfo(SwampLilyFlowerConfig.ID, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(EggShellConfig.ID, GameTags.Organics));
+        this.extras.Add(new ExtraInfo(RotPileConfig.ID, GameTags.Organics));
         // neural vacilator recharge
-        this.extras.Add(new ExtraInfo(GeneShufflerRechargeConfig.ID, false, false, GameTags.IndustrialIngredient));
-        this.extras.Add(new ExtraInfo(RailGunPayloadConfig.ID, true, false, GameTags.IgnoreMaterialCategory));
+        this.extras.Add(new ExtraInfo(GeneShufflerRechargeConfig.ID, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(RailGunPayloadConfig.ID, GameTags.IgnoreMaterialCategory));
         // microchip
-        this.extras.Add(new ExtraInfo(PowerStationToolsConfig.ID, false, false, GameTags.MiscPickupable));
+        this.extras.Add(new ExtraInfo(PowerStationToolsConfig.ID, GameTags.MiscPickupable));
         // micronutrient fertilizer
-        this.extras.Add(new ExtraInfo(FarmStationToolsConfig.ID, false, false, GameTags.MiscPickupable));
+        this.extras.Add(new ExtraInfo(FarmStationToolsConfig.ID, GameTags.MiscPickupable));
         // lumber
-        this.extras.Add(new ExtraInfo(WoodLogConfig.ID, false, false, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(WoodLogConfig.ID, GameTags.IndustrialIngredient));
 
         // blast shot
-        this.extras.Add(new ExtraInfo(MissileBasicConfig.ID, false, false, GameTags.IndustrialProduct));
+        this.extras.Add(new ExtraInfo(MissileBasicConfig.ID, GameTags.IndustrialProduct));
 
         // pokeshell molts
-        this.extras.Add(new ExtraInfo(CrabShellConfig.ID, false, false, GameTags.IndustrialIngredient));
-        this.extras.Add(new ExtraInfo(CrabWoodShellConfig.ID, false, false, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(CrabShellConfig.ID, GameTags.IndustrialIngredient));
+        this.extras.Add(new ExtraInfo(CrabWoodShellConfig.ID, GameTags.IndustrialIngredient));
         
         // @todo dream journal?
     }
@@ -62,10 +55,7 @@ public class Extras {
         List<Tag> tags = new List<Tag>();
 
         foreach (ExtraInfo extraInfo in this.extras) {
-            if (this.baseGameOnly && extraInfo.dlcOnly) {
-                continue;
-            }
-            if (!this.baseGameOnly && extraInfo.excludeFromDlc) {
+            if (!Util.IsPrefabEnabledForCurrentDlc(extraInfo.id)) {
                 continue;
             }
 

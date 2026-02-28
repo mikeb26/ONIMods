@@ -12,12 +12,10 @@ public class Medicines {
             this.id = idIn;
         }
     }
-    private bool baseGameOnly;
 
     private List<MedicineInfo> medicines;
 
-    public Medicines(bool baseGameOnlyIn) {
-        this.baseGameOnly = baseGameOnlyIn;
+    public Medicines() {
         this.medicines = new List<MedicineInfo>();
 
         // vitamin chews
@@ -40,6 +38,9 @@ public class Medicines {
         List<Tag> tags = new List<Tag>();
 
         foreach (MedicineInfo medicineInfo in this.medicines) {
+            if (!Util.IsPrefabEnabledForCurrentDlc(medicineInfo.id)) {
+                continue;
+            }
             var medicineTag = TagManager.Create(medicineInfo.id);
             tags.Add(medicineTag);
             DiscoveredResources.Instance.Discover(medicineTag, GameTags.Medicine);

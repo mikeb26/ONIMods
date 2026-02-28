@@ -1,5 +1,6 @@
 // Copyright © 2023 Mike Brown; see LICENSE at the root of this package
 
+using System;
 using System.Collections.Generic;
 using Klei;
 using UnityEngine;
@@ -29,6 +30,32 @@ public static class Util {
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Returns true iff the given tag corresponds to a loaded prefab AND that prefab is valid
+    /// for the currently active DLC set for this save.
+    ///
+    /// This is the same restriction mechanism the base game uses for content gating
+    /// (required/forbidden DLC ids).
+    /// </summary>
+    public static bool IsPrefabEnabledForCurrentDlc(Tag tag) {
+        var prefab = Assets.TryGetPrefab(tag);
+        if (prefab == null) {
+            return false;
+        }
+
+        var prefabId = prefab.GetComponent<KPrefabID>();
+        // If there's no KPrefabID, treat it as not DLC-gated.
+        if (prefabId == null) {
+            return true;
+        }
+
+        return Game.IsCorrectDlcActiveForCurrentSave(prefabId);
+    }
+
+    public static bool IsPrefabEnabledForCurrentDlc(string id) {
+        return IsPrefabEnabledForCurrentDlc(TagManager.Create(id));
     }
 
     public static void DumpGO(GameObject go) {

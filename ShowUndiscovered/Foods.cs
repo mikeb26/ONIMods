@@ -6,11 +6,9 @@ using System.Collections.Generic;
 namespace ShowUndiscovered;
 
 public class Foods {
-    private bool baseGameOnly;
     private Dictionary<Tag, Tag> dehyrdratedTags;
 
-    public Foods(bool baseGameOnlyIn) {
-        this.baseGameOnly = baseGameOnlyIn;
+    public Foods() {
         this.dehyrdratedTags = new Dictionary<Tag, Tag>();
 
         this.dehyrdratedTags[SalsaConfig.ID] = DehydratedSalsaConfig.ID; // stuffed berry
@@ -28,11 +26,15 @@ public class Foods {
         List<Tag> tags = new List<Tag>();
 
         foreach (EdiblesManager.FoodInfo foodInfo in EdiblesManager.GetAllFoodTypes()) {
-            if (this.baseGameOnly) {
-                continue;
-            }
             // this food was never released
             if (foodInfo.Id == GammaMushConfig.ID) {
+                continue;
+            }
+
+            // Even though GetAllFoodTypes() is already filtered by DLC, ensure the backing
+            // entity prefab is actually present and valid for the current save's DLC set.
+            // (Some entries may exist in data tables while their prefabs are gated.)
+            if (!Util.IsPrefabEnabledForCurrentDlc(foodInfo.Id)) {
                 continue;
             }
 
@@ -45,6 +47,11 @@ public class Foods {
             DiscoveredResources.Instance.Discover(tag, catTag);
 
             if (this.dehyrdratedTags.TryGetValue(tag, out Tag dehydTag) == false) {
+                continue;
+            }
+
+            // Only discover dehydrated variants if the dehydrated prefab exists and is valid.
+            if (!Util.IsPrefabEnabledForCurrentDlc(dehydTag)) {
                 continue;
             }
             tags.Add(dehydTag);
