@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Klei.CustomSettings;
 using Klei.AI;
+using PeterHan.PLib.Database;
 
 namespace BeyondExtraHard;
 
