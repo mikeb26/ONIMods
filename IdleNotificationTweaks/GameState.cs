@@ -256,9 +256,12 @@ public class GameState
             return false;
         }
 
-        Util.LogDbg("isbusyrocket: dupeId:{0} worldId:{1} shipStatus:{2} fueled:{3} mining:{4}",
+        var drilling = ship.HasTag(GameTags.RocketDrilling);
+        var harvesting = ship.HasTag(GameTags.RocketCollectingResources);
+
+        Util.LogDbg("isbusyrocket: dupeId:{0} worldId:{1} shipStatus:{2} fueled:{3} drilling:{4} harvesting:{5}",
                     m.GetInstanceID(), world.id, ship.Status, ship.IsTravellingAndFueled(),
-                    ship.HasTag(GameTags.POIHarvesting));
+                    drilling, harvesting);
 
         if (ship.Status == Clustercraft.CraftStatus.Grounded) {
             return false;
@@ -268,8 +271,8 @@ public class GameState
         } else if (ship.IsTravellingAndFueled()) {
             // rocket is moving
             return true;
-        } else if (ship.HasTag(GameTags.POIHarvesting)) {
-            // rocket is mining
+        } else if (drilling || harvesting) {
+            // rocket is busy with POI drilling or hex-cell resource harvesting
             return true;
         } // else rocket is idle in space
 

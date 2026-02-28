@@ -1,7 +1,7 @@
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export ONIInstallDir ?= "$(HOME)/.steam/steam/SteamApps/common/OxygenNotIncluded"
 export ONIPlayerDir ?= "$(HOME)/.config/unity3d/Klei/Oxygen Not Included"
-export ONIModName = IdleNotificationTweaks
+export ONIModName = "IdleNotificationTweaks"
 export ONIModDLL = $(ONIModName).dll
 export ONIModMergedDLL = $(ONIModName)Merged.dll
 export ModVer = $(shell echo $(shell grep version mod_info.yaml | tail -1 | cut -f2 -d:)-$(shell git rev-parse --short HEAD))
