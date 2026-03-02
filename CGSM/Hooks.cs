@@ -109,4 +109,13 @@ public static class Hooks
             Mod.Instance.gameState.selectNewCluster(cluster.beltPath);
         }
     }
+
+    [HarmonyPatch(typeof(TemplateSpawning), "ApplyTemplateRule")]
+    public static class TemplateSpawning_ApplyTemplateRule_SuppressKnownBadGuaranteedTemplates_Patch
+    {
+        public static void Prefix(WorldGenSettings settings, ProcGen.World.TemplateSpawnRules rule)
+        {
+            WorldTemplateSuppression.MaybeSuppressGuaranteedTemplates(settings, rule);
+        }
+    }
 }
