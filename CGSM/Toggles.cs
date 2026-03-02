@@ -26,14 +26,20 @@ public class Toggles {
     // @todo put Enable/Disabled & tooltips into Strings.cs
     private void addOneToggleSetting(ref CustomGameSettings cgs, PlanetoidType pType,
                                      string displayName, string displayDesc, bool changeToCustom) {
-        var toggle = new ToggleSettingConfig(string.Format("{0}.{1}", "CGSM", pType.ToString()),
-                                            displayName, displayDesc,
-                                            new SettingLevel("Disabled", "Disabled",
-                                                             "Will not be included", (long)0, null),
-                                            new SettingLevel("Enabled", "Enabled", "Will be included",
-                                                             (long)0, null),
-                                            "Disabled", "Disabled", (long)-1, (long)-1, false,
-                                            changeToCustom, "", "");
+        var toggle = new ToggleSettingConfig(
+            string.Format("{0}.{1}", "CGSM", pType.ToString()),
+            displayName,
+            displayDesc,
+            new SettingLevel("Disabled", "Disabled", "Will not be included", 0L, null),
+            new SettingLevel("Enabled", "Enabled", "Will be included", 0L, null),
+            "Disabled",
+            "Disabled",
+            coordinate_range: -1L,
+            debug_only: false,
+            triggers_custom_game: changeToCustom,
+            required_content: null,
+            missing_content_default: ""
+        );
         toggleMap.Add(pType, toggle);
         cgs.AddQualitySettingConfig(toggle);
     }

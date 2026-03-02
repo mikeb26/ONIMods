@@ -11,11 +11,11 @@ public static class Hooks
     [HarmonyPatch("OnClickOption")]
     public class ClusterCat_OnClickOption_Patch {
         public static void Postfix(ProcGen.ClusterLayout.ClusterCategory clusterCategory) {
-            if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.spacedOutVanillaStyle) {
+            if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.SpacedOutVanillaStyle) {
                 Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
                 Mod.Instance.gameState.maskedCluster = "clusters/CGSM";
-            } else if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.spacedOutStyle ||
-                       clusterCategory == ProcGen.ClusterLayout.ClusterCategory.special) {
+            } else if (clusterCategory == ProcGen.ClusterLayout.ClusterCategory.SpacedOutStyle ||
+                       clusterCategory == ProcGen.ClusterLayout.ClusterCategory.Special) {
                 Mod.Instance.gameState.cgsmCluster = ClusterUtils.loadClusterFromOptionsAndEmit(false);
                 Mod.Instance.gameState.maskedCluster = "clusters/CGSMVanilla";
             }
