@@ -232,6 +232,12 @@ public class Planetoid {
         return info.type;
     }
 
+    // If this planetoid requires an additional DLC beyond EXPANSION1, return the
+    // corresponding DLC token (e.g. "DLC2_ID" or "DLC4_ID"). Otherwise null.
+    public string RequiredDlcIdToken() {
+        return info.requiredDlcIdToken;
+    }
+
     public override string ToString() {
         return string.Format("{0}/{1}", this.Type(), this.category);
     }
@@ -241,10 +247,14 @@ public class Planetoid {
 public class PlanetoidInfo {
     public readonly PlanetoidType type;
     public readonly Dictionary<PlanetoidCategory, string> yamlMap;
+    // DLC token (as used in Klei YAML headers), or null if none.
+    public readonly string requiredDlcIdToken;
 
-    public PlanetoidInfo(PlanetoidType typeIn, Dictionary<PlanetoidCategory, string> yamlMapIn) {
+    public PlanetoidInfo(PlanetoidType typeIn, Dictionary<PlanetoidCategory, string> yamlMapIn,
+                         string requiredDlcIdTokenIn = null) {
         type = typeIn;
         yamlMap = yamlMapIn;
+        requiredDlcIdToken = requiredDlcIdTokenIn;
     }
 }
 
@@ -477,45 +487,45 @@ public static class PlanetoidInfos {
             {PlanetoidType.CeresSpacedOut, new PlanetoidInfo(PlanetoidType.CeresSpacedOut,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "dlc2::worlds/CeresSpacedOutAsteroid"},
-                })},
+                }, "DLC2_ID")},
             {PlanetoidType.CeresClassic, new PlanetoidInfo(PlanetoidType.CeresClassic,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "dlc2::worlds/CeresClassicAsteroid"},
-                })},
+                }, "DLC2_ID")},
             {PlanetoidType.CeresClassicShattered, new PlanetoidInfo(PlanetoidType.CeresClassicShattered,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "dlc2::worlds/CeresClassicShatteredAsteroid"},
-                })},
+                }, "DLC2_ID")},
             {PlanetoidType.MiniShatteredStart, new PlanetoidInfo(PlanetoidType.MiniShatteredStart,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "dlc2::worlds/MiniShatteredStartAsteroid"},
-                })},
+                }, "DLC2_ID")},
             {PlanetoidType.MiniShatteredWarp, new PlanetoidInfo(PlanetoidType.MiniShatteredWarp,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Warp, "dlc2::worlds/MiniShatteredWarpAsteroid"},
-                })},
+                }, "DLC2_ID")},
             {PlanetoidType.MiniShatteredGeo, new PlanetoidInfo(PlanetoidType.MiniShatteredGeo,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Other, "dlc2::worlds/MiniShatteredGeoAsteroid"},
-                })},
+                }, "DLC2_ID")},
 
             // DLC4
             {PlanetoidType.PrehistoricSpacedOut, new PlanetoidInfo(PlanetoidType.PrehistoricSpacedOut,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "dlc4::worlds/PrehistoricSpacedOutAsteroid"},
-                })},
+                }, "DLC4_ID")},
             {PlanetoidType.PrehistoricClassic, new PlanetoidInfo(PlanetoidType.PrehistoricClassic,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "dlc4::worlds/PrehistoricClassicAsteroid"},
-                })},
+                }, "DLC4_ID")},
             {PlanetoidType.PrehistoricShatteredClassic, new PlanetoidInfo(PlanetoidType.PrehistoricShatteredClassic,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "dlc4::worlds/PrehistoricShatteredClassicAsteroid"},
-                })},
+                }, "DLC4_ID")},
             {PlanetoidType.WarpOilySandySwamp, new PlanetoidInfo(PlanetoidType.WarpOilySandySwamp,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Warp, "expansion1::worlds/WarpOilySandySwamp"},
-                })},
+                }, "DLC4_ID")},
         };
 
     public static PlanetoidInfo lookup(PlanetoidType planetoidType) {
