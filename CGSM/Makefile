@@ -23,12 +23,13 @@ Util.cs: Util.cs.tmpl FORCE
 # @todo there's probably a cleaner way to do this via PostBuildEvent in csproj but all of the
 # examples I could find assume visual studio
 #
-export ILREPACK = "$(HOME)/.nuget/packages/ilrepack/2.0.18/tools/ILRepack.exe"
+export ILREPACK = dotnet tool run ilrepack --
+export NET471_REF_DIR = $(HOME)/.nuget/packages/microsoft.netframework.referenceassemblies.net471/1.0.3/build/.NETFramework/v4.7.1
 bin/Debug/$(ONIModMergedDLL): bin/Debug/$(ONIModDLL)
-	cd bin/Debug; $(ILREPACK) /ndebug /out:$(ONIModMergedDLL) $(ONIModDLL) PLib.dll Newtonsoft.Json.dll /targetplatform:v4
+	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET471_REF_DIR)
 
 bin/Release/$(ONIModMergedDLL): bin/Release/$(ONIModDLL)
-	cd bin/Release; $(ILREPACK) /ndebug /out:$(ONIModMergedDLL) $(ONIModDLL) PLib.dll Newtonsoft.Json.dll /targetplatform:v4
+	$(ILREPACK) /lib:bin/Release /ndebug /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET471_REF_DIR)
 
 # https://stackoverflow.com/questions/119271/copy-all-files-and-folders-using-msbuild
 #
@@ -74,8 +75,9 @@ Player.log:
 
 deps: dirscheck FORCE
 	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net471 --version 1.0.3
-	dotnet add package ILRepack --version 2.0.18
-	dotnet add package PLib --version 4.12.0
+	# Keep ILRepack as a local dotnet tool (cross-platform) instead of the legacy .exe.
+	# (See .config/dotnet-tools.json)
+	dotnet add package PLib --version 4.19.0.0
 	dotnet add package Newtonsoft.Json --version 13.0.2
 	rm -rf deps
 	mkdir deps
