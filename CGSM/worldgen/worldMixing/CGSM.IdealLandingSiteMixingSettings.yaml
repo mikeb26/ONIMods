@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.IDEALLANDINGSITE.NAME
+description: STRINGS.WORLDS.IDEALLANDINGSITE.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_swamp_rocket_kanim
+world: expansion1::worlds/IdealLandingSite

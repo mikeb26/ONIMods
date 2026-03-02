@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.MINIFLIPPED.NAME
+description: STRINGS.WORLDS.MINIFLIPPED.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_mini_flipped_kanim
+world: expansion1::worlds/MiniFlipped

@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.MINIMETALLICSWAMPY.NAME
+description: STRINGS.WORLDS.MINIMETALLICSWAMPY.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_mini_metallicswampy_kanim
+world: expansion1::worlds/MiniMetallicSwampy

@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.REGOLITHMOONLET.NAME
+description: STRINGS.WORLDS.REGOLITHMOONLET.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_regolith_moonlet_kanim
+world: expansion1::worlds/MiniRegolithMoonlet

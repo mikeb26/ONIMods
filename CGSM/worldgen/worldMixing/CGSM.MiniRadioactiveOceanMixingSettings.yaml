@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.NAME
+description: STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_mini_radiation_kanim
+world: expansion1::worlds/MiniRadioactiveOcean

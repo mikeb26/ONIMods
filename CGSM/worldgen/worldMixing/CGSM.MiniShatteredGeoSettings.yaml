@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.MINISHATTEREDGEO.NAME
+description: STRINGS.WORLDS.MINISHATTEREDGEO.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_moonlet_bottom_kanim
+world: dlc2::worlds/MiniShatteredGeoAsteroid

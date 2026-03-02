@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.TUNDRAMOONLET.NAME
+description: STRINGS.WORLDS.TUNDRAMOONLET.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_ice_planet_kanim
+world: expansion1::worlds/TundraMoonlet

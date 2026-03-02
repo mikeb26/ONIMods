@@ -1,11 +1,49 @@
-// Copyright © 2023 Mike Brown; see LICENSE at the root of this package
+// Copyright © 2023,2026 Mike Brown; see LICENSE at the root of this package
 
 using PeterHan.PLib.OptionsFilt;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CGSM;
 
+public static class Planetoids
+{
+    // Some planetoids have multiple "sizes" / variants that should be treated as equivalent
+    // for the purposes of world mixing.
+    //
+    // In particular, Regolith and MiniRegolith should be considered interchangeable: if a
+    // cluster already contains one, it should satisfy mixing settings for the other.
+    public static PlanetoidType NormalizeForMixing(PlanetoidType type)
+    {
+        return type switch
+        {
+            PlanetoidType.MiniRegolith => PlanetoidType.Regolith,
+            PlanetoidType.Regolith => PlanetoidType.Regolith,
+            _ => type,
+        };
+    }
+
+    public static bool AreMixingEquivalent(PlanetoidType a, PlanetoidType b)
+        => NormalizeForMixing(a) == NormalizeForMixing(b);
+
+    public static bool IsStartWorld(ProcGen.WorldPlacement wp, string startWorldPath)
+    {
+        return (string.Equals(wp.world, startWorldPath, StringComparison.OrdinalIgnoreCase))
+               || wp.locationType == ProcGen.WorldPlacement.LocationType.Startworld
+               || wp.startWorld;
+    }
+
+    public static bool IsWarpWorld(string worldPath)
+    {
+        if (PlanetoidInfos.TryLookupCategoryByWorldPath(worldPath, out var category))
+            return category == PlanetoidCategory.Warp;
+
+        // Fallback
+        return worldPath.IndexOf("Warp", StringComparison.OrdinalIgnoreCase) >= 0
+               || worldPath.IndexOf("Teleport", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+}
 public enum PlanetoidType {
     MetallicSwampy = 0,
     Desolands = 1,
@@ -414,7 +452,7 @@ public static class PlanetoidInfos {
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "expansion1::worlds/VanillaSandstoneDefault"},
                 })},
-            {PlanetoidType.MiniRegolith, new PlanetoidInfo(PlanetoidType.Regolith,
+            {PlanetoidType.MiniRegolith, new PlanetoidInfo(PlanetoidType.MiniRegolith,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Other, "expansion1::worlds/MiniRegolithMoonlet"},
                 })},
@@ -528,6 +566,117 @@ public static class PlanetoidInfos {
                 }, "DLC4_ID")},
         };
 
+    private static readonly Dictionary<string, PlanetoidCategory> worldPathToCategory = BuildWorldPathToCategoryIndex();
+    private static readonly Dictionary<string, PlanetoidType> worldPathToType = BuildWorldPathToTypeIndex();
+
+    private static Dictionary<string, PlanetoidCategory> BuildWorldPathToCategoryIndex()
+    {
+        var index = new Dictionary<string, PlanetoidCategory>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var infoKvp in infos)
+        {
+            var info = infoKvp.Value;
+            if (info?.yamlMap == null)
+                continue;
+
+            foreach (var mapKvp in info.yamlMap)
+            {
+                var category = mapKvp.Key;
+                var path = mapKvp.Value;
+                if (string.IsNullOrWhiteSpace(path))
+                    continue;
+
+                // Index the raw path.
+                index[path] = category;
+
+                // Also index a no-content-prefix form to tolerate callers passing either
+                // "expansion1::worlds/Foo" or "worlds/Foo".
+                var noPrefix = StripContentPrefix(path);
+                if (!string.IsNullOrWhiteSpace(noPrefix))
+                    index[noPrefix] = category;
+            }
+        }
+
+        return index;
+    }
+
+    private static Dictionary<string, PlanetoidType> BuildWorldPathToTypeIndex()
+    {
+        var index = new Dictionary<string, PlanetoidType>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var infoKvp in infos)
+        {
+            var typeKey = infoKvp.Key;
+            var info = infoKvp.Value;
+            if (info?.yamlMap == null)
+                continue;
+
+            foreach (var mapKvp in info.yamlMap)
+            {
+                var path = mapKvp.Value;
+                if (string.IsNullOrWhiteSpace(path))
+                    continue;
+
+                // Index the raw path.
+                index[path] = typeKey;
+
+                // Also index a no-content-prefix form to tolerate callers passing either
+                // "expansion1::worlds/Foo" or "worlds/Foo".
+                var noPrefix = StripContentPrefix(path);
+                if (!string.IsNullOrWhiteSpace(noPrefix))
+                    index[noPrefix] = typeKey;
+            }
+        }
+
+        return index;
+    }
+
+    private static string StripContentPrefix(string worldPath)
+    {
+        if (string.IsNullOrWhiteSpace(worldPath))
+            return worldPath;
+
+        int idx = worldPath.IndexOf("::", StringComparison.Ordinal);
+        if (idx < 0)
+            return worldPath;
+
+        return worldPath.Substring(idx + 2);
+    }
+
+    public static bool TryLookupCategoryByWorldPath(string worldPath, out PlanetoidCategory category)
+    {
+        category = default;
+
+        if (string.IsNullOrWhiteSpace(worldPath))
+            return false;
+
+        if (worldPathToCategory.TryGetValue(worldPath, out category))
+            return true;
+
+        var noPrefix = StripContentPrefix(worldPath);
+        if (!string.IsNullOrWhiteSpace(noPrefix) && worldPathToCategory.TryGetValue(noPrefix, out category))
+            return true;
+
+        return false;
+    }
+
+    public static bool TryLookupTypeByWorldPath(string worldPath, out PlanetoidType planetoidType)
+    {
+        planetoidType = default;
+
+        if (string.IsNullOrWhiteSpace(worldPath))
+            return false;
+
+        if (worldPathToType.TryGetValue(worldPath, out planetoidType))
+            return true;
+
+        var noPrefix = StripContentPrefix(worldPath);
+        if (!string.IsNullOrWhiteSpace(noPrefix) && worldPathToType.TryGetValue(noPrefix, out planetoidType))
+            return true;
+
+        return false;
+    }
+
     public static PlanetoidInfo lookup(PlanetoidType planetoidType) {
         return infos[planetoidType];
     }
@@ -588,6 +737,227 @@ public class PlanetoidPlacement {
         yamlContent.Append("  allowedRings:\n");
         yamlContent.Append(string.Format("    min: {0}\n", this.minRadius));
         yamlContent.Append(string.Format("    max: {0}\n", this.maxRadius));
+
+        if (this.planetoid.category == PlanetoidCategory.Other) {
+            // WorldMixing slots in Klei cluster YAMLs often have extra rules (templates, seasons,
+            // subworlds, etc). We emit the common required tags plus any world-specific extras
+            // (based on MiniClusterFlippedStart.yaml).
+            yamlContent.Append("  worldMixing:\n");
+            yamlContent.Append("    requiredTags:\n");
+            yamlContent.Append("      - Mixing\n");
+
+            switch (this.planetoid.Type()) {
+                case PlanetoidType.Tundra:
+                    yamlContent.Append("      - SmallWorld\n");
+                    yamlContent.Append("    additionalWorldTemplateRules:\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("          - expansion1::poi/poi_temporal_tear_opener_lab # temporal tear opener\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 201\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: Replace\n");
+                    yamlContent.Append("            tagcommand: DistanceFromTag\n");
+                    yamlContent.Append("            tag: AtSurface\n");
+                    yamlContent.Append("            minDistance: 2\n");
+                    yamlContent.Append("            maxDistance: 3\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoMixingTemplateSpawning\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("          - expansion1::poi/genericGravitas/poi_gift_shop # artifacts\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 200\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: All\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoMixingTemplateSpawning\n");
+                    break;
+
+                case PlanetoidType.Marshy:
+                    yamlContent.Append("      - SmallWorld\n");
+                    yamlContent.Append("    forbiddenTags:\n");
+                    yamlContent.Append("      - Challenge\n");
+                    yamlContent.Append("    additionalWorldTemplateRules:\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("        - expansion1::poi/worldmixing/sap_tree_room # Experiment 52B\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 500\n");
+                    yamlContent.Append("        allowExtremeTemperatureOverlap: true # has Abyssalite border\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: All\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoMixingTemplateSpawning\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("        - expansion1::geysers/molten_tungsten_compact\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 150\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: All\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoMixingTemplateSpawning\n");
+                    break;
+
+                case PlanetoidType.Moo:
+                    yamlContent.Append("      - SmallWorld\n");
+                    yamlContent.Append("    forbiddenTags:\n");
+                    yamlContent.Append("      - NoExtraSeasons\n");
+                    yamlContent.Append("      - ModifiedSurfaceHeight\n");
+                    yamlContent.Append("      - SurfaceSubworldReserved\n");
+                    yamlContent.Append("    additionalSubworldFiles:\n");
+                    yamlContent.Append("      - name: expansion1::subworlds/moo/MooCaverns\n");
+                    yamlContent.Append("        minCount: 2\n");
+                    yamlContent.Append("    additionalUnknownCellFilters:\n");
+                    yamlContent.Append("      - tagcommand: DistanceFromTag # surface\n");
+                    yamlContent.Append("        tag: AtSurface\n");
+                    yamlContent.Append("        minDistance: 2\n");
+                    yamlContent.Append("        maxDistance: 2\n");
+                    yamlContent.Append("        command: Replace\n");
+                    yamlContent.Append("        sortOrder: 1000 # apply last so world traits and subworld mixing do not override it\n");
+                    yamlContent.Append("        subworldNames:\n");
+                    yamlContent.Append("          - expansion1::subworlds/moo/MooCaverns\n");
+                    yamlContent.Append("    additionalSeasons:\n");
+                    yamlContent.Append("      - GassyMooteorShowers\n");
+                    yamlContent.Append("    additionalWorldTemplateRules:\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("        - expansion1::poi/genericGravitas/poi_genetics_lab # artifacts\n");
+                    yamlContent.Append("        - geysers/chlorine_gas\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 150\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: All\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoMixingTemplateSpawning\n");
+                    break;
+
+                case PlanetoidType.Water:
+                    yamlContent.Append("      - SmallWorld\n");
+                    yamlContent.Append("    forbiddenTags:\n");
+                    yamlContent.Append("      - AboveCoreSubworldReserved\n");
+                    yamlContent.Append("    additionalSubworldFiles:\n");
+                    yamlContent.Append("      - name: expansion1::subworlds/aquatic/GraphiteCaves\n");
+                    yamlContent.Append("        minCount: 2\n");
+                    yamlContent.Append("    additionalUnknownCellFilters:\n");
+                    yamlContent.Append("      - tagcommand: DistanceFromTag\n");
+                    yamlContent.Append("        tag: AtDepths\n");
+                    yamlContent.Append("        minDistance: 1\n");
+                    yamlContent.Append("        maxDistance: 1\n");
+                    yamlContent.Append("        command: Replace\n");
+                    yamlContent.Append("        sortOrder: 1000 # apply last so world traits and subworld mixing do not override it\n");
+                    yamlContent.Append("        subworldNames:\n");
+                    yamlContent.Append("          - expansion1::subworlds/aquatic/GraphiteCaves\n");
+                    yamlContent.Append("    additionalWorldTemplateRules:\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("        - expansion1::poi/genericGravitas/poi_thermo_building\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 450\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: All\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoMixingTemplateSpawning\n");
+                    break;
+
+                case PlanetoidType.Superconductive:
+                    yamlContent.Append("      - SmallWorld\n");
+                    // Niobium requires the Challenge tag in addition to the common Mixing + SmallWorld.
+                    yamlContent.Append("      - Challenge\n");
+                    yamlContent.Append("    forbiddenTags:\n");
+                    yamlContent.Append("      - AboveCoreSubworldReserved\n");
+                    yamlContent.Append("    additionalSubworldFiles:\n");
+                    yamlContent.Append("      - name: expansion1::subworlds/niobium/NiobiumPatch\n");
+                    yamlContent.Append("        minCount: 2\n");
+                    yamlContent.Append("        maxCount: 3\n");
+                    yamlContent.Append("    additionalUnknownCellFilters:\n");
+                    yamlContent.Append("      - tagcommand: DistanceFromTag\n");
+                    yamlContent.Append("        tag: AtDepths\n");
+                    yamlContent.Append("        minDistance: 1\n");
+                    yamlContent.Append("        maxDistance: 1\n");
+                    yamlContent.Append("        command: Replace\n");
+                    yamlContent.Append("        sortOrder: 1000 # apply last so world traits and subworld mixing do not override it\n");
+                    yamlContent.Append("        subworldNames:\n");
+                    yamlContent.Append("          - expansion1::subworlds/niobium/NiobiumPatch\n");
+                    yamlContent.Append("    additionalWorldTemplateRules:\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("          - expansion1::geysers/molten_niobium\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        allowExtremeTemperatureOverlap: true # has Abyssalite border\n");
+                    yamlContent.Append("        priority: 150\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: Replace\n");
+                    yamlContent.Append("            subworldNames:\n");
+                    yamlContent.Append("              - expansion1::subworlds/niobium/NiobiumPatch\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("        - expansion1::poi/genericGravitas/poi_mining_room # artifacts\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 150\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: All\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoMixingTemplateSpawning\n");
+                    break;
+
+                case PlanetoidType.MiniRegolith:
+                    yamlContent.Append("      - SmallWorld\n");
+                    yamlContent.Append("    forbiddenTags:\n");
+                    yamlContent.Append("      - SubsurfaceSubworldReserved\n");
+                    yamlContent.Append("      - NoDamagingMeteorShowers\n");
+                    yamlContent.Append("    additionalSubworldFiles:\n");
+                    yamlContent.Append("      - name: expansion1::subworlds/regolith/BarrenDust\n");
+                    yamlContent.Append("        minCount: 2\n");
+                    yamlContent.Append("        overridePower: 1\n");
+                    yamlContent.Append("    additionalUnknownCellFilters:\n");
+                    yamlContent.Append("      - tagcommand: DistanceFromTag # surface\n");
+                    yamlContent.Append("        tag: AtSurface\n");
+                    yamlContent.Append("        minDistance: 2\n");
+                    yamlContent.Append("        maxDistance: 2\n");
+                    yamlContent.Append("        command: Replace\n");
+                    yamlContent.Append("        sortOrder: 1000 # apply last so world traits and subworld mixing do not override it\n");
+                    yamlContent.Append("        subworldNames:\n");
+                    yamlContent.Append("          - expansion1::subworlds/regolith/BarrenDust\n");
+                    yamlContent.Append("    additionalSeasons:\n");
+                    yamlContent.Append("      - RegolithMoonMeteorShowers\n");
+                    yamlContent.Append("    additionalWorldTemplateRules:\n");
+                    yamlContent.Append("      - names:\n");
+                    yamlContent.Append("        - expansion1::poi/regolith/bunker_lab\n");
+                    yamlContent.Append("        listRule: GuaranteeAll\n");
+                    yamlContent.Append("        priority: 200\n");
+                    yamlContent.Append("        allowedCellsFilter:\n");
+                    yamlContent.Append("          - command: All\n");
+                    yamlContent.Append("          - command: ExceptWith\n");
+                    yamlContent.Append("            tagcommand: AtTag\n");
+                    yamlContent.Append("            tag: NoGlobalFeatureSpawning\n");
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
         return yamlContent.ToString();
     }

@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.MINIFORESTFROZEN.NAME
+description: STRINGS.WORLDS.MINIFORESTFROZEN.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_mini_forestfrozen_kanim
+world: expansion1::worlds/MiniForestFrozen

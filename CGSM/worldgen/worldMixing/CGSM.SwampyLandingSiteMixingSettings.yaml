@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.SWAMPYLANDINGSITE.NAME
+description: STRINGS.WORLDS.SWAMPYLANDINGSITE.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_forest_rocket_kanim
+world: expansion1::worlds/SwampyLandingSite

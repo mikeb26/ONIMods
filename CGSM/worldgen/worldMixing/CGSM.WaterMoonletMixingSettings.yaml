@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.WATERMOONLET.NAME
+description: STRINGS.WORLDS.WATERMOONLET.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_water_moonlet_kanim
+world: expansion1::worlds/WaterMoonlet

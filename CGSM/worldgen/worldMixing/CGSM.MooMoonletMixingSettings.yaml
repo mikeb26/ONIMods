@@ -1,0 +1,6 @@
+name: STRINGS.WORLDS.MOOMOONLET.NAME
+# Reuse the existing world description for now (shows in tooltip)
+description: STRINGS.WORLDS.MOOMOONLET.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_moo_planet_kanim
+world: expansion1::worlds/MooMoonlet

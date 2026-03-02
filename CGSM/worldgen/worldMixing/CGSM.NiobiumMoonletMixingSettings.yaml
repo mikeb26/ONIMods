@@ -1,0 +1,5 @@
+name: STRINGS.WORLDS.NIOBIUMMOONLET.NAME
+description: STRINGS.WORLDS.NIOBIUMMOONLET.DESCRIPTION
+forbiddenClusterTags: []
+icon: asteroid_niobium_planet_kanim
+world: expansion1::worlds/NiobiumMoonlet

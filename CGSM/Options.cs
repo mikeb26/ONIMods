@@ -24,107 +24,6 @@ public sealed class Options /* : IOptions */ {
     [JsonProperty]
     public WarpPlanetoidType warpPlanetoid { get; set; }
 
-    [Option("STRINGS.WORLDS.MINIMETALLICSWAMPY.NAME", "STRINGS.WORLDS.MINIMETALLICSWAMPY.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool metallicSwampyPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.MINIBADLANDS.NAME", "STRINGS.WORLDS.MINIBADLANDS.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool desolandsPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.MINIFORESTFROZEN.NAME", "STRINGS.WORLDS.MINIFORESTFROZEN.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool frozenForestPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.MINIFLIPPED.NAME", "STRINGS.WORLDS.MINIFLIPPED.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool flippedPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.NAME", "STRINGS.WORLDS.MINIRADIOACTIVEOCEAN.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool radioactiveOceanPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.TUNDRAMOONLET.NAME", "STRINGS.WORLDS.TUNDRAMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool tundraPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.MARSHYMOONLET.NAME", "STRINGS.WORLDS.MARSHYMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool marshyPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.MOOMOONLET.NAME", "STRINGS.WORLDS.MOOMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool mooPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.WATERMOONLET.NAME", "STRINGS.WORLDS.WATERMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool waterPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.NIOBIUMMOONLET.NAME", "STRINGS.WORLDS.NIOBIUMMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool firePlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.REGOLITHMOONLET.NAME", "STRINGS.WORLDS.REGOLITHMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool regolithPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.IDEALLANDINGSITE.NAME", "STRINGS.WORLDS.IDEALLANDINGSITE.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool irradiatedForestPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.SWAMPYLANDINGSITE.NAME", "STRINGS.WORLDS.SWAMPYLANDINGSITE.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool irradiatedSwampPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.METALHEAVYLANDINGSITE.NAME", "STRINGS.WORLDS.METALHEAVYLANDINGSITE.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [JsonProperty]
-    public bool irradiatedMarshPlanetoid { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.BAATOR_OILYSWAMPY_NAME", "STRINGS.WORLDS.CGSM.BAATOR_OILYSWAMPY_NAME", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("Baator_BumminsMod")]
-    [JsonProperty]
-    public bool baatorOilySwampy { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.BAATOR_COLDTERRA_NAME", "STRINGS.WORLDS.CGSM.BAATOR_COLDTERRA_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("Baator_BumminsMod")]
-    [JsonProperty]
-    public bool baatorColdTerra { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.MARSHYSNAKES_NAME", "STRINGS.WORLDS.CGSM.MARSHYSNAKES_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("test447.RollerSnake")]
-    [JsonProperty]
-    public bool marshySnakes { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.FIRESNAKES_NAME", "STRINGS.WORLDS.CGSM.FIRESNAKES_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("test447.RollerSnake")]
-    [JsonProperty]
-    public bool superconductiveSnakes { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.WATERSNAKES_NAME", "STRINGS.WORLDS.CGSM.WATERSNAKES_DESC", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("test447.RollerSnake")]
-    [JsonProperty]
-    public bool waterSnakes { get; set; }
-
-    [Option("STRINGS.WORLDS.MINIBASE.NAME", "STRINGS.WORLDS.MINIBASE.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("miniBaseSO")]
-    [JsonProperty]
-    public bool miniBase { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.MINIBASEOILY_NAME", "STRINGS.WORLDS.OILYMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("miniBaseSO")]
-    [JsonProperty]
-    public bool miniBaseOily { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.MINIBASEMARSHY_NAME", "STRINGS.WORLDS.MARSHYMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("miniBaseSO")]
-    [JsonProperty]
-    public bool miniBaseMarshy { get; set; }
-
-    [Option("STRINGS.WORLDS.CGSM.MINIBASENIOBIUM_NAME", "STRINGS.WORLDS.NIOBIUMMOONLET.DESCRIPTION", "STRINGS.UI.FRONTEND.CGSM.ADDITIONAL_PLANET_CAT")]
-    [RequireMod("miniBaseSO")]
-    [JsonProperty]
-    public bool miniBaseNiobium { get; set; }
-
     [Option("STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT", "STRINGS.UI.FRONTEND.CGSM.NUM_ARTIFACT_OPT_DESC", "STRINGS.UI.FRONTEND.CGSM.SPACE_POIS_CAT")]
     [Limit(0, 9)]
     [JsonProperty]
@@ -239,30 +138,6 @@ public sealed class Options /* : IOptions */ {
         startPlanetoid = StartPlanetoidType.Marshy;
         warpPlanetoid = WarpPlanetoidType.Desolands;
 
-        metallicSwampyPlanetoid = false;
-        desolandsPlanetoid = false;
-        frozenForestPlanetoid = true;
-        flippedPlanetoid = false;
-        radioactiveOceanPlanetoid = true;
-        tundraPlanetoid = true;
-        marshyPlanetoid = false;
-        mooPlanetoid = false;
-        waterPlanetoid = true;
-        firePlanetoid = true;
-        regolithPlanetoid = false;
-        irradiatedForestPlanetoid = false;
-        irradiatedSwampPlanetoid = false;
-        irradiatedMarshPlanetoid = false;
-        baatorOilySwampy = false;
-        baatorColdTerra = false;
-        marshySnakes = false;
-        superconductiveSnakes = false;
-        waterSnakes = false;
-        miniBase = false;
-        miniBaseOily = false;
-        miniBaseMarshy = false;
-        miniBaseNiobium = false;
-
         numArtifactPOIs = 4;
         carbonAsteroid = true;
         chlorineCloud = false;
@@ -328,44 +203,12 @@ public sealed class Options /* : IOptions */ {
         return count;
     }
 
-    public int getOtherPlanetoidCount() {
-        int count = 0;
-
-        count += Convert.ToInt32(metallicSwampyPlanetoid);
-        count += Convert.ToInt32(desolandsPlanetoid);
-        count += Convert.ToInt32(frozenForestPlanetoid);
-        count += Convert.ToInt32(flippedPlanetoid);
-        count += Convert.ToInt32(radioactiveOceanPlanetoid);
-        count += Convert.ToInt32(tundraPlanetoid);
-        count += Convert.ToInt32(marshyPlanetoid);
-        count += Convert.ToInt32(mooPlanetoid);
-        count += Convert.ToInt32(waterPlanetoid);
-        count += Convert.ToInt32(firePlanetoid);
-        count += Convert.ToInt32(regolithPlanetoid);
-        count += Convert.ToInt32(irradiatedForestPlanetoid);
-        count += Convert.ToInt32(irradiatedSwampPlanetoid);
-        count += Convert.ToInt32(irradiatedMarshPlanetoid);
-        count += Convert.ToInt32(baatorOilySwampy);
-        count += Convert.ToInt32(baatorColdTerra);
-        count += Convert.ToInt32(marshySnakes);
-        count += Convert.ToInt32(superconductiveSnakes);
-        count += Convert.ToInt32(waterSnakes);
-        count += Convert.ToInt32(miniBase);
-        count += Convert.ToInt32(miniBaseOily);
-        count += Convert.ToInt32(miniBaseMarshy);
-        count += Convert.ToInt32(miniBaseNiobium);
-
-        return count;
-    }
-
     // if a player has loaded a mod, selected that mod's specific planetoids, disabled the mod,
     // and restarted the game, we can wind up in a state where the persistent configuration
     // returned by POptions.ReadSettings() still contains references to the disabled mod's
     // planetoids. so, scrub them here if we detect this situation
     public void scrubUnloadedModOptions() {
         if (!Util.IsModEnabled("Baator_BumminsMod")) {
-            this.baatorOilySwampy = false;
-            this.baatorColdTerra = false;
             if (this.startPlanetoid == StartPlanetoidType.Baator ||
                 this.startPlanetoid == StartPlanetoidType.BaatorMoonlet) {
                 this.startPlanetoid = StartPlanetoidType.Marshy;
@@ -379,9 +222,6 @@ public sealed class Options /* : IOptions */ {
             }
         }
         if (!Util.IsModEnabled("test447.RollerSnake")) {
-            this.marshySnakes = false;
-            this.superconductiveSnakes = false;
-            this.waterSnakes = false;
             if (this.startPlanetoid == StartPlanetoidType.Tetrament ||
                 this.startPlanetoid == StartPlanetoidType.VanillaTetrament) {
                 this.startPlanetoid = StartPlanetoidType.Marshy;
@@ -391,12 +231,6 @@ public sealed class Options /* : IOptions */ {
                 this.warpPlanetoid = WarpPlanetoidType.Desolands;
                 Util.Log("Roller Snakes mod is not enabled; resetting warp planetoid to {0}", this.warpPlanetoid);
             }
-        }
-        if (!Util.IsModEnabled("miniBaseSO")) {
-            this.miniBase = false;
-            this.miniBaseOily = false;
-            this.miniBaseMarshy = false;
-            this.miniBaseNiobium = false;
         }
     }
 
