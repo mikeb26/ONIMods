@@ -59,6 +59,18 @@ public enum PlanetoidType {
     MiniBaseMarshy = 49,
     MiniBaseNiobium = 50,
     Skewed = 51,
+    // DLC2
+    CeresSpacedOut = 52,
+    CeresClassic = 53,
+    CeresClassicShattered = 54,
+    MiniShatteredStart = 55,
+    MiniShatteredWarp = 56,
+    MiniShatteredGeo = 57,
+    // DLC4
+    PrehistoricSpacedOut = 58,
+    PrehistoricClassic = 59,
+    PrehistoricShatteredClassic = 60,
+    WarpOilySandySwamp = 61,
 };
 
 // Baator introduces 1-way warp planetoids that don't fit cleanly into these existing categories;
@@ -127,6 +139,31 @@ public enum StartPlanetoidType {
     VanillaTetrament = PlanetoidType.TetramentVanilla,
     [Option("STRINGS.WORLDS.STRANGE_ASTEROID_KF23.NAME", "STRINGS.WORLDS.STRANGE_ASTEROID_KF23.DESCRIPTION")]
     Skewed = PlanetoidType.Skewed,
+
+    // DLC2
+    [Option("STRINGS.WORLDS.CERESSPACEDOUT.NAME", "STRINGS.WORLDS.CERESSPACEDOUT.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC2_ID)]
+    CeresSpacedOut = PlanetoidType.CeresSpacedOut,
+    [Option("STRINGS.WORLDS.CERESCLASSIC.NAME", "STRINGS.WORLDS.CERESCLASSIC.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC2_ID)]
+    CeresClassic = PlanetoidType.CeresClassic,
+    [Option("STRINGS.WORLDS.CERESCLASSICSHATTERED.NAME", "STRINGS.WORLDS.CERESCLASSICSHATTERED.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC2_ID)]
+    CeresClassicShattered = PlanetoidType.CeresClassicShattered,
+    [Option("STRINGS.WORLDS.MINISHATTEREDSTART.NAME", "STRINGS.WORLDS.MINISHATTEREDSTART.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC2_ID)]
+    MiniShatteredStart = PlanetoidType.MiniShatteredStart,
+
+    // DLC4
+    [Option("STRINGS.WORLDS.PREHISTORICSPACEDOUT.NAME", "STRINGS.WORLDS.PREHISTORICSPACEDOUT.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC4_ID)]
+    PrehistoricSpacedOut = PlanetoidType.PrehistoricSpacedOut,
+    [Option("STRINGS.WORLDS.PREHISTORICCLASSIC.NAME", "STRINGS.WORLDS.PREHISTORICCLASSIC.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC4_ID)]
+    PrehistoricClassic = PlanetoidType.PrehistoricClassic,
+    [Option("STRINGS.WORLDS.PREHISTORICSHATTERED.NAME", "STRINGS.WORLDS.PREHISTORICSHATTERED.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC4_ID)]
+    PrehistoricShatteredClassic = PlanetoidType.PrehistoricShatteredClassic,
 };
 
 public enum WarpPlanetoidType {
@@ -161,6 +198,16 @@ public enum WarpPlanetoidType {
     DryRadioactiveForest = PlanetoidType.DryRadioactiveForest,
     [Option("STRINGS.WORLDS.CGSM.MARSHYMOONLET_NAME", "STRINGS.WORLDS.CGSM.MARSHYMOONLET_DESC")]
     Marshy = PlanetoidType.Marshy,
+
+    // DLC2
+    [Option("STRINGS.WORLDS.MINISHATTEREDWARP.NAME", "STRINGS.WORLDS.MINISHATTEREDWARP.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC2_ID)]
+    MiniShatteredWarp = PlanetoidType.MiniShatteredWarp,
+
+    // DLC4
+    [Option("STRINGS.WORLDS.WARPOILYSANDYSWAMP.NAME", "STRINGS.WORLDS.WARPOILYSANDYSWAMP.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC4_ID)]
+    WarpOilySandySwamp = PlanetoidType.WarpOilySandySwamp,
 };
 
 /* captures dynamic planetoid properties not known until runtime that the player may be customizing
@@ -424,6 +471,50 @@ public static class PlanetoidInfos {
             {PlanetoidType.Skewed, new PlanetoidInfo(PlanetoidType.Skewed,
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Start, "expansion1::worlds/StrangeAsteroidKleiFest2023Cluster"},
+                })},
+
+            // DLC2
+            {PlanetoidType.CeresSpacedOut, new PlanetoidInfo(PlanetoidType.CeresSpacedOut,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc2::worlds/CeresSpacedOutAsteroid"},
+                })},
+            {PlanetoidType.CeresClassic, new PlanetoidInfo(PlanetoidType.CeresClassic,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc2::worlds/CeresClassicAsteroid"},
+                })},
+            {PlanetoidType.CeresClassicShattered, new PlanetoidInfo(PlanetoidType.CeresClassicShattered,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc2::worlds/CeresClassicShatteredAsteroid"},
+                })},
+            {PlanetoidType.MiniShatteredStart, new PlanetoidInfo(PlanetoidType.MiniShatteredStart,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc2::worlds/MiniShatteredStartAsteroid"},
+                })},
+            {PlanetoidType.MiniShatteredWarp, new PlanetoidInfo(PlanetoidType.MiniShatteredWarp,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Warp, "dlc2::worlds/MiniShatteredWarpAsteroid"},
+                })},
+            {PlanetoidType.MiniShatteredGeo, new PlanetoidInfo(PlanetoidType.MiniShatteredGeo,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Other, "dlc2::worlds/MiniShatteredGeoAsteroid"},
+                })},
+
+            // DLC4
+            {PlanetoidType.PrehistoricSpacedOut, new PlanetoidInfo(PlanetoidType.PrehistoricSpacedOut,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc4::worlds/PrehistoricSpacedOutAsteroid"},
+                })},
+            {PlanetoidType.PrehistoricClassic, new PlanetoidInfo(PlanetoidType.PrehistoricClassic,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc4::worlds/PrehistoricClassicAsteroid"},
+                })},
+            {PlanetoidType.PrehistoricShatteredClassic, new PlanetoidInfo(PlanetoidType.PrehistoricShatteredClassic,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc4::worlds/PrehistoricShatteredClassicAsteroid"},
+                })},
+            {PlanetoidType.WarpOilySandySwamp, new PlanetoidInfo(PlanetoidType.WarpOilySandySwamp,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Warp, "expansion1::worlds/WarpOilySandySwamp"},
                 })},
         };
 

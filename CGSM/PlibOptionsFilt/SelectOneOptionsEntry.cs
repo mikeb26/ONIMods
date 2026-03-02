@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
+using PeterHan.PLib.Core;
 using PeterHan.PLib.UI;
 using UnityEngine;
 
@@ -28,6 +29,23 @@ namespace PeterHan.PLib.OptionsFilt {
 	/// An options entry which represents Enum and displays a spinner with text options.
 	/// </summary>
 	public class SelectOneOptionsEntry : OptionsEntry {
+		/// <summary>
+		/// Determines whether an enum member should be displayed based on its
+		/// RequireDLCAttribute(s).
+		/// </summary>
+		/// <param name="member">The enum member info.</param>
+		/// <returns>true if the enum member should be included, or false if it should be hidden.</returns>
+		private static bool MatchesDLC(MemberInfo member) {
+			bool dlcMatch = true;
+			foreach (var attrib in member.GetCustomAttributes(false))
+				if (attrib is RequireDLCAttribute requireDLC && PGameUtils.IsDLCOwned(
+						requireDLC.DlcID) != requireDLC.Required) {
+					dlcMatch = false;
+					break;
+				}
+			return dlcMatch;
+		}
+
 		/// <summary>
 		/// Obtains the title and tool tip for an enumeration value.
 		/// </summary>
@@ -101,8 +119,20 @@ namespace PeterHan.PLib.OptionsFilt {
 			chosen = null;
 			comboBox = null;
 			options = new List<EnumOption>(n);
-			for (int i = 0; i < n; i++)
-				options.Add(GetAttribute(eval.GetValue(i), fieldType));
+			for (int i = 0; i < n; i++) {
+				object value = eval.GetValue(i);
+				string valueName = value?.ToString() ?? "";
+				// Filter based on [RequireDLC] applied to enum members
+				bool include = true;
+				foreach (var enumField in fieldType.GetMember(valueName, BindingFlags.Public |
+						BindingFlags.Static))
+					if (enumField.DeclaringType == fieldType) {
+						include = MatchesDLC(enumField);
+						break;
+					}
+				if (include)
+					options.Add(GetAttribute(value, fieldType));
+			}
 		}
 
 		public override GameObject GetUIComponent() {
