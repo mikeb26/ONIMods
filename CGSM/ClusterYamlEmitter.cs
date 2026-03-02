@@ -19,7 +19,7 @@ menuOrder: {4}
 clusterCategory: {0}
 {1}difficulty: {2}
 
-startWorldIndex: {3}
+{6}startWorldIndex: {3}
 ";
 
     public ClusterYamlEmitter(Cluster clusterIn, int categoryIn, string outputFileIn) {
@@ -71,6 +71,22 @@ startWorldIndex: {3}
         if (this.cluster.storyTraits) {
             storyTraitsStr = "";
         }
+
+        // DLC4 clusters (Prehistoric) have extra cluster metadata to enable the
+        // Demolior/Prehistoric content and audio.
+        var dlc4HeaderExtras = "";
+        if (this.cluster?.start?.planetoid?.RequiredDlcIdToken() == "DLC4_ID") {
+            dlc4HeaderExtras =
+                "clusterTags:\n" +
+                "- PrehistoricCluster\n" +
+                "- DemoliorImperative\n\n" +
+                "clusterAudio:\n" +
+                "  musicWelcome: Music_WattsonMessage_DLC4\n" +
+                "  musicFirst: Prehistoric_Planet\n" +
+                "  stingerDay: Stinger_Day_DLC4\n" +
+                "  stingerNight: Stinger_Loop_Night_DLC4\n\n";
+        }
+
         int startWorldIndex = 0;
         if (this.cluster.placePriority != Cluster.PlacePriority.Start) {
             startWorldIndex = 1;
@@ -127,7 +143,7 @@ startWorldIndex: {3}
 
         yamlContent.Append(string.Format(ClusterYamlHeaderTextFmt, this.category, storyTraitsStr,
                                              this.cluster.difficulty, startWorldIndex, -16,
-                                             requiredDlcIds.ToString()));
+                                             requiredDlcIds.ToString(), dlc4HeaderExtras));
         yamlContent.Append(string.Format("numRings: {0}\nworldPlacements:\n",
                                          this.cluster.radius));
     }
