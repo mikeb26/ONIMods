@@ -176,6 +176,13 @@ public class Cluster {
         harvestPoiGroup.AddIfSet(optsIn.sandyOreField, HarvestablePOIs.SandyOreField);
         harvestPoiGroup.AddIfSet(optsIn.satelliteField, HarvestablePOIs.SatelliteField);
         harvestPoiGroup.AddIfSet(optsIn.swampyOreField, HarvestablePOIs.SwampyOreField);
+        // These POIs only exist when the corresponding DLC is active.
+        if (DlcManager.IsContentSubscribed(DlcManager.DLC2_ID)) {
+            harvestPoiGroup.AddIfSet(optsIn.dlc2CeresOreField, HarvestablePOIs.DLC2CeresOreField);
+        }
+        if (DlcManager.IsContentSubscribed(DlcManager.DLC4_ID)) {
+            harvestPoiGroup.AddIfSet(optsIn.dlc4PrehistoricOreField, HarvestablePOIs.DLC4PrehistoricOreField);
+        }
 
         this.poiGroups.Add(harvestPoiGroup);
     }

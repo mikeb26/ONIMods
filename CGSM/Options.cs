@@ -222,6 +222,16 @@ public sealed class Options /* : IOptions */ {
     [JsonProperty]
     public bool swampyOreField { get; set; }
 
+    [Option("STRINGS.UI.SPACEDESTINATIONS.HARVESTABLE_POI.DLC2CERESOREFIELD.NAME", "STRINGS.UI.SPACEDESTINATIONS.HARVESTABLE_POI.DLC2CERESOREFIELD.DESC", "STRINGS.UI.FRONTEND.CGSM.SPACE_POIS_CAT")]
+    [RequireDLC(DlcManager.DLC2_ID)]
+    [JsonProperty]
+    public bool dlc2CeresOreField { get; set; }
+
+    [Option("STRINGS.UI.SPACEDESTINATIONS.HARVESTABLE_POI.DLC4PREHISTORICOREFIELD.NAME", "STRINGS.UI.SPACEDESTINATIONS.HARVESTABLE_POI.DLC4PREHISTORICOREFIELD.DESC", "STRINGS.UI.FRONTEND.CGSM.SPACE_POIS_CAT")]
+    [RequireDLC(DlcManager.DLC4_ID)]
+    [JsonProperty]
+    public bool dlc4PrehistoricOreField { get; set; }
+
     public Options() {
         // defaults
         starmapRadius = 17;
@@ -277,6 +287,9 @@ public sealed class Options /* : IOptions */ {
         sandyOreField = true;
         satelliteField = true;
         swampyOreField = true;
+        // DLC-specific harvestables default enabled only when the DLC is owned/active.
+        dlc2CeresOreField = DlcManager.IsContentSubscribed(DlcManager.DLC2_ID);
+        dlc4PrehistoricOreField = DlcManager.IsContentSubscribed(DlcManager.DLC4_ID);
     }
 
     public int getHarvestPoiCount() {
@@ -305,6 +318,12 @@ public sealed class Options /* : IOptions */ {
         count += Convert.ToInt32(sandyOreField);
         count += Convert.ToInt32(satelliteField);
         count += Convert.ToInt32(swampyOreField);
+        if (DlcManager.IsContentSubscribed(DlcManager.DLC2_ID)) {
+            count += Convert.ToInt32(dlc2CeresOreField);
+        }
+        if (DlcManager.IsContentSubscribed(DlcManager.DLC4_ID)) {
+            count += Convert.ToInt32(dlc4PrehistoricOreField);
+        }
 
         return count;
     }

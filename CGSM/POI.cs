@@ -29,6 +29,8 @@ public enum POIType {
     SandyOreField,
     SatelliteField,
     SwampyOreField,
+    DLC2CeresOreField,
+    DLC4PrehistoricOreField,
     TemporalTear,
     GravitasSpaceStation1,
     GravitasSpaceStation2,
@@ -65,6 +67,8 @@ public enum HarvestablePOIs {
     SandyOreField = POIType.SandyOreField,
     SatelliteField = POIType.SatelliteField,
     SwampyOreField = POIType.SwampyOreField,
+    DLC2CeresOreField = POIType.DLC2CeresOreField,
+    DLC4PrehistoricOreField = POIType.DLC4PrehistoricOreField,
 };
 
 public enum ArtifactPOIs {
@@ -91,7 +95,7 @@ public static class POI {
 
     public static bool isHarvestable(POIType poi) {
         if (poi >= POIType.CarbonAsteroidField &&
-            poi <= POIType.SwampyOreField) {
+            poi <= POIType.DLC4PrehistoricOreField) {
             return true;
         }
 

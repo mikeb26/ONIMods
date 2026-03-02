@@ -96,10 +96,26 @@ startWorldIndex: {3}
             }
         }
 
+        // Some clusters may not include any DLC2/DLC4 planetoids, but can still include
+        // DLC-specific HarvestableSpacePOI.
+        void ConsiderPOI(POIType poi) {
+            if (poi == POIType.DLC2CeresOreField) {
+                needsDlc2 = true;
+            } else if (poi == POIType.DLC4PrehistoricOreField) {
+                needsDlc4 = true;
+            }
+        }
+
         ConsiderPlanetoid(this.cluster.start);
         ConsiderPlanetoid(this.cluster.warp);
         foreach (var placement in this.cluster.others) {
             ConsiderPlanetoid(placement);
+        }
+
+        foreach (var poiGroup in this.cluster.poiGroups) {
+            foreach (var poi in poiGroup.poiList) {
+                ConsiderPOI(poi);
+            }
         }
 
         if (needsDlc2) {
