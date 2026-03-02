@@ -47,6 +47,23 @@ namespace PeterHan.PLib.OptionsFilt {
 		}
 
 		/// <summary>
+		/// Determines whether an enum member should be displayed based on its
+		/// RequireModAttribute(s).
+		/// </summary>
+		/// <param name="member">The enum member info.</param>
+		/// <returns>true if the enum member should be included, or false if it should be hidden.</returns>
+		private static bool MatchesMod(MemberInfo member) {
+			bool modMatch = true;
+			foreach (var attrib in member.GetCustomAttributes(false))
+				if (attrib is RequireModAttribute requireMod && !Util.IsModEnabled(
+						requireMod.ModStaticID)) {
+					modMatch = false;
+					break;
+				}
+			return modMatch;
+		}
+
+		/// <summary>
 		/// Obtains the title and tool tip for an enumeration value.
 		/// </summary>
 		/// <param name="enumValue">The value in the enumeration.</param>
@@ -122,12 +139,12 @@ namespace PeterHan.PLib.OptionsFilt {
 			for (int i = 0; i < n; i++) {
 				object value = eval.GetValue(i);
 				string valueName = value?.ToString() ?? "";
-				// Filter based on [RequireDLC] applied to enum members
+				// Filter based on requirement attributes applied to enum members
 				bool include = true;
 				foreach (var enumField in fieldType.GetMember(valueName, BindingFlags.Public |
 						BindingFlags.Static))
 					if (enumField.DeclaringType == fieldType) {
-						include = MatchesDLC(enumField);
+						include = MatchesDLC(enumField) && MatchesMod(enumField);
 						break;
 					}
 				if (include)
