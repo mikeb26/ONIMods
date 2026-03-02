@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2023 Peter Han
+ * Copyright 2026 Peter Han
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without
  * restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Serialization;
 using PeterHan.PLib.UI;
 using UnityEngine;
 
@@ -36,38 +37,26 @@ namespace PeterHan.PLib.OptionsFilt {
 		private static EnumOption GetAttribute(object enumValue, Type fieldType) {
 			if (enumValue == null)
 				throw new ArgumentNullException(nameof(enumValue));
-			bool shouldSkip = false;
 			string valueName = enumValue.ToString(), title = valueName, tooltip = "";
 			foreach (var enumField in fieldType.GetMember(valueName, BindingFlags.Public |
-						BindingFlags.Static)) {
-				if (enumField.DeclaringType != fieldType) {
-					continue;
+						BindingFlags.Static))
+				if (enumField.DeclaringType == fieldType) {
+					// Search for OptionsAttribute
+					foreach (var attrib in enumField.GetCustomAttributes(false))
+						if (attrib is IOptionSpec spec) {
+							if (string.IsNullOrEmpty(spec.Title))
+								spec = HandleDefaults(spec, enumField);
+							title = LookInStrings(spec.Title);
+							tooltip = LookInStrings(spec.Tooltip);
+							break;
+						} else if (attrib is EnumMemberAttribute attr && attr.
+								IsValueSetExplicitly) {
+							title = LookInStrings(attr.Value);
+							break;
+						}
+					break;
 				}
-				// Search for OptionsAttribute
-				foreach (var attrib in enumField.GetCustomAttributes(false)) {
-					if (attrib is IOptionSpec spec) {
-						if (string.IsNullOrEmpty(spec.Title))
-							spec = HandleDefaults(spec, enumField);
-						title = LookInStrings(spec.Title);
-						tooltip = LookInStrings(spec.Tooltip);
-					} else if (attrib is RequireDLCAttribute requireDLC &&
-					           DlcManager.IsContentActive(requireDLC.DlcID) !=
-					            requireDLC.Required) {
-						shouldSkip = true;
-						break;
-					} else if (attrib is RequireModAttribute requireMod &&
-					           !Util.IsModEnabled(requireMod.ModStaticID)) {
-						shouldSkip = true;
-						break;
-					}
-				}
-				break;
-			}
-			if (!shouldSkip) {
- 				return new EnumOption(title, tooltip, enumValue);
-			} else {
-				return null;
-			}
+			return new EnumOption(title, tooltip, enumValue);
 		}
 
 		public override object Value {
@@ -112,13 +101,8 @@ namespace PeterHan.PLib.OptionsFilt {
 			chosen = null;
 			comboBox = null;
 			options = new List<EnumOption>(n);
-			for (int i = 0; i < n; i++) {
-				var opt2add = GetAttribute(eval.GetValue(i), fieldType);
-				if (opt2add == null) {
-					continue;
-				}
-				options.Add(opt2add);
-			}
+			for (int i = 0; i < n; i++)
+				options.Add(GetAttribute(eval.GetValue(i), fieldType));
 		}
 
 		public override GameObject GetUIComponent() {
@@ -147,7 +131,7 @@ namespace PeterHan.PLib.OptionsFilt {
 		/// </summary>
 		private void Update() {
 			if (comboBox != null && chosen != null)
-				PComboBox<EnumOption>.SetSelectedItem(comboBox, chosen, false);
+				PComboBox<EnumOption>.SetSelectedItem(comboBox, chosen);
 		}
 
 		/// <summary>

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2023 Peter Han
+ * Copyright 2026 Peter Han
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without
  * restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -25,8 +25,7 @@ namespace PeterHan.PLib.OptionsFilt {
 	/// show or hide it for particular DLCs. If the option is hidden, the value currently
 	/// in the options file is preserved unchanged when reading or writing.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true,
-		Inherited = true)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
 	public sealed class RequireDLCAttribute : Attribute {
 		/// <summary>
 		/// The DLC ID to check.

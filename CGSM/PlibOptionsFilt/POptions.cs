@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2023 Peter Han
+ * Copyright 2026 Peter Han
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without
  * restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -152,6 +152,11 @@ namespace PeterHan.PLib.OptionsFilt {
 				PUtil.LogDebug("{0} was not found; using default settings".F(Path.GetFileName(
 					path)));
 #endif
+			} catch (DirectoryNotFoundException) {
+#if DEBUG
+				PUtil.LogDebug("{0} was not found; using default settings".F(Path.GetFileName(
+					path)));
+#endif
 			} catch (UnauthorizedAccessException e) {
 				// Options will be set to defaults
 				PUtil.LogExcWarn(e);
@@ -260,14 +265,17 @@ namespace PeterHan.PLib.OptionsFilt {
 				var modSpec = mods[index];
 				string label = modSpec.staticID;
 				if (modSpec.IsEnabledForActiveDlc() && registered.TryGetValue(label,
-						out ModOptionsHandler handler)) {
+						out var handler)) {
+					string title = modSpec.title;
+					if (Strings.TryGet(title, out var localized))
+						title = localized.String;
 #if DEBUG
 					PUtil.LogDebug("Adding options for mod: {0}".F(modSpec.staticID));
 #endif
 					// Create delegate to open settings dialog
 					new PButton("ModSettingsButton") {
 						FlexSize = Vector2.up, OnClick = handler.ShowDialog,
-						ToolTip = PLibStrings.DIALOG_TITLE.text.F(modSpec.title), Text =
+						ToolTip = PLibStrings.DIALOG_TITLE.text.F(title), Text =
 						CultureInfo.CurrentCulture.TextInfo.ToTitleCase(PLibStrings.
 						BUTTON_OPTIONS.text.ToLower()), Margin = OPTION_BUTTON_MARGIN
 						// Move before the subscription and enable button

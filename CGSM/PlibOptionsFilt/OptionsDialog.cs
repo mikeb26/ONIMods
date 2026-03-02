@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2023 Peter Han
+ * Copyright 2026 Peter Han
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without
  * restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -252,18 +252,6 @@ namespace PeterHan.PLib.OptionsFilt {
 		}
 
 		/// <summary>
-		/// Checks the mod config class for the [RestartRequired] attribute, and brings up a
-		/// restart dialog if necessary.
-		/// </summary>
-		private void CheckForRestart() {
-			if (options != null && options.GetType().GetCustomAttribute(typeof(
-					RestartRequiredAttribute)) != null)
-				// Prompt user to restart
-				PUIElements.ShowConfirmDialog(null, PLibStrings.RESTART_REQUIRED,
-					SaveAndRestart, null, PLibStrings.RESTART_OK, PLibStrings.RESTART_CANCEL);
-		}
-
-		/// <summary>
 		/// Closes the current dialog.
 		/// </summary>
 		private void CloseDialog() {
@@ -359,11 +347,12 @@ namespace PeterHan.PLib.OptionsFilt {
 			if (!string.IsNullOrEmpty(uri)) {
 				// Open the config folder, opening the file itself might start an unknown
 				// editor which could execute the json somehow...
-				WriteOptions();
+				bool changed = WriteOptions();
 				CloseDialog();
 				PUtil.LogDebug("Opening config folder: " + uri);
 				Application.OpenURL(uri);
-				CheckForRestart();
+				if (changed)
+					PromptForRestart();
 			}
 		}
 
@@ -375,8 +364,8 @@ namespace PeterHan.PLib.OptionsFilt {
 			switch (action) {
 			case "ok":
 				// Save changes to mod options
-				WriteOptions();
-				CheckForRestart();
+				if (WriteOptions())
+					PromptForRestart();
 				break;
 			case PDialog.DIALOG_KEY_CLOSE:
 				OnClose?.Invoke(options);
@@ -390,6 +379,15 @@ namespace PeterHan.PLib.OptionsFilt {
 		private void OnResetConfig(GameObject _) {
 			options = CreateOptions(optionsType);
 			UpdateOptions();
+		}
+		
+		/// <summary>
+		/// Brings up a restart dialog.
+		/// </summary>
+		private void PromptForRestart() {
+			// Prompt user to restart
+			PUIElements.ShowConfirmDialog(null, PLibStrings.RESTART_REQUIRED,
+				SaveAndRestart, null, PLibStrings.RESTART_OK, PLibStrings.RESTART_CANCEL);
 		}
 
 		/// <summary>
@@ -458,16 +456,23 @@ namespace PeterHan.PLib.OptionsFilt {
 		/// <summary>
 		/// Writes the mod options to its config file.
 		/// </summary>
-		private void WriteOptions() {
+		/// <returns>true if a restart is requested, or false otherwise.</returns>
+		private bool WriteOptions() {
+			bool needRestart = false;
 			if (options != null) {
+				if (options.GetType().GetCustomAttribute(typeof(RestartRequiredAttribute)) !=
+						null)
+					needRestart = true;
 				// Update from local options
 				foreach (var catEntries in optionCategories)
 					foreach (var option in catEntries.Value)
-						option.WriteTo(options);
+						// Order is important, WriteTo must always run!
+						needRestart |= option.WriteTo(options) && option.RestartRequired;
 				POptions.WriteSettings(options, POptions.GetConfigFilePath(optionsType),
 					configAttr?.IndentOutput ?? false);
 				TriggerUpdateOptions(options);
 			}
+			return needRestart;
 		}
 	}
 }

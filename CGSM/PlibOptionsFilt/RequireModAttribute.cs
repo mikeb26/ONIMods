@@ -1,4 +1,6 @@
-﻿using PeterHan.PLib.Core;
+﻿// Copyright © 2023,2026 Mike Brown; see LICENSE at the root of this package
+
+using PeterHan.PLib.Core;
 using System;
 
 namespace PeterHan.PLib.OptionsFilt {

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2023 Peter Han
+ * Copyright 2026 Peter Han
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without
  * restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -24,6 +24,11 @@ namespace PeterHan.PLib.OptionsFilt {
 	/// </summary>
 	public interface IOptionsEntry : IOptionSpec {
 		/// <summary>
+		/// Stores whether changing this option requires a restart.
+		/// </summary>
+		bool RestartRequired { get; set; }
+
+		/// <summary>
 		/// Creates UI components that will present this option.
 		/// </summary>
 		/// <param name="parent">The parent panel where the components should be added.</param>
@@ -41,6 +46,7 @@ namespace PeterHan.PLib.OptionsFilt {
 		/// Writes the option value from the UI into the provided settings object.
 		/// </summary>
 		/// <param name="settings">The settings object.</param>
-		void WriteTo(object settings);
+		/// <returns>true if the value changed, or false otherwise.</returns>
+		bool WriteTo(object settings);
 	}
 }
