@@ -6,6 +6,9 @@ public static class Strings {
     public static class UI {
         public static class FRONTEND {
             public static class SU {
+                public static LocString LOG_DISC = "Log Discoveries";
+                public static LocString LOG_DISC_DESC = "Set to true to instruct the mod to log each item as it is discovered";
+
             }
         }
     }

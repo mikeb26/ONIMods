@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Klei.CustomSettings;
 using Klei.AI;
+using PeterHan.PLib.Options;
 
 namespace ShowUndiscovered;
 
@@ -18,8 +19,13 @@ public class GameState
     private Extras extras;
     private List<Tag> allTags;
     private bool isStarted;
+    internal Options opts = null;
 
     public GameState() {
+        this.opts = POptions.ReadSettings<Options>();
+        if (opts == null) {
+            this.opts = new Options();
+        }
         this.critters = new Critters();
         this.seeds = new Seeds();
         this.medicines = new Medicines();
@@ -49,9 +55,18 @@ public class GameState
     // private void discoverBuildings() {
     // }
 
-    public void logMissing(Tag tag, Tag categoryTag) {
-        if (this.isStarted && !this.allTags.Contains(tag)) {
-            Util.LogDbg("Missing tag: {0}, {1}", tag, categoryTag);
+    public void logDiscover(Tag tag, Tag categoryTag) {
+        if (!this.opts.logDiscovery) {
+            return;
+        }
+        if (!this.isStarted) {
+            Util.Log("Pre-start tag: {0}, {1}", tag, categoryTag);
+        }
+
+        if (!this.allTags.Contains(tag)) {
+            Util.Log("Missing tag: {0}, {1}", tag, categoryTag);
+        } else {
+            // @todo check if category tag is the same as what we discovered with during init
         }
     }
 }

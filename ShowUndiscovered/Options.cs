@@ -10,9 +10,14 @@ namespace ShowUndiscovered;
 
 [JsonObject(MemberSerialization.OptIn)]
 [ModInfo("https://github.com/mikeb26/ONIMods/ShowUndiscovered")]
-public sealed class SUOptions {
-    public SUOptions() {
+public sealed class Options /* : IOptions */ {
+    [Option("STRINGS.UI.FRONTEND.SU.LOG_DISC", "STRINGS.UI.FRONTEND.SU.LOG_DISC_DESC")]
+    [JsonProperty]
+    public bool logDiscovery { get; set; }
+
+    public Options() {
         // defaults
+	this.logDiscovery = false;
     }
 
     // @todo add option to store currently non-storable items
@@ -22,7 +27,7 @@ public sealed class SUOptions {
         StringBuilder sb = new StringBuilder();
         sb.Append("Options[ ");
 
-        foreach(PropertyInfo prop in typeof(SUOptions).GetProperties()) {
+        foreach(PropertyInfo prop in typeof(Options).GetProperties()) {
             sb.Append(string.Format("{0}={1} ", prop.Name, prop.GetValue(this, null)));
         }
         sb.Append("]");

@@ -8,13 +8,13 @@ namespace ShowUndiscovered;
 
 public static class Hooks
 {
-    // [HarmonyPatch(typeof(DiscoveredResources), "Discover")]
-    // public static class DiscoveredResources_Discover_Patch  {
-    //     // keep prefix; some other mod is breaking postfix
-    //     public static void Prefix(Tag tag, Tag categoryTag) {
-    //         Mod.Instance.gameState.logMissing(tag, categoryTag);
-    //     }
-    // }
+    [HarmonyPatch(typeof(DiscoveredResources), "Discover")]
+    public static class DiscoveredResources_Discover_Patch  {
+        // keep prefix; some other mod is breaking postfix
+        public static void Prefix(Tag tag, Tag categoryTag) {
+            Mod.Instance.gameState.logDiscover(tag, categoryTag);
+        }
+    }
 
     // new game hook
     [HarmonyPatch(typeof(Game), "OnSpawn")]
