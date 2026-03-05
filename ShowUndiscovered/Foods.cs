@@ -54,7 +54,7 @@ public class Foods {
                 catTag = GameTags.Edible;
             }
 
-            DiscoveredResources.Instance.Discover(tag, catTag);
+	    Mod.Instance.gameState.Discover(tag, catTag);
         }
 
         return tags;

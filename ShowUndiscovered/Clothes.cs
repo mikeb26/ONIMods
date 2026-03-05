@@ -35,7 +35,7 @@ public class Clothes {
 
             var tag = prefabId.PrefabTag;
             if (tags.Add(tag)) {
-                DiscoveredResources.Instance.Discover(tag, GameTags.Clothes);
+                Mod.Instance.gameState.Discover(tag, GameTags.Clothes);
             }
         }
 

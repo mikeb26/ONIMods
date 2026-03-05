@@ -69,4 +69,10 @@ public class GameState
             // @todo check if category tag is the same as what we discovered with during init
         }
     }
+
+    public void Discover(Tag tag, Tag catTag) {
+        if (this.opts.showUndiscovered) {
+            DiscoveredResources.Instance.Discover(tag, catTag);
+        }
+    }
 }

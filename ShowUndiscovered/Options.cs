@@ -15,9 +15,14 @@ public sealed class Options /* : IOptions */ {
     [JsonProperty]
     public bool logDiscovery { get; set; }
 
+    [Option("STRINGS.UI.FRONTEND.SU.SHOW_UND", "STRINGS.UI.FRONTEND.SU.SHOW_UND_DESC")]
+    [JsonProperty]
+    public bool showUndiscovered { get; set; }
+
     public Options() {
         // defaults
 	this.logDiscovery = false;
+	this.showUndiscovered = true;
     }
 
     // @todo add option to store currently non-storable items

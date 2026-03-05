@@ -130,7 +130,7 @@ public class Extras {
 
             var extraTag = prefabId.PrefabTag;
             if (tags.Add(extraTag)) {
-                DiscoveredResources.Instance.Discover(extraTag, categoryTag);
+                Mod.Instance.gameState.Discover(extraTag, categoryTag);
             }
         }
 

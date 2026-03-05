@@ -48,7 +48,7 @@ public class Critters {
             if (prefabId.HasTag(GameTags.Egg)) {
                 var eggTag = prefabId.PrefabTag;
                 if (tags.Add(eggTag)) {
-                    DiscoveredResources.Instance.Discover(eggTag, GameTags.Egg);
+                    Mod.Instance.gameState.Discover(eggTag, GameTags.Egg);
                 }
                 continue;
             }
@@ -60,7 +60,7 @@ public class Critters {
 
             var critterTag = prefabId.PrefabTag;
             if (tags.Add(critterTag)) {
-                DiscoveredResources.Instance.Discover(critterTag, critterCategory);
+                Mod.Instance.gameState.Discover(critterTag, critterCategory);
             }
         }
 

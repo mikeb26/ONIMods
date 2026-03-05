@@ -86,7 +86,7 @@ public class Elements {
 
             var categoryTag = GetCategoryTag(element);
             tags.Add(elementTag);
-            DiscoveredResources.Instance.Discover(elementTag, categoryTag);
+            Mod.Instance.gameState.Discover(elementTag, categoryTag);
         }
 
         return tags;

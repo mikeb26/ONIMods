@@ -33,7 +33,7 @@ public class Seeds {
 
             var seedTag = prefabId.PrefabTag;
             if (tags.Add(seedTag)) {
-                DiscoveredResources.Instance.Discover(seedTag, GameTags.Seed);
+                Mod.Instance.gameState.Discover(seedTag, GameTags.Seed);
             }
         }
 
