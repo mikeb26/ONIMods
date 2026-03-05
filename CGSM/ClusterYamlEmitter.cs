@@ -74,9 +74,9 @@ clusterCategory: {0}
 
         // DLC4 clusters (Prehistoric) have extra cluster metadata to enable the
         // Demolior/Prehistoric content and audio.
-        var dlc4HeaderExtras = "";
+        var dlcHeaderExtras = "";
         if (this.cluster?.start?.planetoid?.RequiredDlcIdToken() == "DLC4_ID") {
-            dlc4HeaderExtras =
+            dlcHeaderExtras =
                 "clusterTags:\n" +
                 "- PrehistoricCluster\n" +
                 "- DemoliorImperative\n\n" +
@@ -85,6 +85,17 @@ clusterCategory: {0}
                 "  musicFirst: Prehistoric_Planet\n" +
                 "  stingerDay: Stinger_Day_DLC4\n" +
                 "  stingerNight: Stinger_Loop_Night_DLC4\n\n";
+        } else if (this.cluster?.start?.planetoid?.RequiredDlcIdToken() == "DLC2_ID") {
+            // DLC2 clusters (Frosty) similar
+            dlcHeaderExtras =
+                "clusterTags:\n" +
+                "- CeresCluster\n" +
+                "- GeothermalImperative\n\n" +
+                "clusterAudio:\n" +
+                "  musicWelcome: Music_WattsonMessage_DLC2\n" +
+                "  musicFirst: Ice_Planet\n" +
+                "  stingerDay: Stinger_Day_DLC2\n" +
+                "  stingerNight: Stinger_Loop_Night_DLC2\n\n";
         }
 
         int startWorldIndex = 0;
@@ -143,7 +154,7 @@ clusterCategory: {0}
 
         yamlContent.Append(string.Format(ClusterYamlHeaderTextFmt, this.category, storyTraitsStr,
                                              this.cluster.difficulty, startWorldIndex, -16,
-                                             requiredDlcIds.ToString(), dlc4HeaderExtras));
+                                             requiredDlcIds.ToString(), dlcHeaderExtras));
         yamlContent.Append(string.Format("numRings: {0}\nworldPlacements:\n",
                                          this.cluster.radius));
     }
