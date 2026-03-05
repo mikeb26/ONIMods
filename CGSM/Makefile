@@ -58,20 +58,20 @@ depscheck:
 
 .PHONY: test
 test: build FORCE
-	rm -rf "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
-	mkdir "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
-	cp -r bin/Debug/$(ONIModMergedDLL) bin/Debug/mod_info.yaml bin/Debug/mod.yaml bin/Debug/worldgen bin/Debug/templates "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
+	rm -rf $(ONIPlayerDir)/mods/Local/$(ONIModName)
+	mkdir $(ONIPlayerDir)/mods/Local/$(ONIModName)
+	cp -r bin/Debug/$(ONIModMergedDLL) bin/Debug/mod_info.yaml bin/Debug/mod.yaml bin/Debug/worldgen bin/Debug/templates $(ONIPlayerDir)/mods/Local/$(ONIModName)
 
 .PHONY: log
 log:
-	cat "$(ONIPlayerDir)/Player.log"
+	cat $(ONIPlayerDir)/Player.log
 
 .PHONY: logf
 logf:
-	tail -f "$(ONIPlayerDir)/Player.log"
+	tail -f $(ONIPlayerDir)/Player.log
 
 Player.log:
-	ln -s "$(ONIPlayerDir)/Player.log" .
+	ln -s $(ONIPlayerDir)/Player.log .
 
 deps: dirscheck FORCE
 	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net471 --version 1.0.3
