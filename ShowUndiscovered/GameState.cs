@@ -18,7 +18,9 @@ public class GameState
     private Elements elements;
     private Extras extras;
     private List<Tag> allTags;
+    private Dictionary<Tag, Tag> allTagCategories;
     private bool isStarted;
+    private bool isOurDiscover;
     internal Options opts = null;
 
     public GameState() {
@@ -34,7 +36,9 @@ public class GameState
         this.extras = new Extras();
         this.foods = new Foods();
         this.allTags = new List<Tag>();
+        this.allTagCategories = new Dictionary<Tag, Tag>();
         this.isStarted = false;
+        this.isOurDiscover = false;
     }
 
     public void discoverAll() {
@@ -59,20 +63,38 @@ public class GameState
         if (!this.opts.logDiscovery) {
             return;
         }
+        if (!this.isOurDiscover) {
+            return;
+        }
         if (!this.isStarted) {
             Util.Log("Pre-start tag: {0}, {1}", tag, categoryTag);
+            return;
         }
 
         if (!this.allTags.Contains(tag)) {
             Util.Log("Missing tag: {0}, {1}", tag, categoryTag);
         } else {
-            // @todo check if category tag is the same as what we discovered with during init
+            // If the game discovers a resource under a different category than the one we
+            // pre-discovered during init, log it (helps catch DLC/API changes).
+            if (this.isStarted && this.allTagCategories.TryGetValue(tag, out Tag originalCategoryTag)) {
+                if (originalCategoryTag != categoryTag) {
+                    Util.Log("Category mismatch tag={0}: original={1}, now={2}", tag, originalCategoryTag, categoryTag);
+                }
+            }
         }
     }
 
     public void Discover(Tag tag, Tag catTag) {
+        // Track the category we originally used when pre-discovering this tag during init.
+        // (Don't overwrite later; we want the initial mapping for mismatch detection.)
+        if (!this.isStarted && !this.allTagCategories.ContainsKey(tag)) {
+            this.allTagCategories.Add(tag, catTag);
+        }
+
         if (this.opts.showUndiscovered) {
+            this.isOurDiscover = true;
             DiscoveredResources.Instance.Discover(tag, catTag);
+            this.isOurDiscover = false;
         }
     }
 }
