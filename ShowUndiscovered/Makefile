@@ -25,6 +25,9 @@ Util.cs: Util.cs.tmpl FORCE
 #
 export ILREPACK = dotnet tool run ilrepack --
 export NET471_REF_DIR = $(HOME)/.nuget/packages/microsoft.netframework.referenceassemblies.net471/1.0.3/build/.NETFramework/v4.7.1
+export ILSPYCMD = ilspycmd --disable-updatecheck
+export ILSPY_OUTDIR = deps/ilspy
+export ILSPY_ENV = env DOTNET_PROCESSOR_COUNT=1
 bin/Debug/$(ONIModMergedDLL): bin/Debug/$(ONIModDLL)
 	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET471_REF_DIR)
 
@@ -39,6 +42,22 @@ dirscheck:
 .PHONY: depscheck
 depscheck:
 	if [ ! -d deps ]; then make deps; fi
+
+.PHONY: ilspy
+ilspy: depscheck FORCE
+	@# Note: --nested-directories combined with -p can trigger occasional
+	@# DirectoryNotFoundException on some systems/filesystems due to directory
+	@# creation races inside ilspycmd when writing many files in parallel.
+	@# Force a single worker by limiting Environment.ProcessorCount.
+	mkdir -p $(ILSPY_OUTDIR)
+	# Clean both historical output folder naming schemes.
+	rm -rf $(ILSPY_OUTDIR)/Assembly-CSharp $(ILSPY_OUTDIR)/Assembly-CSharp-firstpass
+	rm -rf $(ILSPY_OUTDIR)/Assembly-CSharp.dll $(ILSPY_OUTDIR)/Assembly-CSharp-firstpass.dll
+	# ilspycmd does not reliably create the top-level output directory itself.
+	# Create it explicitly to avoid DirectoryNotFoundException during project export.
+	mkdir -p $(ILSPY_OUTDIR)/Assembly-CSharp.dll $(ILSPY_OUTDIR)/Assembly-CSharp-firstpass.dll
+	$(ILSPY_ENV) $(ILSPYCMD) --nested-directories -p -o $(ILSPY_OUTDIR)/Assembly-CSharp.dll -r deps deps/Assembly-CSharp.dll
+	$(ILSPY_ENV) $(ILSPYCMD) --nested-directories -p -o $(ILSPY_OUTDIR)/Assembly-CSharp-firstpass.dll -r deps deps/Assembly-CSharp-firstpass.dll
 
 .PHONY: test
 test: build FORCE
