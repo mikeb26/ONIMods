@@ -23,12 +23,12 @@ Util.cs: Util.cs.tmpl FORCE
 # @todo there's probably a cleaner way to do this via PostBuildEvent in csproj but all of the
 # examples I could find assume visual studio
 #
-export ILREPACK = "$(HOME)/.nuget/packages/ilrepack/2.0.18/tools/ILRepack.exe"
+export ILREPACK = dotnet tool run ilrepack --
 bin/Debug/$(ONIModMergedDLL): bin/Debug/$(ONIModDLL)
-	cd bin/Debug; $(ILREPACK) /ndebug /out:$(ONIModMergedDLL) $(ONIModDLL) PLib.dll Newtonsoft.Json.dll /targetplatform:v4
+	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 bin/Release/$(ONIModMergedDLL): bin/Release/$(ONIModDLL)
-	cd bin/Release; $(ILREPACK) /ndebug /out:$(ONIModMergedDLL) $(ONIModDLL) PLib.dll Newtonsoft.Json.dll /targetplatform:v4
+	$(ILREPACK) /lib:bin/Release /ndebug /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 .PHONY: dirscheck
 dirscheck:
@@ -41,25 +41,25 @@ depscheck:
 
 .PHONY: test
 test: build FORCE
-	rm -rf "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
-	mkdir "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
-	cp -r bin/Debug/$(ONIModMergedDLL) bin/Debug/mod_info.yaml bin/Debug/mod.yaml "$(ONIPlayerDir)/mods/Local/$(ONIModName)"
+	rm -rf $(ONIPlayerDir)/mods/Local/$(ONIModName)
+	mkdir $(ONIPlayerDir)/mods/Local/$(ONIModName)
+	cp -r bin/Debug/$(ONIModMergedDLL) bin/Debug/mod_info.yaml bin/Debug/mod.yaml $(ONIPlayerDir)/mods/Local/$(ONIModName)
 
 .PHONY: log
 log:
-	cat "$(ONIPlayerDir)/Player.log"
+	cat $(ONIPlayerDir)/Player.log
 
 .PHONY: logf
 logf:
 	tail -f "$(ONIPlayerDir)/Player.log"
 
 Player.log:
-	ln -s "$(ONIPlayerDir)/Player.log" .
+	ln -s $(ONIPlayerDir)/Player.log .
 
 deps: dirscheck FORCE
-	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net471 --version 1.0.3
+	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net481 --version 1.0.3
 	dotnet add package ILRepack --version 2.0.18
-	dotnet add package PLib --version 4.12.0
+	dotnet add package PLib --version 4.20.0
 	dotnet add package Newtonsoft.Json --version 13.0.2
 	rm -rf deps
 	mkdir deps
