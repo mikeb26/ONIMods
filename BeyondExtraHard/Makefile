@@ -24,12 +24,12 @@ Util.cs: Util.cs.tmpl FORCE
 # examples I could find assume visual studio
 #
 export ILREPACK = dotnet tool run ilrepack --
-export NET471_REF_DIR = $(HOME)/.nuget/packages/microsoft.netframework.referenceassemblies.net471/1.0.3/build/.NETFramework/v4.7.1
+export NET481_REF_DIR = $(HOME)/.nuget/packages/microsoft.netframework.referenceassemblies.net481/1.0.3/build/.NETFramework/v4.8.1
 bin/Debug/$(ONIModMergedDLL): bin/Debug/$(ONIModDLL)
-	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET471_REF_DIR)
+	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 bin/Release/$(ONIModMergedDLL): bin/Release/$(ONIModDLL)
-	$(ILREPACK) /lib:bin/Release /ndebug /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET471_REF_DIR)
+	$(ILREPACK) /lib:bin/Release /ndebug /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 .PHONY: dirscheck
 dirscheck:
@@ -58,10 +58,10 @@ Player.log:
 	ln -s "$(ONIPlayerDir)/Player.log" .
 
 deps: dirscheck FORCE
-	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net471 --version 1.0.3
+	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net481 --version 1.0.3
 	# Keep ILRepack as a local dotnet tool (cross-platform) instead of the legacy .exe.
 	# (See .config/dotnet-tools.json)
-	dotnet add package PLib --version 4.19.0.0
+	dotnet add package PLib --version 4.20.0.0
 	dotnet add package Newtonsoft.Json --version 13.0.2
 	dotnet tool restore --tool-manifest .config/dotnet-tools.json
 	rm -rf deps
