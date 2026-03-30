@@ -80,7 +80,7 @@ deps: dirscheck FORCE
 	dotnet add package Microsoft.NETFramework.ReferenceAssemblies.net481 --version 1.0.3
 	# Keep ILRepack as a local dotnet tool (cross-platform) instead of the legacy .exe.
 	# (See .config/dotnet-tools.json)
-	dotnet add package PLib --version 4.20.0.0
+	dotnet add package PLib --version 4.21.0.0
 	dotnet add package Newtonsoft.Json --version 13.0.2
 	dotnet tool restore --tool-manifest .config/dotnet-tools.json
 	rm -rf deps
