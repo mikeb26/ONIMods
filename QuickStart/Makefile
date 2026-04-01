@@ -25,10 +25,10 @@ Util.cs: Util.cs.tmpl FORCE
 #
 export ILREPACK = dotnet tool run ilrepack --
 bin/Debug/$(ONIModMergedDLL): bin/Debug/$(ONIModDLL)
-	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
+	$(ILREPACK) /lib:bin/Debug /ndebug /allowdup /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 bin/Release/$(ONIModMergedDLL): bin/Release/$(ONIModDLL)
-	$(ILREPACK) /lib:bin/Release /ndebug /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
+	$(ILREPACK) /lib:bin/Release /ndebug /allowdup /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 .PHONY: dirscheck
 dirscheck:
