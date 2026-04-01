@@ -26,10 +26,10 @@ Util.cs: Util.cs.tmpl FORCE
 export ILREPACK = dotnet tool run ilrepack --
 export NET481_REF_DIR = $(HOME)/.nuget/packages/microsoft.netframework.referenceassemblies.net481/1.0.3/build/.NETFramework/v4.8.1
 bin/Debug/$(ONIModMergedDLL): bin/Debug/$(ONIModDLL)
-	$(ILREPACK) /lib:bin/Debug /ndebug /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
+	$(ILREPACK) /lib:bin/Debug /ndebug /allowdup /out:bin/Debug/$(ONIModMergedDLL) bin/Debug/$(ONIModDLL) bin/Debug/PLib.dll bin/Debug/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 bin/Release/$(ONIModMergedDLL): bin/Release/$(ONIModDLL)
-	$(ILREPACK) /lib:bin/Release /ndebug /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
+	$(ILREPACK) /lib:bin/Release /ndebug /allowdup /out:bin/Release/$(ONIModMergedDLL) bin/Release/$(ONIModDLL) bin/Release/PLib.dll bin/Release/Newtonsoft.Json.dll /targetplatform:v4,$(NET481_REF_DIR)
 
 # https://stackoverflow.com/questions/119271/copy-all-files-and-folders-using-msbuild
 #
