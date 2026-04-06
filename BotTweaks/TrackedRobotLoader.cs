@@ -63,5 +63,15 @@ internal static class TrackedRobotLoader {
         }
 
         Util.LogDbg("TrackedRobotLoader: attached tracker to {0} existing robot(s)", attached);
+
+        // Ensure resource screen picks up newly discovered robot types.
+        var rs = AllResourcesScreen.Instance;
+        if (rs != null) {
+            rs.Populate();
+        }
+        var pr = PinnedResourcesPanel.Instance;
+        if (pr != null) {
+            pr.Refresh();
+        }
     }
 }

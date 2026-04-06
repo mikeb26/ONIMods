@@ -6,6 +6,15 @@ using UnityEngine;
 namespace BotTweaks.Hooks;
 
 internal static class HooksPrefabs {
+    [HarmonyPatch(typeof(WorldInventory), "OnPrefabInit")]
+    public static class WorldInventory_OnPrefabInit_Patch {
+        public static void Postfix(WorldInventory __instance) {
+            Util.LogDbg("WorldInventory.OnPrefabInit: adding RobotInventory to world '{0}' (id:{1})", __instance.gameObject.name,
+                __instance.GetComponent<WorldContainer>() != null ? __instance.GetComponent<WorldContainer>().id : -1);
+            __instance.gameObject.AddOrGet<RobotInventory>();
+        }
+    }
+
     [HarmonyPatch(typeof(ScoutRoverConfig), nameof(ScoutRoverConfig.CreatePrefab))]
     public static class ScoutRoverConfig_CreatePrefab_Patch {
         public static void Postfix(GameObject __result) {
