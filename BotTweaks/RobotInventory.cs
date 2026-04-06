@@ -1,182 +1,136 @@
-﻿/*
+/*
  * Original Copyright 2026 Peter Han; see ./ResourceScreen/LICENSE from this directory
+ * Adaptations for BotTweaks Copyright © 2026 Mike Brown; see LICENSE at the root of this
+ *   package
  */
 
 using KSerialization;
-using PeterHan.PLib.Detours;
-using System;
 using System.Collections.Generic;
-
-using RobotInventoryPerType = System.Collections.Generic.Dictionary<Tag, PeterHan.
-    RobotInventory.RobotTotals>;
 
 namespace BotTweaks;
 
-/// <summary>
-/// Stores the inventory of each critter type. One is created per world.
-/// </summary>
+// loosely based on https://github.com/peterhaneve/ONIMods/blob/main/CritterInventory/CritterInventory.cs
+
+// Stores the inventory all tracked robots per world.
 [SerializationConfig(MemberSerialization.OptIn)]
-public sealed class RobotInventory : KMonoBehaviour, IRender200ms {
-    // EX1-452242 made these fields private
-    private static readonly IDetouredField<FactionAlignment, bool> FACTION_TARGETABLE =
-        PDetours.DetourField<FactionAlignment, bool>("targetable");
+public sealed class RobotInventory : KMonoBehaviour {
 
-    private static readonly IDetouredField<FactionAlignment, bool> FACTION_TARGETED =
-        PDetours.DetourField<FactionAlignment, bool>("targeted");
+    private const int INITIAL_RTYPE_CAPACITY = 8;
 
-    /// <summary>
-    /// The total quantity of creatures.
-    /// </summary>
-    private readonly IDictionary<RobotType, RobotInventoryPerType> counts;
+    // Track actual instances for cycling-through in the pinned panel.
+    // Not serialized (save files can be loaded without this mod).
+    private readonly Dictionary<RobotType, HashSet<TrackedRobot>> instances;
 
-    /// <summary>
-    /// Flags whether new critter types have been discovered.
-    /// </summary>
-    private bool discovered;
-
-    /// <summary>
-    /// The critter types that are currently pinned.
-    /// </summary>
     [Serialize]
-    private Dictionary<RobotType, HashSet<Tag>> pinned;
+    private HashSet<RobotType> pinned;
 
-#pragma warning disable CS0649
-#pragma warning disable IDE0044
-    // This field is automatically populated by KMonoBehaviour
     [MyCmpReq]
     private WorldContainer worldContainer;
-#pragma warning restore IDE0044
-#pragma warning restore CS0649
+
+    private bool discovered;
 
     public RobotInventory() {
-        this.counts = new Dictionary<RobotType, RobotInventoryPerType>(4);
-        foreach (var type in Enum.GetValues(typeof(RobotType))) {
-            if (type is RobotType ct) {
-                this.counts.Add(ct, new RobotInventoryPerType(32));
-            }
-        }
+        this.instances = new Dictionary<RobotType, HashSet<TrackedRobot>>(INITIAL_RTYPE_CAPACITY);
     }
 
-    /// <summary>
-    /// Adds a critter in the current world to the inventory.
-    /// </summary>
-    /// <param name="id">The prefab ID of the creature to add.</param>
-    private void AddRobot(KPrefabID id) {
-        if (this.counts.TryGetValue(id.GetRobotType(), out var byType)) {
-            var species = id.PrefabTag;
-            bool targeted = false, targetable = false;
-            // Create critter totals if not present
-            if (!byType.TryGetValue(species, out var totals)) {
-                byType.Add(species, totals = new RobotTotals());
-                this.discovered = true;
-            }
-            totals.Total++;
-            if (id.TryGetComponent(out FactionAlignment alignment)) {
-                targeted = FACTION_TARGETED.Get(alignment);
-                targetable = FACTION_TARGETABLE.Get(alignment);
-            }
-            // Reserve wrangled, marked for attack, and trussed/bagged creatures
-            if ((id.TryGetComponent(out Capturable capturable) && capturable.
-                    IsMarkedForCapture) || (targeted && targetable) || id.HasTag(
-                    GameTags.Creatures.Bagged)) {
-                totals.Reserved++;
-            }
+    internal void RegisterInstance(RobotType type, TrackedRobot robot) {
+        if (robot == null) {
+            return;
         }
+
+        bool hadSet = instances.TryGetValue(type, out var set) && set != null;
+        bool newType = !hadSet;
+        if (!hadSet) {
+            set = new HashSet<TrackedRobot>();
+            instances[type] = set;
+            this.discovered = true;
+        }
+        if (!set.Add(robot)) {
+            // Already tracked.
+            return;
+        }
+
+        RefreshUIIfActiveWorld(forcePopulate: newType);
     }
 
-    /// <summary>
-    /// Gets the total quantity of critters of a specific type.
-    /// </summary>
-    /// <param name="type">The critter type, wild or tame.</param>
-    /// <param name="species">The critter species to examine.</param>
-    /// <returns>The total quantity of critters of that type and species.</returns>
-    internal RobotTotals GetBySpecies(RobotType type, Tag species) {
-        if (!this.counts.TryGetValue(type, out var byType)) {
-            throw new ArgumentOutOfRangeException(nameof(type));
-        }
-        if (!byType.TryGetValue(species, out var totals)) {
-            totals = new RobotTotals();
-        }
-        return totals;
+    public ISet<RobotType> GetPinnedTypes() {
+        return this.pinned;
     }
 
-    /// <summary>
-    /// Gets the species that are pinned for a given critter type.
-    /// </summary>
-    /// <param name="type">The critter type to look up.</param>
-    /// <returns>The pinned species, or null if pins are not yet initialized.</returns>
-    public ISet<Tag> GetPinnedSpecies(RobotType type) {
-        if (this.pinned == null || !this.pinned.TryGetValue(type, out var result)) {
-            result = null;
-        }
-        return result;
-    }
-
-    /// <summary>
-    /// Gets the world ID of this inventory. It is parented to the same component as
-    /// WorldInventory, so the same method is used.
-    /// </summary>
-    /// <returns>The world ID to use for inventory.</returns>
     private int GetWorldID() {
         return (this.worldContainer != null) ? this.worldContainer.id : -1;
     }
 
     protected override void OnPrefabInit() {
         base.OnPrefabInit();
-        // Initialize, if not deserialized from the file
+        this.worldContainer = GetComponent<WorldContainer>();
         if (this.pinned == null) {
-            this.pinned = new Dictionary<RobotType, HashSet<Tag>>(4);
-            foreach (var pair in this.counts) {
-                this.pinned.Add(pair.Key, new HashSet<Tag>());
-            }
+            this.pinned = new HashSet<RobotType>();
         }
     }
 
-    /// <summary>
-    /// Gets the total quantity of each critter of a specific type.
-    /// </summary>
-    /// <param name="type">The critter type, wild or tame.</param>
-    /// <param name="results">The location to populate the results per species.</param>
-    /// <returns>The total quantity of critters of that type.</returns>
-    internal RobotTotals PopulateTotals(RobotType type,
-            IDictionary<Tag, RobotTotals> results) {
-        if (!this.counts.TryGetValue(type, out var byType)) {
-            throw new ArgumentOutOfRangeException(nameof(type));
-        }
-        var all = new RobotTotals();
-        foreach (var pair in byType) {
-            var totals = pair.Value;
-            var species = pair.Key;
-            if (results != null && !results.ContainsKey(species)) {
-                results.Add(species, totals);
+    internal int PopulateCounts(IDictionary<RobotType, int> results) {
+        int all = 0;
+        foreach (var pair in instances) {
+            var robotType = pair.Key;
+            var set = pair.Value;
+            int count = set != null ? set.Count : 0;
+            if (results != null && !results.ContainsKey(robotType)) {
+                results.Add(robotType, count);
             }
-            all.Total += totals.Total;
-            all.Reserved += totals.Reserved;
+            all += count;
         }
         return all;
     }
 
-    /// <summary>
-    /// Updates the contents of the critter inventory.
-    /// </summary>
-    public void Render200ms(float _) {
-        int id = this.GetWorldID();
-        var clusterManager = ClusterManager.Instance;
-        if (clusterManager != null && clusterManager.activeWorldId == id) {
-            // Reset existing count to zero
-            foreach (var typePair in this.counts) {
-                foreach (var speciesPair in typePair.Value) {
-                    var species = speciesPair.Value;
-                    species.Reserved = 0;
-                    species.Total = 0;
-                }
+    internal bool ConsumeDiscoveredFlag() {
+        bool d = this.discovered;
+        this.discovered = false;
+        return d;
+    }
+
+    internal IReadOnlyCollection<TrackedRobot> GetInstances(RobotType type) {
+        if (instances.TryGetValue(type, out var set) && set != null) {
+            return set;
+        }
+        return System.Array.Empty<TrackedRobot>();
+    }
+
+    internal void UnregisterInstance(RobotType type, TrackedRobot robot) {
+        if (robot == null) {
+            return;
+        }
+
+        bool removed = false;
+        if (instances.TryGetValue(type, out var set) && set != null) {
+            removed = set.Remove(robot);
+        }
+
+        // Only refresh if we actually tracked this instance.
+        if (removed) {
+            RefreshUIIfActiveWorld(forcePopulate: false);
+        }
+    }
+
+    private void RefreshUIIfActiveWorld(bool forcePopulate) {
+        int worldId = GetWorldID();
+        var cm = ClusterManager.Instance;
+        if (cm == null || cm.activeWorldId != worldId) {
+            return;
+        }
+
+        var resourcesScreen = AllResourcesScreen.Instance;
+        if (resourcesScreen != null) {
+            if (forcePopulate || ConsumeDiscoveredFlag()) {
+                resourcesScreen.Populate();
+            } else {
+                resourcesScreen.RefreshRows();
             }
-            this.discovered = false;
-            RobotInventoryUtils.GetRobots(id, this.AddRobot);
-            var inst = AllResourcesScreen.Instance;
-            if (this.discovered && inst != null) {
-                inst.Populate();
-            }
+        }
+
+        var pinnedPanel = PinnedResourcesPanel.Instance;
+        if (pinnedPanel != null) {
+            pinnedPanel.Refresh();
         }
     }
 }

@@ -6,6 +6,8 @@ public static class Strings {
     public static class UI {
         public static class FRONTEND {
             public static class BOTTWEAKS {
+                public static LocString ROBOTS_CAT = "Robots";
+
                 public static LocString ROVER_EXPIRE_OPT = "Rover Expire Behavior";
                 public static LocString ROVER_EXPIRE_OPT_DESC = "Control the behavior of an expired Rover.";
 
