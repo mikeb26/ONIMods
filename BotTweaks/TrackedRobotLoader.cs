@@ -23,6 +23,10 @@ internal static class TrackedRobotLoader {
             { RemoteWorker.PrefabTag, go => go.AddOrGet<RemoteWorker>() },
         };
 
+    internal static void Reset() {
+        ran = false;
+    }
+
     internal static void ScanAndAttachForExistingSaves() {
         if (ran) {
             return;

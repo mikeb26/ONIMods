@@ -18,7 +18,7 @@ internal sealed class Biobot : TrackedRobot {
         return IsBatteryExpired(gameObject);
     }
 
-    internal override bool IsPowerbankEnabled() => PowerBankEnabler.IsPowerBankEnabled(gameObject);
+    internal override bool IsPowerbankEnabled() => IsConvertedToPowerBanks() || PowerBankEnabler.IsPowerBankEnabled(gameObject);
 
     internal override void EnablePowerbank() {
         PowerBankEnabler.EnablePowerBanksIfEligible(this);

@@ -3,6 +3,7 @@
 using Klei.AI;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace BotTweaks;
@@ -28,6 +29,50 @@ internal static class PowerBankEnabler {
     // For ManualDeliveryKG settings. Flydo uses 21kg.
     private const float POWERBANK_STORAGE_CAPACITY_KG = 21f;
 
+    private static readonly Tag DefaultRechargeableElectrobankPrefabTag = new("Electrobank");
+
+    private static readonly FieldInfo SelfChargingElectrobankLifetimeRemainingField =
+        typeof(SelfChargingElectrobank).GetField("lifetimeRemaining",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+    private static readonly Dictionary<Tag, List<StateMachine.BaseDef>> CleanTrackedRobotPrefabDefs = new();
+
+    internal static void CaptureTrackedRobotPrefabBaseline(GameObject prefab) {
+        if (prefab == null) {
+            return;
+        }
+
+        var kpid = prefab.GetComponent<KPrefabID>();
+        if (kpid == null) {
+            return;
+        }
+
+        var tag = kpid.PrefabTag;
+        if (tag != Rover.PrefabTag && tag != Biobot.PrefabTag) {
+            return;
+        }
+
+        var smc = prefab.GetComponent<StateMachineController>();
+        if (smc == null) {
+            return;
+        }
+
+        var defs = CloneStateMachineDefs(smc);
+        CleanTrackedRobotPrefabDefs[tag] = defs;
+
+        Util.LogDbg("PowerBankEnabler: captured clean prefab def baseline for '{0}' ({1} defs)",
+            prefab.name, defs.Count);
+    }
+
+    internal static void ResetTrackedRobotPrefabStateBeforeLoad(SaveManager saveManager) {
+        if (saveManager == null) {
+            return;
+        }
+
+        ResetTrackedRobotPrefabStateBeforeLoad(saveManager, Rover.PrefabTag);
+        ResetTrackedRobotPrefabStateBeforeLoad(saveManager, Biobot.PrefabTag);
+    }
+
     internal static void EnablePowerBanksIfEligible(TrackedRobot tracked) {
         if (!tracked.CanEnablePowerbank()) {
             return;
@@ -46,6 +91,8 @@ internal static class PowerBankEnabler {
         if (go == null) {
             return;
         }
+
+        MarkTrackedRobotConverted(go, true);
 
         // If already enabled, no-op.
         if (IsPowerBankEnabled(go)) {
@@ -109,9 +156,99 @@ internal static class PowerBankEnabler {
         // NOTE2: The monitor tries to override a battery meter symbol in the robot's anim build.
         // Rovers/biobots do not have Flydo's battery meter symbols, so we install a Harmony guard
         // (see HooksPowerBanks) to skip the override.
+        EnsurePrivateStateMachineDefs(go);
         var rebmDef = go.AddOrGetDef<RobotElectroBankMonitor.Def>();
         rebmDef.lowBatteryWarningPercent = 0.2f;
         return rebmDef;
+    }
+
+    internal static void ReconcileAfterLoad() {
+        var trackedRobots = UnityEngine.Object.FindObjectsByType<TrackedRobot>(FindObjectsSortMode.None);
+        if (trackedRobots == null || trackedRobots.Length == 0) {
+            return;
+        }
+
+        int restored = 0;
+        int migrated = 0;
+        int restoredSavedState = 0;
+
+        for (int i = 0; i < trackedRobots.Length; i++) {
+            var tracked = trackedRobots[i];
+            if (tracked == null || tracked.gameObject == null) {
+                continue;
+            }
+
+            if (!SupportsPowerBankRestore(tracked)) {
+                continue;
+            }
+
+            bool shouldRestore = tracked.IsConvertedToPowerBanks() || LooksLikeLegacyConvertedRobot(tracked.gameObject);
+            if (!shouldRestore) {
+                continue;
+            }
+
+            if (!tracked.IsConvertedToPowerBanks()) {
+                tracked.MarkConvertedToPowerBanks(true);
+                migrated++;
+            }
+
+            if (!IsPowerBankEnabled(tracked.gameObject)) {
+                EnablePowerBanks(tracked.gameObject);
+                restored++;
+            }
+
+            if (RestorePersistentStateAfterLoad(tracked)) {
+                restoredSavedState++;
+            }
+        }
+
+        if (restored > 0 || migrated > 0 || restoredSavedState > 0) {
+            Util.LogDbg("PowerBankEnabler: post-load reconciliation restored {0} converted robot(s), restored {1} saved power-bank state(s), migrated {2} legacy robot(s)",
+                restored, restoredSavedState, migrated);
+        }
+    }
+
+    internal static void CapturePersistentStateForSave(TrackedRobot tracked) {
+        if (tracked == null || tracked.gameObject == null || !SupportsPowerBankRestore(tracked)) {
+            return;
+        }
+
+        if (!tracked.IsConvertedToPowerBanks()) {
+            tracked.ClearSavedPowerBankState();
+            return;
+        }
+
+        var filterTags = new List<Tag>();
+        var filterable = tracked.gameObject.GetComponent<TreeFilterable>();
+        if (filterable != null && filterable.AcceptedTags != null) {
+            filterTags.AddRange(filterable.AcceptedTags);
+        }
+
+        var bankPrefabTags = new List<Tag>();
+        var bankCharges = new List<float>();
+        var bankLifetimeRemaining = new List<float>();
+
+        var storage = FindElectrobankStorage(tracked.gameObject);
+        if (storage != null && storage.items != null) {
+            for (int i = 0; i < storage.items.Count; i++) {
+                var item = storage.items[i];
+                if (item == null || !item.HasTag(GameTags.ChargedPortableBattery)) {
+                    continue;
+                }
+
+                var electrobank = item.GetComponent<Electrobank>();
+                var kpid = item.GetComponent<KPrefabID>();
+                if (electrobank == null || kpid == null) {
+                    continue;
+                }
+
+                bankPrefabTags.Add(kpid.PrefabTag);
+                bankCharges.Add(Mathf.Max(0f, electrobank.Charge));
+                bankLifetimeRemaining.Add(GetSelfChargingLifetimeRemaining(item));
+            }
+        }
+
+        tracked.SavePowerBankState(filterTags, bankPrefabTags, bankCharges, bankLifetimeRemaining);
     }
 
     private static void StartStateMachines(GameObject go, RobotElectroBankMonitor.Def rebmDef) {
@@ -159,6 +296,178 @@ internal static class PowerBankEnabler {
         }
 
         return null;
+    }
+
+    private static bool RestorePersistentStateAfterLoad(TrackedRobot tracked) {
+        if (tracked == null || tracked.gameObject == null || !SupportsPowerBankRestore(tracked)) {
+            return false;
+        }
+
+        var go = tracked.gameObject;
+        var storage = FindElectrobankStorage(go);
+        var filterable = go.GetComponent<TreeFilterable>();
+        if (storage == null || filterable == null) {
+            return false;
+        }
+
+        bool changed = false;
+        if (tracked.HasSavedPowerBankState()) {
+            tracked.GetSavedPowerBankState(out var filterTags, out var bankPrefabTags, out var bankCharges,
+                out var bankLifetimeRemaining);
+
+            changed |= RestoreSavedFilterState(filterable, filterTags);
+            changed |= RestoreSavedPowerBanks(go, storage, bankPrefabTags, bankCharges, bankLifetimeRemaining);
+        } else {
+            changed |= RestoreLegacyPowerBankState(go, storage, filterable);
+        }
+
+        if (StorageHasChargedPowerBank(storage)) {
+            PreventInternalBatteryDeathAndRevive(go);
+        }
+
+        if (changed) {
+            go.GetSMI<RobotElectroBankMonitor.Instance>()?.ElectroBankStorageChange();
+            RefreshUI(go);
+        }
+
+        return changed;
+    }
+
+    private static bool RestoreSavedFilterState(TreeFilterable filterable, List<Tag> filterTags) {
+        if (filterable == null || filterTags == null) {
+            return false;
+        }
+
+        if (filterable.AcceptedTags != null && filterable.AcceptedTags.SetEquals(filterTags)) {
+            return false;
+        }
+
+        filterable.UpdateFilters(new HashSet<Tag>(filterTags));
+        return true;
+    }
+
+    private static bool RestoreSavedPowerBanks(
+        GameObject robot,
+        Storage storage,
+        List<Tag> bankPrefabTags,
+        List<float> bankCharges,
+        List<float> bankLifetimeRemaining
+    ) {
+        if (robot == null || storage == null || bankPrefabTags == null || bankPrefabTags.Count == 0) {
+            return false;
+        }
+
+        if (StorageHasChargedPowerBank(storage)) {
+            return false;
+        }
+
+        bool restoredAny = false;
+        for (int i = 0; i < bankPrefabTags.Count; i++) {
+            var prefab = Assets.GetPrefab(bankPrefabTags[i]);
+            if (prefab == null) {
+                continue;
+            }
+
+            var spawned = global::Util.KInstantiate(prefab, robot.transform.GetPosition());
+            if (spawned == null) {
+                continue;
+            }
+
+            spawned.SetActive(true);
+
+            var electrobank = spawned.GetComponent<Electrobank>();
+            if (electrobank == null) {
+                global::Util.KDestroyGameObject(spawned);
+                continue;
+            }
+
+            float desiredCharge = i < bankCharges.Count ? bankCharges[i] : electrobank.Charge;
+            SetElectrobankCharge(electrobank, desiredCharge);
+
+            float desiredLifetime = i < bankLifetimeRemaining.Count ? bankLifetimeRemaining[i] : -1f;
+            SetSelfChargingLifetimeRemaining(spawned, desiredLifetime);
+
+            storage.Store(spawned, hide_popups: true, block_events: false, do_disease_transfer: false);
+            restoredAny = true;
+        }
+
+        return restoredAny;
+    }
+
+    private static bool RestoreLegacyPowerBankState(GameObject go, Storage storage, TreeFilterable filterable) {
+        if (go == null || storage == null) {
+            return false;
+        }
+
+        bool changed = false;
+        var bankAmount = Db.Get().Amounts.InternalElectroBank.Lookup(go);
+        if (bankAmount != null && bankAmount.value > 0f && !StorageHasChargedPowerBank(storage)) {
+            changed |= RestoreSavedPowerBanks(
+                go,
+                storage,
+                new List<Tag> { DefaultRechargeableElectrobankPrefabTag },
+                new List<float> { bankAmount.value },
+                new List<float> { -1f }
+            );
+        }
+
+        if (changed && filterable != null && (filterable.AcceptedTags == null || filterable.AcceptedTags.Count == 0)) {
+            filterable.UpdateFilters(new HashSet<Tag> { DefaultRechargeableElectrobankPrefabTag });
+        }
+
+        return changed;
+    }
+
+    private static bool StorageHasChargedPowerBank(Storage storage) {
+        return storage != null && storage.items != null && storage.FindFirst(GameTags.ChargedPortableBattery) != null;
+    }
+
+    private static void SetElectrobankCharge(Electrobank electrobank, float desiredCharge) {
+        if (electrobank == null) {
+            return;
+        }
+
+        desiredCharge = Mathf.Clamp(desiredCharge, 0f, 120000f);
+        float currentCharge = electrobank.Charge;
+        if (desiredCharge < currentCharge) {
+            electrobank.RemovePower(currentCharge - desiredCharge, dropWhenEmpty: false);
+        } else if (desiredCharge > currentCharge) {
+            electrobank.AddPower(desiredCharge - currentCharge);
+        }
+    }
+
+    private static float GetSelfChargingLifetimeRemaining(GameObject powerBank) {
+        if (powerBank == null || SelfChargingElectrobankLifetimeRemainingField == null) {
+            return -1f;
+        }
+
+        var selfCharging = powerBank.GetComponent<SelfChargingElectrobank>();
+        if (selfCharging == null) {
+            return -1f;
+        }
+
+        try {
+            return (float)SelfChargingElectrobankLifetimeRemainingField.GetValue(selfCharging);
+        } catch {
+            return -1f;
+        }
+    }
+
+    private static void SetSelfChargingLifetimeRemaining(GameObject powerBank, float lifetimeRemaining) {
+        if (powerBank == null || lifetimeRemaining < 0f || SelfChargingElectrobankLifetimeRemainingField == null) {
+            return;
+        }
+
+        var selfCharging = powerBank.GetComponent<SelfChargingElectrobank>();
+        if (selfCharging == null) {
+            return;
+        }
+
+        try {
+            SelfChargingElectrobankLifetimeRemainingField.SetValue(selfCharging, lifetimeRemaining);
+        } catch {
+            // ignore
+        }
     }
 
     private static Storage FindOrCreateElectrobankStorage(GameObject go) {
@@ -432,5 +741,150 @@ internal static class PowerBankEnabler {
             Db.Get().ChoreTypes.Die,
             kpid
         );
+    }
+
+    private static bool SupportsPowerBankRestore(TrackedRobot tracked) {
+        return tracked is Rover || tracked is Biobot;
+    }
+
+    private static bool LooksLikeLegacyConvertedRobot(GameObject go) {
+        if (go == null) {
+            return false;
+        }
+
+        if (IsPowerBankEnabled(go)) {
+            return true;
+        }
+
+        if (Db.Get().Amounts.InternalElectroBank.Lookup(go) != null) {
+            return true;
+        }
+
+        var internalBattery = GetInternalTrackedRobotBattery(go);
+        if (internalBattery != null && internalBattery.paused && internalBattery.value <= INTERNAL_BATT_EPSILON + 0.01f) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static AmountInstance GetInternalTrackedRobotBattery(GameObject go) {
+        if (go == null) {
+            return null;
+        }
+
+        return Db.Get().Amounts.InternalChemicalBattery.Lookup(go)
+            ?? Db.Get().Amounts.InternalBioBattery.Lookup(go);
+    }
+
+    private static void MarkTrackedRobotConverted(GameObject go, bool converted) {
+        var tracked = go != null ? go.GetComponent<TrackedRobot>() : null;
+        if (tracked == null || !SupportsPowerBankRestore(tracked)) {
+            return;
+        }
+
+        tracked.MarkConvertedToPowerBanks(converted);
+    }
+
+    private static void ResetTrackedRobotPrefabStateBeforeLoad(SaveManager saveManager, Tag prefabTag) {
+        var prefab = saveManager.GetPrefab(prefabTag);
+        if (prefab == null) {
+            return;
+        }
+
+        var smc = prefab.GetComponent<StateMachineController>();
+        if (smc == null) {
+            return;
+        }
+
+        var currentDefs = CloneStateMachineDefs(smc);
+        bool hasElectroBankMonitor = ContainsDef<RobotElectroBankMonitor.Def>(currentDefs);
+        if (!hasElectroBankMonitor) {
+            return;
+        }
+
+        if (CleanTrackedRobotPrefabDefs.TryGetValue(prefabTag, out var baselineDefs)) {
+            ReplaceStateMachineDefs(smc, baselineDefs);
+            Util.LogDbg("PowerBankEnabler: reset prefab state machine defs for '{0}' before SaveManager.Load", prefab.name);
+            return;
+        }
+
+        if (RemoveDefs<RobotElectroBankMonitor.Def>(smc, currentDefs)) {
+            Util.LogDbg("PowerBankEnabler: removed leaked RobotElectroBankMonitor.Def from '{0}' before SaveManager.Load", prefab.name);
+        }
+    }
+
+    private static List<StateMachine.BaseDef> CloneStateMachineDefs(StateMachineController smc) {
+        if (smc == null || !smc.defHandle.IsValid()) {
+            return new List<StateMachine.BaseDef>();
+        }
+
+        var cmpdef = smc.cmpdef;
+        if (cmpdef == null || cmpdef.defs == null || cmpdef.defs.Count == 0) {
+            return new List<StateMachine.BaseDef>();
+        }
+
+        return new List<StateMachine.BaseDef>(cmpdef.defs);
+    }
+
+    private static bool ContainsDef<TDef>(List<StateMachine.BaseDef> defs) where TDef : StateMachine.BaseDef {
+        if (defs == null) {
+            return false;
+        }
+
+        for (int i = 0; i < defs.Count; i++) {
+            if (defs[i] is TDef) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool RemoveDefs<TDef>(StateMachineController smc, List<StateMachine.BaseDef> defs)
+        where TDef : StateMachine.BaseDef {
+        if (smc == null || defs == null || defs.Count == 0) {
+            return false;
+        }
+
+        var filtered = new List<StateMachine.BaseDef>(defs.Count);
+        bool removedAny = false;
+        for (int i = 0; i < defs.Count; i++) {
+            if (defs[i] is TDef) {
+                removedAny = true;
+                continue;
+            }
+
+            filtered.Add(defs[i]);
+        }
+
+        if (!removedAny) {
+            return false;
+        }
+
+        ReplaceStateMachineDefs(smc, filtered);
+        return true;
+    }
+
+    private static void ReplaceStateMachineDefs(StateMachineController smc, List<StateMachine.BaseDef> defs) {
+        if (smc == null) {
+            return;
+        }
+
+        var cmpdef = new StateMachineController.CmpDef {
+            defs = defs != null ? new List<StateMachine.BaseDef>(defs) : new List<StateMachine.BaseDef>()
+        };
+
+        smc.defHandle = new DefHandle();
+        smc.defHandle.Set(cmpdef);
+    }
+
+    private static void EnsurePrivateStateMachineDefs(GameObject go) {
+        var smc = go != null ? go.GetComponent<StateMachineController>() : null;
+        if (smc == null) {
+            return;
+        }
+
+        ReplaceStateMachineDefs(smc, CloneStateMachineDefs(smc));
     }
 }

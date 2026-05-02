@@ -1,11 +1,77 @@
 // Copyright © 2026 Mike Brown; see LICENSE at the root of this package
 
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using KSerialization;
 using UnityEngine;
 
 namespace BotTweaks;
 
 internal abstract class TrackedRobot : KMonoBehaviour, ISim1000ms {
+    [Serialize]
+    private bool convertedToPowerBanks;
+
+    [Serialize]
+    private bool hasSavedPowerBankState;
+
+    [Serialize]
+    private List<Tag> savedPowerBankFilterTags = new();
+
+    [Serialize]
+    private List<Tag> savedPowerBankPrefabTags = new();
+
+    [Serialize]
+    private List<float> savedPowerBankCharges = new();
+
+    [Serialize]
+    private List<float> savedPowerBankLifetimeRemaining = new();
+
     internal abstract RobotType RobotType { get; }
+
+    internal bool IsConvertedToPowerBanks() => convertedToPowerBanks;
+
+    internal bool HasSavedPowerBankState() => hasSavedPowerBankState;
+
+    internal void MarkConvertedToPowerBanks(bool converted) {
+        convertedToPowerBanks = converted;
+    }
+
+    internal void SavePowerBankState(
+        ICollection<Tag> filterTags,
+        ICollection<Tag> bankPrefabTags,
+        ICollection<float> bankCharges,
+        ICollection<float> bankLifetimeRemaining
+    ) {
+        hasSavedPowerBankState = true;
+        savedPowerBankFilterTags = filterTags != null ? new List<Tag>(filterTags) : new List<Tag>();
+        savedPowerBankPrefabTags = bankPrefabTags != null ? new List<Tag>(bankPrefabTags) : new List<Tag>();
+        savedPowerBankCharges = bankCharges != null ? new List<float>(bankCharges) : new List<float>();
+        savedPowerBankLifetimeRemaining = bankLifetimeRemaining != null
+            ? new List<float>(bankLifetimeRemaining)
+            : new List<float>();
+    }
+
+    internal void ClearSavedPowerBankState() {
+        hasSavedPowerBankState = false;
+        savedPowerBankFilterTags = new List<Tag>();
+        savedPowerBankPrefabTags = new List<Tag>();
+        savedPowerBankCharges = new List<float>();
+        savedPowerBankLifetimeRemaining = new List<float>();
+    }
+
+    internal void GetSavedPowerBankState(
+        out List<Tag> filterTags,
+        out List<Tag> bankPrefabTags,
+        out List<float> bankCharges,
+        out List<float> bankLifetimeRemaining
+    ) {
+        filterTags = savedPowerBankFilterTags != null ? new List<Tag>(savedPowerBankFilterTags) : new List<Tag>();
+        bankPrefabTags = savedPowerBankPrefabTags != null ? new List<Tag>(savedPowerBankPrefabTags) : new List<Tag>();
+        bankCharges = savedPowerBankCharges != null ? new List<float>(savedPowerBankCharges) : new List<float>();
+        bankLifetimeRemaining = savedPowerBankLifetimeRemaining != null
+            ? new List<float>(savedPowerBankLifetimeRemaining)
+            : new List<float>();
+    }
 
     /// <summary>
     /// Whether this robot can (and should) be converted to use Power Banks right now.
@@ -20,7 +86,7 @@ internal abstract class TrackedRobot : KMonoBehaviour, ISim1000ms {
     /// Default: false (most robots either don't support power banks, or already have their own
     /// implementation like Flydo).
     /// </summary>
-    internal virtual bool IsPowerbankEnabled() => false;
+    internal virtual bool IsPowerbankEnabled() => convertedToPowerBanks;
 
     /// <summary>
     /// Enable Power Bank behavior on this robot instance.
@@ -66,6 +132,11 @@ internal abstract class TrackedRobot : KMonoBehaviour, ISim1000ms {
 
     protected override void OnPrefabInit() {
         base.OnPrefabInit();
+    }
+
+    [OnSerializing]
+    protected void OnSerializingMethod() {
+        PowerBankEnabler.CapturePersistentStateForSave(this);
     }
 
     protected override void OnSpawn() {

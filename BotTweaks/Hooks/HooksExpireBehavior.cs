@@ -51,18 +51,27 @@ internal static class HooksExpireBehavior {
     // Existing saves: apply dispositions to already-dead rovers/biobots on load.
     [HarmonyPatch(typeof(Game), "OnSpawn")]
     public static class Game_OnSpawn_Patch {
+        public static void Prefix() {
+	    TrackedRobotLoader.Reset();
+	}
+
         public static void Postfix() {
             try {
                 // OnSpawnComplete is invoked in Game.LateUpdate and then nulled; always use
                 // Delegate.Combine to avoid clobbering other handlers.
                 Game.Instance.OnSpawnComplete = (System.Action)System.Delegate.Combine(
                     Game.Instance.OnSpawnComplete,
-                    new System.Action(ExpiredRobotBehavior.ApplyToExistingDeadRobots)
+                    new System.Action(TrackedRobotLoader.ScanAndAttachForExistingSaves)
                 );
 
                 Game.Instance.OnSpawnComplete = (System.Action)System.Delegate.Combine(
                     Game.Instance.OnSpawnComplete,
-                    new System.Action(TrackedRobotLoader.ScanAndAttachForExistingSaves)
+                    new System.Action(PowerBankEnabler.ReconcileAfterLoad)
+                );
+
+                Game.Instance.OnSpawnComplete = (System.Action)System.Delegate.Combine(
+                    Game.Instance.OnSpawnComplete,
+                    new System.Action(ExpiredRobotBehavior.ApplyToExistingDeadRobots)
                 );
             } catch (Exception e) {
                 Util.Log("Failed to register OnSpawnComplete handler: {0}", e);

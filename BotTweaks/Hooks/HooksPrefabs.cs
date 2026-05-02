@@ -23,6 +23,7 @@ internal static class HooksPrefabs {
             }
 
             __result.AddOrGet<Rover>();
+            PowerBankEnabler.CaptureTrackedRobotPrefabBaseline(__result);
 
             // Stock rover prefab has a Deconstructable but it is disabled. Enable it so the
             // standard "Deconstruct" user menu button appears even while the rover is alive.
@@ -42,6 +43,7 @@ internal static class HooksPrefabs {
             }
 
             __result.AddOrGet<Biobot>();
+            PowerBankEnabler.CaptureTrackedRobotPrefabBaseline(__result);
 
             // Stock morb rover prefab has a Deconstructable but it is disabled. Enable it so the
             // standard "Deconstruct" user menu button appears even while the biobot is alive.
