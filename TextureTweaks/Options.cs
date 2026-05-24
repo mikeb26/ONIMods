@@ -1,0 +1,70 @@
+// Copyright © 2026 Mike Brown; see LICENSE at the root of this package
+
+using Newtonsoft.Json;
+using PeterHan.PLib.Options;
+using System.Text;
+using System.Reflection;
+using System;
+
+namespace TextureTweaks;
+
+public enum LiquidTextureChoice {
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.DEFAULT", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.DEFAULT_DESC")]
+    Default,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.NONE", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.NONE_DESC")]
+    None,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.MAGMA", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.MAGMA_DESC")]
+    Magma,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.MOLTEN_METAL", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.MOLTEN_METAL_DESC")]
+    MoltenMetal,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.POLLUTED", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.POLLUTED_DESC")]
+    Polluted,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.OIL", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.OIL_DESC")]
+    Oil,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.THICK", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.THICK_DESC")]
+    Thick,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.SAP", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.SAP_DESC")]
+    Sap,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.CRYSTAL_FRAGMENTS", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.CRYSTAL_FRAGMENTS_DESC")]
+    CrystalFragments,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.OVOLENE", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.OVOLENE_DESC")]
+    Ovolene,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.MUCUS", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.MUCUS_DESC")]
+    Mucus,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.INK", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.INK_DESC")]
+    Ink,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.POLLUTED_BRINE", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.POLLUTED_BRINE_DESC")]
+    PollutedBrine
+}
+
+[JsonObject(MemberSerialization.OptIn)]
+[ModInfo("https://github.com/mikeb26/ONIMods/TextureTweaks")]
+public sealed class Options /* : IOptions */ {
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.MAGMA_TEXTURE", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.MAGMA_TEXTURE_DESC")]
+    [RestartRequired]
+    [JsonProperty]
+    public LiquidTextureChoice MagmaTexture { get; set; }
+
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.MOLTEN_METAL_TEXTURE", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.MOLTEN_METAL_TEXTURE_DESC")]
+    [RestartRequired]
+    [JsonProperty]
+    public LiquidTextureChoice MoltenMetalTexture { get; set; }
+
+    public Options() {
+        // defaults
+        MagmaTexture = LiquidTextureChoice.Oil;
+        MoltenMetalTexture = LiquidTextureChoice.Oil;
+    }
+
+    public override string ToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Options[ ");
+
+        foreach(PropertyInfo prop in typeof(Options).GetProperties()) {
+            sb.Append(string.Format("{0}={1} ", prop.Name, prop.GetValue(this, null)));
+        }
+        sb.Append("]");
+
+        return sb.ToString();
+    }
+}
