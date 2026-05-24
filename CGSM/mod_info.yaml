@@ -4,7 +4,7 @@
 supportedContent: EXPANSION1_ID
 
 # The build number of the last version of the game you tested your mod with
-minimumSupportedBuild: 719533
+minimumSupportedBuild: 722606
 
 # Mod version number
 version: 1.0.1
