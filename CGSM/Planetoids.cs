@@ -109,6 +109,9 @@ public enum PlanetoidType {
     PrehistoricClassic = 59,
     PrehistoricShatteredClassic = 60,
     WarpOilySandySwamp = 61,
+    // DLC5
+    AquaticSpacedOut = 62,
+    AquaticClassic = 63,
 };
 
 // Baator introduces 1-way warp planetoids that don't fit cleanly into these existing categories;
@@ -202,6 +205,14 @@ public enum StartPlanetoidType {
     [Option("STRINGS.WORLDS.PREHISTORICSHATTERED.NAME", "STRINGS.WORLDS.PREHISTORICSHATTERED.DESCRIPTION")]
     [RequireDLC(DlcManager.DLC4_ID)]
     PrehistoricShatteredClassic = PlanetoidType.PrehistoricShatteredClassic,
+
+    // DLC5
+    [Option("STRINGS.WORLDS.AQUATICSPACEDOUT.NAME", "STRINGS.WORLDS.AQUATICSPACEDOUT.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC5_ID)]
+    AquaticSpacedOut = PlanetoidType.AquaticSpacedOut,
+    [Option("STRINGS.WORLDS.AQUATICCLASSIC.NAME", "STRINGS.WORLDS.AQUATICCLASSIC.DESCRIPTION")]
+    [RequireDLC(DlcManager.DLC5_ID)]
+    AquaticClassic = PlanetoidType.AquaticClassic,
 };
 
 public enum WarpPlanetoidType {
@@ -564,6 +575,16 @@ public static class PlanetoidInfos {
                 new Dictionary<PlanetoidCategory, string>{
                     {PlanetoidCategory.Warp, "expansion1::worlds/WarpOilySandySwamp"},
                 }, "DLC4_ID")},
+
+            // DLC5
+            {PlanetoidType.AquaticSpacedOut, new PlanetoidInfo(PlanetoidType.AquaticSpacedOut,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc5::worlds/AquaticSpacedOutAsteroid"},
+                }, "DLC5_ID")},
+            {PlanetoidType.AquaticClassic, new PlanetoidInfo(PlanetoidType.AquaticClassic,
+                new Dictionary<PlanetoidCategory, string>{
+                    {PlanetoidCategory.Start, "dlc5::worlds/AquaticClassicAsteroid"},
+                }, "DLC5_ID")},
         };
 
     private static readonly Dictionary<string, PlanetoidCategory> worldPathToCategory = BuildWorldPathToCategoryIndex();

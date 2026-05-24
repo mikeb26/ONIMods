@@ -131,6 +131,11 @@ public sealed class Options /* : IOptions */ {
     [JsonProperty]
     public bool dlc4PrehistoricOreField { get; set; }
 
+    [Option("STRINGS.UI.SPACEDESTINATIONS.HARVESTABLE_POI.DLC5AQUATICOREFIELD.NAME", "STRINGS.UI.SPACEDESTINATIONS.HARVESTABLE_POI.DLC5AQUATICOREFIELD.DESC", "STRINGS.UI.FRONTEND.CGSM.SPACE_POIS_CAT")]
+    [RequireDLC(DlcManager.DLC5_ID)]
+    [JsonProperty]
+    public bool dlc5AquaticOreField { get; set; }
+
     public Options() {
         // defaults
         starmapRadius = 17;
@@ -165,6 +170,7 @@ public sealed class Options /* : IOptions */ {
         // DLC-specific harvestables default enabled only when the DLC is owned/active.
         dlc2CeresOreField = DlcManager.IsContentSubscribed(DlcManager.DLC2_ID);
         dlc4PrehistoricOreField = DlcManager.IsContentSubscribed(DlcManager.DLC4_ID);
+        dlc5AquaticOreField = DlcManager.IsContentSubscribed(DlcManager.DLC5_ID);
     }
 
     public int getHarvestPoiCount() {
@@ -198,6 +204,9 @@ public sealed class Options /* : IOptions */ {
         }
         if (DlcManager.IsContentSubscribed(DlcManager.DLC4_ID)) {
             count += Convert.ToInt32(dlc4PrehistoricOreField);
+        }
+        if (DlcManager.IsContentSubscribed(DlcManager.DLC5_ID)) {
+            count += Convert.ToInt32(dlc5AquaticOreField);
         }
 
         return count;

@@ -196,6 +196,9 @@ public class Cluster {
         if (DlcManager.IsContentSubscribed(DlcManager.DLC4_ID)) {
             harvestPoiGroup.AddIfSet(optsIn.dlc4PrehistoricOreField, HarvestablePOIs.DLC4PrehistoricOreField);
         }
+        if (DlcManager.IsContentSubscribed(DlcManager.DLC5_ID)) {
+            harvestPoiGroup.AddIfSet(optsIn.dlc5AquaticOreField, HarvestablePOIs.DLC5AquaticOreField);
+        }
 
         this.poiGroups.Add(harvestPoiGroup);
     }

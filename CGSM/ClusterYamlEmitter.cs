@@ -96,6 +96,20 @@ clusterCategory: {0}
                 "  musicFirst: Ice_Planet\n" +
                 "  stingerDay: Stinger_Day_DLC2\n" +
                 "  stingerNight: Stinger_Loop_Night_DLC2\n\n";
+        } else if (this.cluster?.start?.planetoid?.RequiredDlcIdToken() == "DLC5_ID") {
+            // DLC5 clusters (Aquatic) have custom intro, starting minion, cluster tags, and audio.
+            dlcHeaderExtras =
+                "welcomeMessage: STRINGS.UI.WELCOMEMESSAGEBODY_DLC5_AQUATIC\n\n" +
+                "clusterTags:\n" +
+                "- AquaticCluster\n" +
+                "- MinnowRecruitedAchievement\n\n" +
+                "startingMinions:\n" +
+                "- KAI\n\n" +
+                "clusterAudio:\n" +
+                "  musicWelcome: Music_WattsonMessage_DLC5\n" +
+                "  musicFirst: DynamicMusic_Aquatic_Planet_DLC5\n" +
+                "  stingerDay: Stinger_Day_DLC5\n" +
+                "  stingerNight: Stinger_Loop_Night_DLC5\n\n";
         }
 
         int startWorldIndex = 0;
@@ -111,6 +125,7 @@ clusterCategory: {0}
 
         bool needsDlc2 = false;
         bool needsDlc4 = false;
+        bool needsDlc5 = false;
 
         void ConsiderPlanetoid(PlanetoidPlacement placement) {
             if (placement?.planetoid == null)
@@ -120,16 +135,20 @@ clusterCategory: {0}
                 needsDlc2 = true;
             } else if (token == "DLC4_ID") {
                 needsDlc4 = true;
+            } else if (token == "DLC5_ID") {
+                needsDlc5 = true;
             }
         }
 
-        // Some clusters may not include any DLC2/DLC4 planetoids, but can still include
+        // Some clusters may not include any DLC2/DLC4/DLC5 planetoids, but can still include
         // DLC-specific HarvestableSpacePOI.
         void ConsiderPOI(POIType poi) {
             if (poi == POIType.DLC2CeresOreField) {
                 needsDlc2 = true;
             } else if (poi == POIType.DLC4PrehistoricOreField) {
                 needsDlc4 = true;
+            } else if (poi == POIType.DLC5AquaticOreField) {
+                needsDlc5 = true;
             }
         }
 
@@ -150,6 +169,9 @@ clusterCategory: {0}
         }
         if (needsDlc4) {
             requiredDlcIds.Append(", DLC4_ID");
+        }
+        if (needsDlc5) {
+            requiredDlcIds.Append(", DLC5_ID");
         }
 
         yamlContent.Append(string.Format(ClusterYamlHeaderTextFmt, this.category, storyTraitsStr,
