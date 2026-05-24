@@ -81,7 +81,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="PLib" Version="4.22.0.0" />
+    <PackageReference Include="PLib" Version="4.24.0" />
   </ItemGroup>
 
 </Project>
