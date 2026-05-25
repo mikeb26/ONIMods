@@ -3,8 +3,18 @@
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
+using PeterHan.PLib.Options;
 
 namespace TextureTweaks;
+
+public enum LiquidTexture {
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.DEFAULT", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.DEFAULT_DESC")]
+    Default,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.POLLUTED", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.POLLUTED_DESC")]
+    Polluted,
+    [Option("STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.OIL", "STRINGS.UI.FRONTEND.TEXTURETWEAKS.LIQUID_TEXTURES.OIL_DESC")]
+    Oil
+}
 
 public static class Liquids {
     private static readonly FieldInfo SubstanceTextureField = AccessTools.Field(typeof(Substance), "texture");
@@ -15,7 +25,7 @@ public static class Liquids {
             return;
         }
 
-        Options opts = Mod.Instance?.gameState?.opts ?? new Options();
+        Options opts = Mod.Instance.gameState.opts;
         int changed = 0;
 
         foreach(Element element in elements) {
@@ -23,14 +33,14 @@ public static class Liquids {
                 continue;
             }
 
-            LiquidTextureChoice choice = LiquidTextureChoice.Default;
+            LiquidTexture choice = LiquidTexture.Default;
             if (element.id == SimHashes.Magma) {
                 choice = opts.MagmaTexture;
             } else if (element.IsMoltenMetal) {
                 choice = opts.MoltenMetalTexture;
             }
 
-            if (choice == LiquidTextureChoice.Default) {
+            if (choice == LiquidTexture.Default) {
                 continue;
             }
 
@@ -46,11 +56,7 @@ public static class Liquids {
         }
     }
 
-    private static Substance.SubstanceTexture ToSubstanceTexture(LiquidTextureChoice choice) {
-        if (choice == LiquidTextureChoice.Default) {
-            return Substance.SubstanceTexture.None;
-        }
-
+    private static Substance.SubstanceTexture ToSubstanceTexture(LiquidTexture choice) {
         return (Substance.SubstanceTexture)System.Enum.Parse(typeof(Substance.SubstanceTexture), choice.ToString());
     }
 }
