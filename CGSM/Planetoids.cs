@@ -208,10 +208,10 @@ public enum StartPlanetoidType {
 
     // DLC5
     [Option("STRINGS.WORLDS.AQUATICSPACEDOUT.NAME", "STRINGS.WORLDS.AQUATICSPACEDOUT.DESCRIPTION")]
-    [RequireDLC(DlcManager.DLC5_ID)]
+    [RequireDLC("DLC5_ID")]
     AquaticSpacedOut = PlanetoidType.AquaticSpacedOut,
     [Option("STRINGS.WORLDS.AQUATICCLASSIC.NAME", "STRINGS.WORLDS.AQUATICCLASSIC.DESCRIPTION")]
-    [RequireDLC(DlcManager.DLC5_ID)]
+    [RequireDLC("DLC5_ID")]
     AquaticClassic = PlanetoidType.AquaticClassic,
 };
 
